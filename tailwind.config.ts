@@ -9,6 +9,11 @@ export default {
   theme: {
     extend: {
       colors: {
+        primary: "#132963",
+        secondary: "#FFF500",
+        backgroundDash: "#F8F9FF",
+        inputColor: "#F7FBFF",
+        borderInput: "#D4D7E3",
         background: "var(--background)",
         foreground: "var(--foreground)",
       },

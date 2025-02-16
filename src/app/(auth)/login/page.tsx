@@ -1,0 +1,47 @@
+import React from "react";
+import Input from "@/components/form/Input";
+import Button from "@/components/form/Button";
+import Image from "next/image";
+
+export default function LoginPage() {
+  return (
+    <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-white overflow-hidden">
+      <div className="w-full md:w-1/2 flex flex-col justify-center p-12 bg-white-50 mx-4 md:mx-12 rounded-lg border border-gray-200 shadow-lg">
+        <h1 className="text-black text-4xl mb-3 self-start font-semibold text-center md:text-left">
+          Selamat Datang 👋
+        </h1>
+        <p className="text-black text-xl mb-6 self-start font-normal text-center md:text-left">
+          Buku untuk Berbagi, Akses untuk Berkembang.
+        </p>
+        <form className="w-full md:w-4/4">
+          <Input
+            type="text"
+            placeholder="Masukkan Email Anda ex: user@example.com"
+            label="Email"
+          />
+          <Input
+            type="password"
+            placeholder="Masukkan Password Anda"
+            isPassword={true}
+            label="Password"
+          />
+          <Button text="Masuk" />
+        </form>
+        <p className="text-black text-center text-base mt-6 font-normal">
+          Belum punya akun?{" "}
+          <a href="/register" className="text-primary hover:underline">
+            Hubungi Admin
+          </a>
+        </p>
+      </div>
+      <div className="hidden md:flex w-1/2 justify-center items-center">
+        <Image
+          src="/assets/images/login_img.png"
+          alt="Placeholder"
+          width={600}
+          height={400}
+        />
+      </div>
+    </div>
+  );
+}
