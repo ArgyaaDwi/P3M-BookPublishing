@@ -1,9 +1,40 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import Input from "@/components/form/Input";
 import Button from "@/components/form/Button";
 import Image from "next/image";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmitLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to login");
+      }
+      console.log("Login successful:", result.data);
+      router.push("/admin/dashboard");
+    } catch (error) {
+      setError((error as Error).message);
+    }
+  };
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-white overflow-hidden">
       <div className="w-full md:w-1/2 flex flex-col justify-center p-12 bg-white-50 mx-4 md:mx-12 rounded-lg border border-gray-200 shadow-lg">
@@ -13,17 +44,22 @@ export default function LoginPage() {
         <p className="text-black text-xl mb-6 self-start font-normal text-center md:text-left">
           Buku untuk Berbagi, Akses untuk Berkembang.
         </p>
-        <form className="w-full md:w-4/4">
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+        <form className="w-full md:w-4/4" onSubmit={handleSubmitLogin}>
           <Input
             type="text"
             placeholder="Masukkan Email Anda ex: user@example.com"
             label="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <Input
             type="password"
             placeholder="Masukkan Password Anda"
             isPassword={true}
             label="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <Button text="Masuk" />
         </form>

@@ -8,5 +8,6 @@ export type Publisher = {
     };
     username: string;
     createdAt: string;
+    address: string 
   };
   

@@ -2,7 +2,7 @@ import CardChart from "@/components/card/CardChart";
 import Card from "@/components/card/Card";
 import { Files, Users, UserRoundPen, File } from "lucide-react";
 import Breadcrumb from "@/components/BreadCrumb";
-export default function DashboardPage() {
+export default function DashboardAdminPage() {
   const breadcrumbItems = [
     {
       name: "Dashboard",
@@ -12,7 +12,7 @@ export default function DashboardPage() {
   return (
     <div>
       <Breadcrumb title="Hai, Admin P3M" breadcrumbItems={breadcrumbItems} />
-      <p className="text-gray-600">Kelola Ajuan Penerbitan Sekarang!</p>
+      <p className="text-gray-600">Kelola Ajuan Proposal Penerbitan Sekarang!</p>
       <p className="text-black mt-4 font-semibold">Overview</p>
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
         <Card

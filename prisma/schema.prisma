@@ -7,6 +7,9 @@
 generator client {
   provider = "prisma-client-js"
 }
+generator typescriptInterfaces {
+  provider = "prisma-generator-typescript-interfaces"
+}
 
 datasource db {
   provider = "postgresql"
@@ -43,8 +46,70 @@ model User {
   phone_number BigInt?
   profile_pic String?
 
+  publications Publication[] @relation("LecturerPublication")
+  publisherPublication Publication[] @relation("PublisherPublication")
+  activities PublicationActivity[] @relation("ActivityUser")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deleted Boolean @default(false)
   @@map("users")
+}
+
+model PublicationStatus{
+  id Int @id @default(autoincrement())
+  status_name String @unique
+  status_description String? @unique
+
+  publications Publication[] @relation("StatusPublication")
+  activities PublicationActivity[] @relation("StatusActivities")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deleted Boolean @default(false)
+  @@map("publication_status")
+
+}
+
+model Publication{
+  id Int @id @default(autoincrement())
+
+  user_id Int
+  publisher_id Int?
+
+  lecturer User @relation(fields: [user_id], references: [id], name: "LecturerPublication")
+  publisher User? @relation(fields: [publisher_id], references: [id], name: "PublisherPublication")
+  status PublicationStatus @relation(fields: [current_status_id], references: [id], name: "StatusPublication")
+  activities PublicationActivity[] @relation("PublicationActivities")
+
+  publication_ticket String
+  publication_title String
+  publication_document String
+  current_status_id Int
+  supporting_url String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deleted Boolean @default(false)
+  @@map("publication")
+}
+
+model PublicationActivity{
+  id Int @id @default(autoincrement())
+
+  publication_id Int
+  user_id Int
+  publication_status_id Int
+
+  publication Publication @relation(fields: [publication_id], references: [id], name: "PublicationActivities")
+  user User @relation(fields: [user_id], references: [id], name: "ActivityUser")
+  status PublicationStatus @relation(fields: [publication_status_id], references: [id], name: "StatusActivities")
+
+  publication_notes String?
+  supporting_url String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deleted Boolean @default(false)
+  @@map("publication_activities")
 }

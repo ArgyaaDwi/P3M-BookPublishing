@@ -8,8 +8,9 @@ interface InputProps {
   type: string;
   placeholder: string;
   isPassword?: boolean;
-  value?: string; // Tambahkan properti value
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // Tambahkan properti onChange
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  
 }
 
 const Input = ({
@@ -33,8 +34,8 @@ const Input = ({
           type={isPassword && showPassword ? "text" : type}
           placeholder={placeholder}
           className="p-3 flex-1 bg-transparent outline-none"
-          value={value} // Tambahkan value ke input
-          onChange={onChange} // Tambahkan onChange ke input
+          value={value}
+          onChange={onChange}
         />
         {isPassword && (
           <button

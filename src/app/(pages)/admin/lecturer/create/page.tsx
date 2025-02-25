@@ -3,8 +3,9 @@ import React, { useState, useEffect } from "react";
 import Breadcrumb from "@/components/BreadCrumb";
 import Input from "@/components/form/Input";
 import Select from "@/components/form/Select";
-
+import { useRouter } from "next/navigation";
 export default function AddLecturerPage() {
+  const router = useRouter();
   const [nameInput, setNameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
@@ -81,6 +82,7 @@ export default function AddLecturerPage() {
       if (response.ok) {
         console.log("Lecturer added successfully:", result.data);
         alert("Dosen berhasil ditambahkan!");
+        router.push("/admin/lecturer");
       } else {
         console.error("Failed to add lecturer:", result.message);
         alert("Gagal menambahkan dosen: " + result.message);

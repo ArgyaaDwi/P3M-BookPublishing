@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 export async function GET() {
   try {
     const lecturers = await prisma.user.findMany({
-      where: { role: "DOSEN" },
+      where: { role: "DOSEN", deleted: false },
       select: {
         id: true,
         name: true,

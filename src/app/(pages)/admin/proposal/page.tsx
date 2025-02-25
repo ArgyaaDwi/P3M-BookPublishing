@@ -1,31 +1,68 @@
+"use client";
+
 import Breadcrumb from "@/components/BreadCrumb";
 import Tabs from "@/components/Tabs";
-
+import AllProposalAdmin from "./components/AllProposal";
+import ApproveProposalAdmin from "./components/ApproveProposal";
+import RevisionProposalAdmin from "./components/RevisionProposal";
+import { ChartBar, FileText } from "lucide-react";
 export default function ProposalPage() {
   const tabItems = [
     {
       title: "Semua Ajuan",
       content: (
-        <div className="text-black font-bold">Konten untuk Semua Ajuan</div>
+        <div>
+          <div className="flex gap-2">
+            <button className="bg-white border border-gray-500 text-gray-500 px-3 py-2 font-semibold rounded-lg hover:bg-gray-500 hover:text-white transition-all duration-300 flex items-center gap-2">
+              <FileText className="w-5 h-5" /> Export PDF
+            </button>
+            <button className="bg-white border border-green-500 text-green-500 px-3 py-2 font-semibold rounded-lg hover:bg-green-500 hover:text-white transition-all duration-300 flex items-center gap-2">
+              <ChartBar className="w-5 h-5" />
+              Export Excel
+            </button>
+          </div>{" "}
+          {/* <ProposalTable title="Semua Ajuan" /> */}
+          <AllProposalAdmin />
+        </div>
       ),
     },
     {
       title: "Status Revisi",
       content: (
-        <div className="text-black font-bold">
-          Konten untuk Ajuan yang Statusnya Revisi Awokawok Mampus
+        <div>
+          <div className="flex gap-2">
+            <button className="bg-white border border-gray-500 text-gray-500 px-3 py-2 font-semibold rounded-lg hover:bg-gray-500 hover:text-white transition-all duration-300 flex items-center gap-2">
+              <FileText className="w-5 h-5" /> Export PDF
+            </button>
+            <button className="bg-white border border-green-500 text-green-500 px-3 py-2 font-semibold rounded-lg hover:bg-green-500 hover:text-white transition-all duration-300 flex items-center gap-2">
+              <ChartBar className="w-5 h-5" />
+              Export Excel
+            </button>
+          </div>{" "}
+          {/* <ProposalTable title="Status Revisi" /> */}
+          <RevisionProposalAdmin />
         </div>
       ),
     },
     {
       title: "Status Diterima",
       content: (
-        <div className="text-black font-bold">
-          Konten untuk Ajuan yang Statusnya Diterima Cie Congrats
+        <div>
+          <div className="flex gap-2">
+            <button className="bg-white border border-gray-500 text-gray-500 px-3 py-2 font-semibold rounded-lg hover:bg-gray-500 hover:text-white transition-all duration-300 flex items-center gap-2">
+              <FileText className="w-5 h-5" /> Export PDF
+            </button>
+            <button className="bg-white border border-green-500 text-green-500 px-3 py-2 font-semibold rounded-lg hover:bg-green-500 hover:text-white transition-all duration-300 flex items-center gap-2">
+              <ChartBar className="w-5 h-5" />
+              Export Excel
+            </button>
+          </div>{" "}
+          <ApproveProposalAdmin />
         </div>
       ),
     },
   ];
+
   const breadcrumbItems = [
     {
       name: "Dashboard",
@@ -36,9 +73,13 @@ export default function ProposalPage() {
       url: "/admin/proposal",
     },
   ];
+
   return (
     <div>
-      <Breadcrumb title="Halaman Proposal" breadcrumbItems={breadcrumbItems} />
+      <Breadcrumb
+        title="Halaman Ajuan Proposal"
+        breadcrumbItems={breadcrumbItems}
+      />
       <div className="bg-white rounded-lg mt-3">
         <Tabs tabs={tabItems} />
       </div>

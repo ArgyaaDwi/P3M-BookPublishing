@@ -2,8 +2,9 @@
 import React, { useState } from "react";
 import Breadcrumb from "@/components/BreadCrumb";
 import Input from "@/components/form/Input";
-
+import { useRouter } from "next/navigation";
 export default function AddLecturerPage() {
+  const router = useRouter();
   const [nameInput, setNameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
@@ -46,6 +47,7 @@ export default function AddLecturerPage() {
       if (response.ok) {
         console.log("Publisher added successfully:", result.data);
         alert("Penerbit berhasil ditambahkan!");
+        router.push("/admin/publisher");
       } else {
         console.error("Publisher failed to add lecturer:", result.message);
         alert("Gagal menambahkan penerbit: " + result.error);

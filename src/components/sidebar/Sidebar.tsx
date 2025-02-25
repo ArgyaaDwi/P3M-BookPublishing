@@ -15,9 +15,9 @@ interface SidebarProps {
 export default function Sidebar({ title, children }: SidebarProps) {
   const [expanded, setExpanded] = useState(true);
   return (
-    <aside className={`h-screen transition-all ${expanded ? "w-64" : "w-16"}`}>
+    <aside className={` h-screen transition-all ${expanded ? "w-64" : "w-16"}`}>
       {" "}
-      <nav className="h-full flex flex-col bg-white border-r shadow-sm">
+      <nav className=" h-full flex flex-col bg-white border-r shadow-sm">
         <div className="p-4 pb-2 flex justify-between items-center mb-5">
           <img
             src="/assets/images/p3m_logo.png"
@@ -37,6 +37,7 @@ export default function Sidebar({ title, children }: SidebarProps) {
           </button>
         </div>
         <SidebarContext.Provider value={{ expanded }}>
+          
           <ul className="flex-1 px-3 ">{children}</ul>
         </SidebarContext.Provider>
         <div className="border-t flex p-3">

@@ -8,4 +8,6 @@ export type Lecturer = {
   };
   username: string;
   createdAt: string;
+  updatedAt: string;
+  address: string;
 };
