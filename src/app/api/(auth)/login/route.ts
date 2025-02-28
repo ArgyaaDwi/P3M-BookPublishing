@@ -39,11 +39,12 @@ export async function POST(req: NextRequest) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 24 * 60 * 60, 
+      maxAge: 24 * 60 * 60,
+      // maxAge: 120,
     });
 
     return NextResponse.json(
-      { success: true, data: { token: session } },
+      { success: true, data: { token: session, role: user.role } },
       { status: 200 }
     );
   } catch (error) {

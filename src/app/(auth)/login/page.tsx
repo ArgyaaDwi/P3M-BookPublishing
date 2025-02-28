@@ -11,6 +11,30 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  // const handleSubmitLogin = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setError("");
+
+  //   try {
+  //     const response = await fetch("/api/login", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ email, password }),
+  //     });
+
+  //     const result = await response.json();
+
+  //     if (!response.ok) {
+  //       throw new Error(result.error || "Failed to login");
+  //     }
+  //     console.log("Login successful:", result.data);
+  //     router.push("/admin/dashboard");
+  //   } catch (error) {
+  //     setError((error as Error).message);
+  //   }
+  // };
   const handleSubmitLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -25,16 +49,32 @@ export default function LoginPage() {
       });
 
       const result = await response.json();
+      console.log(result);
+      
 
       if (!response.ok) {
         throw new Error(result.error || "Failed to login");
       }
+
       console.log("Login successful:", result.data);
-      router.push("/admin/dashboard");
+
+      // Cek role dan arahkan ke halaman sesuai dengan role
+      const userRole = result.data.role;
+
+      if (userRole === "ADMIN") {
+        router.push("/admin/dashboard");
+      } else if (userRole === "DOSEN") {
+        router.push("/lecturer/dashboard");
+      } else if (userRole === "PENERBIT") {
+        router.push("/publisher/dashboard");
+      } else {
+        throw new Error("Invalid role");
+      }
     } catch (error) {
       setError((error as Error).message);
     }
   };
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-white overflow-hidden">
       <div className="w-full md:w-1/2 flex flex-col justify-center p-12 bg-white-50 mx-4 md:mx-12 rounded-lg border border-gray-200 shadow-lg">
