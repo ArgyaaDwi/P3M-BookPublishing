@@ -3,8 +3,9 @@ import React, { useState, useEffect } from "react";
 import BadgeStatus from "@/components/BadgeStatus";
 import { Eye } from "lucide-react";
 import Select from "@/components/form/Select";
-import ModalStatus from "@/components/ModalStatus";
-
+import { formatDate } from "@/utils/dateFormatter";
+import LoadingIndicator from "@/components/Loading";
+import PublicationType from "@/types/publicationTypes";
 const ApproveProposalAdmin = () => {
   const [showDropdown, setShowDropdown] = useState<number | null>(null);
   const [assignedReviewers, setAssignedPublishers] = useState<{
@@ -13,7 +14,8 @@ const ApproveProposalAdmin = () => {
   const [publishers, setPublishers] = useState<
     { label: string; value: string }[]
   >([]);
-
+  const [proposals, setProposals] = useState<PublicationType[]>([]);
+  const [loading, setLoading] = useState(true);
   const getPublishers = async () => {
     try {
       const response = await fetch("/api/admin/publishers");
@@ -43,7 +45,22 @@ const ApproveProposalAdmin = () => {
     };
     fetchPublishers();
   }, []);
-
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch("/api/admin/proposals?status=approved");
+        const data = await res.json();
+        console.log("Proposals:", data);
+        setProposals(data.data || []);
+      } catch (error) {
+        console.error("Error fetching proposals:", error);
+        setProposals([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
   const handleAssignClick = (rowId: number) => {
     setShowDropdown(showDropdown === rowId ? null : rowId);
   };
@@ -53,86 +70,120 @@ const ApproveProposalAdmin = () => {
     setShowDropdown(null);
     console.log("Assigned for row", rowId, ":", value);
   };
+  if (loading) {
+    return <LoadingIndicator />;
+  }
   return (
     <table className="w-full text-left border border-gray-300 mt-2">
       <thead>
         <tr>
-          <th className="p-4 text-base font-medium text-gray-600 border text-left">
+          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
             No
           </th>
-          <th className="p-4 text-base font-medium text-gray-600 border text-left">
+          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
             Judul Proposal
           </th>
-          <th className="p-4 text-base font-medium text-gray-600 border text-left">
-            Tanggal Pengajuan Dibuat
+          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
+            Dosen Pemohon
           </th>
-          <th className="p-4 text-base font-medium text-gray-600 border text-left">
+          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
+            Tanggal Pengajuan
+          </th>
+          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
             Penerbit
           </th>
-          <th className="p-4 text-base font-medium text-gray-600 border text-left">
+          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
             Status
           </th>
-          <th className="p-4 text-base font-medium text-gray-600 border text-left">
+          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
             Aksi
           </th>
         </tr>
       </thead>
       <tbody>
-        {[1, 2].map((rowId) => (
-          <tr key={rowId}>
-            <td className="p-4 text-black border font-semibold">{rowId}</td>
-            <td className="p-4 text-black border font-semibold">
-              <div className="flex flex-col">
-                <span>Proposal {rowId}</span>
-                <span className="text-gray-500 font-medium">#BO25909192</span>
-              </div>
-            </td>
-            <td className="p-4 text-black border font-semibold">
-              Minggu, 16 Februari 2025 pukul 21.35
-            </td>
-            <td className="p-4 text-black border font-semibold">
-              {assignedReviewers[rowId] ? (
-                publishers.find((p) => p.value === assignedReviewers[rowId])
-                  ?.label
-              ) : (
-                <>
-                  <button
-                    className="bg-teal-500 hover:bg-teal-700 text-white px-3 py-1 rounded"
-                    onClick={() => handleAssignClick(rowId)}
-                  >
-                    Assign
+        {proposals.length > 0 ? (
+          proposals.map((proposal, index) => (
+            <tr key={proposal.id}>
+              <td className="p-4 text-black border">{index + 1}</td>
+              <td className="p-4 text-black border font-semibold">
+                <div className="flex flex-col">
+                  <span>{proposal.publication_title}</span>
+                  <span className="text-gray-500 font-medium">
+                    #{proposal.publication_ticket}
+                  </span>
+                </div>
+              </td>
+              <td className="p-4 text-black border">
+                {proposal.lecturer?.name ?? "Dosen Tidak Diketahui"}
+              </td>
+              <td className="p-4 text-black border">
+                {formatDate(proposal.createdAt)}
+              </td>
+              <td className="p-4 text-black border">
+                {assignedReviewers[proposal.id] ? (
+                  publishers.find(
+                    (p) => p.value === assignedReviewers[proposal.id]
+                  )?.label
+                ) : (
+                  <>
+                    <button
+                      className="bg-teal-500 hover:bg-teal-700 text-white px-3 py-1 rounded"
+                      onClick={() => handleAssignClick(proposal.id)}
+                    >
+                      Assign
+                    </button>
+                    {showDropdown === proposal.id && (
+                      <div className="mt-2">
+                        <Select
+                          label="Pilih Penerbit"
+                          options={publishers}
+                          value={assignedReviewers[proposal.id] || ""}
+                          onChange={(value) =>
+                            handleSelectChange(proposal.id, value)
+                          }
+                        />
+                      </div>
+                    )}
+                  </>
+                )}
+              </td>
+              <td className="p-4 text-black border font-semibold">
+                <BadgeStatus
+                  text={
+                    proposal.status?.status_name || "Status Tidak Diketahui"
+                  }
+                  color={
+                    proposal.current_status_id === 1
+                      ? "badgePendingText"
+                      : proposal.current_status_id === 2
+                      ? "badgeRevText"
+                      : "badgeSuccessText"
+                  }
+                  bgColor={
+                    proposal.current_status_id === 1
+                      ? "badgePending"
+                      : proposal.current_status_id === 2
+                      ? "badgeRev"
+                      : "badgeSuccess"
+                  }
+                />
+              </td>
+              <td className="p-4 text-black border">
+                <div className="flex items-center gap-2">
+                  <button className="bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800">
+                    <Eye />
                   </button>
-                  {showDropdown === rowId && (
-                    <div className="mt-2">
-                      <Select
-                        label="Pilih Penerbit"
-                        options={publishers}
-                        value={assignedReviewers[rowId] || ""}
-                        onChange={(value) => handleSelectChange(rowId, value)}
-                      />
-                    </div>
-                  )}
-                </>
-              )}
-            </td>
-
-            <td className="p-4 text-black border font-semibold">
-              <BadgeStatus
-                text="Approve dari Admin"
-                color="badgeSuccessText"
-                bgColor="badgeSuccess"
-              />
-            </td>
-            <td className="p-4 text-black border">
-              <div className="flex items-center gap-2">
-                <button className="bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800">
-                  <Eye />
-                </button>
-              <ModalStatus />
-              </div>
+                </div>
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan={7} className="text-center p-4 text-gray-500">
+              Tidak Ada Ajuan Dengan Status Approve.
             </td>
           </tr>
-        ))}
+        )}
       </tbody>
     </table>
   );

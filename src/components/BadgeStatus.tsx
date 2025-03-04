@@ -12,12 +12,14 @@ const BadgeStatus = ({ text, color, bgColor }: BadgeStatusProps) => {
     badgeSuccess: "bg-green-100",
     badgeError: "bg-red-100",
     badgeRev: "bg-orange-50",
+    badgePending: "bg-sky-100",
   };
 
   const textColorMap: { [key: string]: string } = {
     badgeSuccessText: "text-green-500",
     badgeErrorText: "text-red-500",
     badgeRevText: "text-orange-500",
+    badgePendingText: "text-sky-500",
   };
 
   return (

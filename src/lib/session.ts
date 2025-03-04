@@ -28,7 +28,6 @@ export async function createSession(user: User) {
   });
 
   const cookieStore = await cookies();
-
   cookieStore.set({
     name: "session",
     value: session,

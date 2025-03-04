@@ -5,13 +5,15 @@ import BadgeStatus from "@/components/BadgeStatus";
 import { Eye } from "lucide-react";
 import PublicationType from "@/types/publicationTypes";
 import LoadingIndicator from "@/components/Loading";
-const RevisionProposalAdmin = () => {
+import ModalStatus from "@/components/ModalStatus";
+const VerifyProposalAdmin = () => {
   const [proposals, setProposals] = useState<PublicationType[]>([]);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/admin/proposals?status=revision");
+        const res = await fetch("/api/admin/proposals?status=verify");
         const data = await res.json();
         console.log("Proposals:", data);
         setProposals(data.data || []);
@@ -40,7 +42,7 @@ const RevisionProposalAdmin = () => {
           <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
             Dosen Pemohon
           </th>
-          <th className="p-4 text-base font-semibold bg-gray-50  text-gray-600 border text-left">
+          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
             Tanggal Pengajuan
           </th>
           <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
@@ -58,7 +60,9 @@ const RevisionProposalAdmin = () => {
               console.log("Proposal:", proposal),
               (
                 <tr key={proposal.id}>
-                  <td className="p-4 text-black border">{index + 1}</td>
+                  <td className="p-4 text-black border">
+                    {index + 1}
+                  </td>
                   <td className="p-4 text-black border font-semibold">
                     <div className="flex flex-col">
                       <span>{proposal.publication_title}</span>
@@ -67,13 +71,13 @@ const RevisionProposalAdmin = () => {
                       </span>
                     </div>
                   </td>
-                  <td className="p-4 text-black border">
+                  <td className="p-4 text-black border ">
                     {proposal.lecturer?.name || "Dosen Tidak Diketahui"}
                   </td>
-                  <td className="p-4 text-black border">
+                  <td className="p-4 text-black border ">
                     {formatDate(proposal.createdAt)}
                   </td>
-                  <td className="p-4 text-black border">
+                  <td className="p-4 text-black border ">
                     <BadgeStatus
                       text={
                         proposal.status?.status_name || "Status Tidak Diketahui"
@@ -99,10 +103,8 @@ const RevisionProposalAdmin = () => {
                       <button className="bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800">
                         <Eye />
                       </button>
-                      {/* <button className="bg-yellow-100 p-2 rounded-lg text-yellow-500 hover:text-yellow-800">
-                        <Pencil />
-                      </button>
-                      <button className="bg-red-100 p-2 rounded-lg text-red-500 hover:text-red-800">
+                      <ModalStatus proposal={proposal} />
+                      {/* <button className="bg-red-100 p-2 rounded-lg text-red-500 hover:text-red-800">
                         <Trash2 />
                       </button> */}
                     </div>
@@ -114,7 +116,7 @@ const RevisionProposalAdmin = () => {
         ) : (
           <tr>
             <td colSpan={6} className="text-center p-4 text-gray-500">
-              Tidak Ada Ajuan Dengan Status Revisi.
+              Tidak Ada Ajuan Yang Perlu Diverifikasi.
             </td>
           </tr>
         )}
@@ -123,4 +125,4 @@ const RevisionProposalAdmin = () => {
   );
 };
 
-export default RevisionProposalAdmin;
+export default VerifyProposalAdmin;

@@ -56,40 +56,6 @@ export async function GET(
   }
 }
 
-// PUT Handler untuk memperbarui dosen
-// export async function PUT(
-//   req: Request,
-//   { params }: { params: { id: string } }
-// ) {
-//   const { id } = params;
-//   const { name, email, major, address, phone_number } = await req.json();
-
-//   try {
-//     const updatedLecturer = await prisma.user.update({
-//       where: { id: parseInt(id) },
-//       data: {
-//         name,
-//         email,
-//         major: major ? { connect: { major_name: major } } : undefined,
-//         address,
-//         phone_number,
-//       },
-//     });
-
-//     return NextResponse.json({
-//       status: "success",
-//       message: "Lecturer updated successfully",
-//       data: updatedLecturer,
-//     });
-//   } catch (error) {
-//     console.error("Error updating lecturer:", error);
-//     return NextResponse.json(
-//       { status: "error", message: "Failed to update lecturer" },
-//       { status: 500 }
-//     );
-//   }
-// }
-
 export async function PUT(
   req: Request,
   { params }: { params: { id: string } }

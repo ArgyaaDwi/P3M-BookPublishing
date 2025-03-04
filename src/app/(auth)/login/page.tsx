@@ -10,31 +10,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
-  // const handleSubmitLogin = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setError("");
-
-  //   try {
-  //     const response = await fetch("/api/login", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ email, password }),
-  //     });
-
-  //     const result = await response.json();
-
-  //     if (!response.ok) {
-  //       throw new Error(result.error || "Failed to login");
-  //     }
-  //     console.log("Login successful:", result.data);
-  //     router.push("/admin/dashboard");
-  //   } catch (error) {
-  //     setError((error as Error).message);
-  //   }
-  // };
+  const [loading, setLoading] = useState(false);
   const handleSubmitLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -47,10 +23,8 @@ export default function LoginPage() {
         },
         body: JSON.stringify({ email, password }),
       });
-
       const result = await response.json();
       console.log(result);
-      
 
       if (!response.ok) {
         throw new Error(result.error || "Failed to login");
@@ -72,9 +46,13 @@ export default function LoginPage() {
       }
     } catch (error) {
       setError((error as Error).message);
+    } finally {
+      setLoading(false);
     }
   };
-
+ if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-white overflow-hidden">
       <div className="w-full md:w-1/2 flex flex-col justify-center p-12 bg-white-50 mx-4 md:mx-12 rounded-lg border border-gray-200 shadow-lg">

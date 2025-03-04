@@ -7,6 +7,7 @@ const Header = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false); 
   const [user, setUser] = useState<{
+    id: string;
     name: string;
     email: string;
     avatarUrl: string;
@@ -22,6 +23,7 @@ const Header = () => {
         }
         const data = await response.json();
         setUser({
+          id: data.user_id,
           name: data.name,
           email: data.email,
           avatarUrl: data.avatarUrl || "/assets/images/user_img.png",
@@ -60,7 +62,7 @@ const Header = () => {
         {user ? (
           <>
             <span className="hidden md:block text-gray-800 font-normal">
-              {user.name}
+              {user.name} 
             </span>
             <img
               src="/assets/images/user_img.png"

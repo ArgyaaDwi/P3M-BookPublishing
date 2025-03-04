@@ -3,21 +3,52 @@ import React, { useState } from "react";
 import Breadcrumb from "@/components/BreadCrumb";
 import Input from "@/components/form/Input";
 import { Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 export default function AddLecturerPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [nameInput, setNameInput] = useState("");
-  const [emailInput, setEmailInput] = useState("");
+  const [titleInput, setTitleInput] = useState("");
+  const router = useRouter();
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setNameInput(e.target.value);
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setEmailInput(e.target.value);
+  // const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  //   setNameInput(e.target.value);
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setTitleInput(e.target.value);
 
   const breadcrumbItems = [
     { name: "Dashboard", url: "/lecturer/dashboard" },
     { name: "Ajuan", url: "/lecturer/proposal" },
     { name: "Buat Ajuan Proposal", url: "/lecturer/proposal/create" },
   ];
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const data = {
+      publication_title: titleInput,
+    };
+
+    try {
+      const response = await fetch("/api/lecturer/proposals", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        console.log("Proposal added successfully:", result.data);
+        alert("Proposal berhasil ditambahkan!");
+        router.push("/lecturer/proposal");
+      } else {
+        console.error("Proposal failed to add:", result.message);
+        alert("Gagal menambahkan proposal: " + result.error);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Terjadi kesalahan saat mengirim data.");
+    }
+  };
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setSelectedFile(event.target.files[0]);
@@ -46,20 +77,20 @@ export default function AddLecturerPage() {
         </h3>
         <hr className="mb-3" />
         <div className="px-4">
-          <form>
-            <Input
+          <form onSubmit={handleFormSubmit}>
+            {/* <Input
               type="text"
               placeholder="Masukkan Nama Dosen Pengusul"
               label="Nama Pengusul"
               value={nameInput}
               onChange={handleNameChange}
-            />
+            /> */}
             <Input
               type="text"
               placeholder="Masukkan Judul Buku yang Akan Diajukan"
               label="Judul Buku"
-              value={emailInput}
-              onChange={handleEmailChange}
+              value={titleInput}
+              onChange={handleTitleChange}
             />
             <h3 className="text-black text-base self-start font-normal mb-1">
               Draf PDF Buku
@@ -120,7 +151,6 @@ export default function AddLecturerPage() {
                 </div>
               )}
             </div>
-
             <div className="flex items-center gap-2 pt-4">
               <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
                 Simpan

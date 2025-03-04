@@ -5,14 +5,16 @@ import Tabs from "@/components/Tabs";
 import AllProposalAdmin from "./components/AllProposal";
 import ApproveProposalAdmin from "./components/ApproveProposal";
 import RevisionProposalAdmin from "./components/RevisionProposal";
+import VerifyProposalAdmin from "./components/VerifProposal";
 import { ChartBar, FileText } from "lucide-react";
+import Example from "@/components/tables/TestTable";
 export default function ProposalPage() {
   const tabItems = [
     {
       title: "Semua Ajuan",
       content: (
         <div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 pb-2">
             <button className="bg-white border border-gray-500 text-gray-500 px-3 py-2 font-semibold rounded-lg hover:bg-gray-500 hover:text-white transition-all duration-300 flex items-center gap-2">
               <FileText className="w-5 h-5" /> Export PDF
             </button>
@@ -21,8 +23,25 @@ export default function ProposalPage() {
               Export Excel
             </button>
           </div>{" "}
-          {/* <ProposalTable title="Semua Ajuan" /> */}
+          <Example />
           <AllProposalAdmin />
+        </div>
+      ),
+    },
+    {
+      title: "Butuh Verifikasi",
+      content: (
+        <div>
+          <div className="flex gap-2 pb-2">
+            <button className="bg-white border border-gray-500 text-gray-500 px-3 py-2 font-semibold rounded-lg hover:bg-gray-500 hover:text-white transition-all duration-300 flex items-center gap-2">
+              <FileText className="w-5 h-5" /> Export PDF
+            </button>
+            <button className="bg-white border border-green-500 text-green-500 px-3 py-2 font-semibold rounded-lg hover:bg-green-500 hover:text-white transition-all duration-300 flex items-center gap-2">
+              <ChartBar className="w-5 h-5" />
+              Export Excel
+            </button>
+          </div>{" "}
+          <VerifyProposalAdmin />
         </div>
       ),
     },
@@ -30,7 +49,7 @@ export default function ProposalPage() {
       title: "Status Revisi",
       content: (
         <div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 pb-2">
             <button className="bg-white border border-gray-500 text-gray-500 px-3 py-2 font-semibold rounded-lg hover:bg-gray-500 hover:text-white transition-all duration-300 flex items-center gap-2">
               <FileText className="w-5 h-5" /> Export PDF
             </button>
@@ -39,7 +58,6 @@ export default function ProposalPage() {
               Export Excel
             </button>
           </div>{" "}
-          {/* <ProposalTable title="Status Revisi" /> */}
           <RevisionProposalAdmin />
         </div>
       ),
@@ -48,7 +66,7 @@ export default function ProposalPage() {
       title: "Status Diterima",
       content: (
         <div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 pb-2">
             <button className="bg-white border border-gray-500 text-gray-500 px-3 py-2 font-semibold rounded-lg hover:bg-gray-500 hover:text-white transition-all duration-300 flex items-center gap-2">
               <FileText className="w-5 h-5" /> Export PDF
             </button>

@@ -46,3 +46,9 @@ export const config = {
     "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|assets|login).*)",
   ],
 };
+// export const config = {
+//   matcher: [
+//     "/api/:path*",
+//     "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|assets|login).*)",
+//   ],
+// };

@@ -1,7 +1,7 @@
 "use client";
 
 import { Menu, ChevronFirst, LogOut } from "lucide-react";
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 interface SidebarContextType {
   expanded: boolean;
@@ -14,6 +14,48 @@ interface SidebarProps {
 
 export default function Sidebar({ title, children }: SidebarProps) {
   const [expanded, setExpanded] = useState(true);
+  const [user, setUser] = useState<{
+    name: string;
+    email: string;
+    avatarUrl: string;
+    role: string;
+  } | null>(null);
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("/api/logout", {
+        method: "POST",
+      });
+
+      if (response.ok) {
+        window.location.href = "/login";
+      } else {
+        console.error("Logout gagal");
+      }
+    } catch (error) {
+      console.error("Terjadi kesalahan saat logout:", error);
+    }
+  };
+  useEffect(() => {
+    const fetchUserSession = async () => {
+      try {
+        const response = await fetch("/api/session");
+        if (!response.ok) {
+          throw new Error("Gagal mengambil data sesi");
+        }
+        const data = await response.json();
+        setUser({
+          name: data.name,
+          email: data.email,
+          avatarUrl: data.avatarUrl || "/assets/images/user_img.png",
+          role: data.role || "Pengguna",
+        });
+      } catch (error) {
+        console.error("Error fetching session:", error);
+      }
+    };
+
+    fetchUserSession();
+  }, []);
   return (
     <aside className={` h-screen transition-all ${expanded ? "w-64" : "w-16"}`}>
       {" "}
@@ -37,7 +79,6 @@ export default function Sidebar({ title, children }: SidebarProps) {
           </button>
         </div>
         <SidebarContext.Provider value={{ expanded }}>
-          
           <ul className="flex-1 px-3 ">{children}</ul>
         </SidebarContext.Provider>
         <div className="border-t flex p-3">
@@ -53,10 +94,12 @@ export default function Sidebar({ title, children }: SidebarProps) {
             `}
           >
             <div className="leading-4">
-              <h4 className="font-semibold text-black">Argya Dwi</h4>
-              <span className="text-xs text-gray-600">argya@gmail.com</span>
+              <h4 className="font-semibold text-black">{user?.name || ""}</h4>
+              <span className="text-xs text-gray-600">{user?.email || ""}</span>
             </div>
-            <LogOut size={22} color="red" />
+            <button onClick={handleLogout}>
+              <LogOut size={22} color="red" />
+            </button>
           </div>
         </div>
       </nav>
