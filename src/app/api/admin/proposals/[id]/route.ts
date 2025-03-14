@@ -1,7 +1,46 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-const prisma = new PrismaClient();
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const id = parseInt(params.id, 10);
+    if (isNaN(id)) {
+      return NextResponse.json(
+        { status: "error", message: "Invalid Proposal ID" },
+        { status: 400 }
+      );
+    }
+    const proposal = await prisma.publication.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        publication_ticket: true,
+        publication_title: true,
+        lecturer: { select: { name: true } },
+        publisher: { select: { name: true } },
+        status: { select: { status_name: true } },
+        createdAt: true,
+      },
+    });
+    if (!proposal) {
+      return NextResponse.json(
+        { status: "error", message: "Proposal not found" },
+        { status: 404 }
+      );
+    }
+    return NextResponse.json({ status: "success", data: proposal });
+  } catch (error) {
+    console.error("Error fetching publisher:", error);
+    return NextResponse.json(
+      { status: "error", message: "Failed to fetch publisher" },
+      { status: 500 }
+    );
+  }
+}
 
 export async function PUT(
   req: NextRequest,

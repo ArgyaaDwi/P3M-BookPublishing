@@ -1,103 +1,127 @@
-import { useMemo } from 'react';
+"use client";
+import { useEffect, useMemo, useState } from "react";
 import {
   MantineReactTable,
   useMantineReactTable,
   type MRT_ColumnDef,
-} from 'mantine-react-table';
+} from "mantine-react-table";
+import { formatDate } from "@/utils/dateFormatter";
+import BadgeStatus from "@/components/BadgeStatus";
+import { Eye, Trash2 } from "lucide-react";
+import { PublicationType } from "@/types/publicationTypes";
+import LoadingIndicator from "@/components/Loading";
+import { Button } from "@mantine/core";
 
-type Person = {
-  name: {
-    firstName: string;
-    lastName: string;
-  };
-  address: string;
-  city: string;
-  state: string;
-};
+const AllProposalAdmin = () => {
+  const [proposals, setProposals] = useState<PublicationType[]>([]);
+  const [loading, setLoading] = useState(true);
 
-//nested data is ok, see accessorKeys in ColumnDef below
-const data: Person[] = [
-  {
-    name: {
-      firstName: 'Zachary',
-      lastName: 'Davis',
-    },
-    address: '261 Battle Ford',
-    city: 'Columbus',
-    state: 'Ohio',
-  },
-  {
-    name: {
-      firstName: 'Robert',
-      lastName: 'Smith',
-    },
-    address: '566 Brakus Inlet',
-    city: 'Westerville',
-    state: 'West Virginia',
-  },
-  {
-    name: {
-      firstName: 'Kevin',
-      lastName: 'Yan',
-    },
-    address: '7777 Kuhic Knoll',
-    city: 'South Linda',
-    state: 'West Virginia',
-  },
-  {
-    name: {
-      firstName: 'John',
-      lastName: 'Upton',
-    },
-    address: '722 Emie Stream',
-    city: 'Huntington',
-    state: 'Washington',
-  },
-  {
-    name: {
-      firstName: 'Nathan',
-      lastName: 'Harris',
-    },
-    address: '1 Kuhic Knoll',
-    city: 'Ohiowa',
-    state: 'Nebraska',
-  },
-];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch("/api/admin/proposals?status=all");
+        const data = await res.json();
+        console.log("Proposals:", data);
+        setProposals(data.data || []);
+      } catch (error) {
+        console.error("Error fetching proposals:", error);
+        setProposals([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
-const Example = () => {
-  //should be memoized or stable
-  const columns = useMemo<MRT_ColumnDef<Person>[]>(
+  const columns = useMemo<MRT_ColumnDef<PublicationType>[]>(
     () => [
       {
-        accessorKey: 'name.firstName', //access nested data with dot notation
-        header: 'First Name',
+        accessorFn: (_, index) => index + 1,
+        header: "No",
+        size: 50,
       },
       {
-        accessorKey: 'name.lastName',
-        header: 'Last Name',
+        accessorKey: "publication_title",
+        header: "Judul Proposal",
+
+        Cell: ({ row }) => (
+          <div className="flex flex-col">
+            <span className="font-semibold">
+              {row.original.publication_title}
+            </span>
+            <span className="text-gray-500 font-medium">
+              #{row.original.publication_ticket}
+            </span>
+          </div>
+        ),
       },
       {
-        accessorKey: 'address', //normal accessorKey
-        header: 'Address',
+        accessorKey: "lecturer.name",
+        header: "Dosen Pemohon",
+        Cell: ({ row }) =>
+          row.original.lecturer?.name || "Dosen Tidak Diketahui",
       },
       {
-        accessorKey: 'city',
-        header: 'City',
+        accessorKey: "createdAt",
+        header: "Tanggal Pengajuan",
+        Cell: ({ row }) => formatDate(row.original.createdAt),
       },
       {
-        accessorKey: 'state',
-        header: 'State',
+        accessorKey: "status.status_name",
+        header: "Status",
+        Cell: ({ row }) => (
+          <BadgeStatus
+            text={row.original.status?.status_name || "Status Tidak Diketahui"}
+            color={
+              row.original.current_status_id === 1 ||
+              row.original.current_status_id === 4
+                ? "badgePendingText"
+                : row.original.current_status_id === 2
+                ? "badgeRevText"
+                : "badgeSuccessText"
+            }
+            bgColor={
+              row.original.current_status_id === 1 ||
+              row.original.current_status_id === 4
+                ? "badgePending"
+                : row.original.current_status_id === 2
+                ? "badgeRev"
+                : "badgeSuccess"
+            }
+          />
+        ),
+      },
+      {
+        accessorKey: "actions",
+        header: "Aksi",
+        enableSorting: false,
+        enableColumnFilter: false,
+        Cell: () => (
+          <div className="flex items-center gap-2">
+            <Button variant="light" color="blue">
+              <Eye size={18} />
+            </Button>
+            <Button variant="light" color="red">
+              <Trash2 size={18} />
+            </Button>
+          </div>
+        ),
       },
     ],
-    [],
+    []
   );
 
   const table = useMantineReactTable({
     columns,
-    data, //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
+    data: proposals,
+    enablePagination: true,
+    enableSorting: true,
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   });
+
+  if (loading) return <LoadingIndicator />;
 
   return <MantineReactTable table={table} />;
 };
 
-export default Example;
+export default AllProposalAdmin;

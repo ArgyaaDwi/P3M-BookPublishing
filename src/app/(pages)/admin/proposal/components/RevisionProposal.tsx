@@ -2,10 +2,12 @@
 import { useEffect, useState } from "react";
 import { formatDate } from "@/utils/dateFormatter";
 import BadgeStatus from "@/components/BadgeStatus";
+import { useRouter } from "next/navigation";
 import { Eye } from "lucide-react";
-import PublicationType from "@/types/publicationTypes";
+import { PublicationType } from "@/types/publicationTypes";
 import LoadingIndicator from "@/components/Loading";
 const RevisionProposalAdmin = () => {
+  const router = useRouter();
   const [proposals, setProposals] = useState<PublicationType[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -96,7 +98,12 @@ const RevisionProposalAdmin = () => {
                   </td>
                   <td className="p-4 text-black border">
                     <div className="flex items-center gap-2">
-                      <button className="bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800">
+                      <button
+                        onClick={() =>
+                          router.push(`/admin/proposal/${proposal.id}`)
+                        }
+                        className="bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800"
+                      >
                         <Eye />
                       </button>
                       {/* <button className="bg-yellow-100 p-2 rounded-lg text-yellow-500 hover:text-yellow-800">

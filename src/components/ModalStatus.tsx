@@ -219,10 +219,10 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
   return (
     <div>
       <button
-        className="bg-yellow-100 p-2 rounded-lg text-yellow-500 hover:text-yellow-800 flex gap-2"
+        className="bg-yellow-100 p-2 rounded-lg text-yellow-500 hover:text-yellow-800 flex items-center gap-2"
         onClick={() => setIsOpen(true)}
       >
-        <Pencil />
+        <Pencil className="w-5 h-5" />
         Ubah Status
       </button>
 

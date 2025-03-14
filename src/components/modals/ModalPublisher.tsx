@@ -1,0 +1,155 @@
+"use client";
+import React, { useState, useEffect } from "react";
+import { CircleAlert } from "lucide-react";
+import { Publisher } from "@/types/publisherTypes";
+type ProposalType = {
+  id: number;
+  current_status_id: number;
+  status: { status_name: string };
+};
+
+type ModalPublisherProps = {
+  proposal: ProposalType; 
+};
+
+const ModalPublisher: React.FC<ModalPublisherProps> = ({ proposal: publication }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [publisherList, setPublisherList] = useState<Publisher[]>([]);
+  const [selectedPublisher, setSelectedPublisher] = useState<number | null>(
+    null
+  );
+  const [note, setNote] = useState<string>("");
+  const [supportingUrl, setSupportingUrl] = useState<string>("");
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await fetch("/api/admin/publishers");
+        const result = await response.json();
+        if (result.status === "success" && Array.isArray(result.data)) {
+          setPublisherList(result.data);
+        }
+      } catch (error) {
+        console.error("Error fetching publishers:", error);
+      }
+    };
+    getData();
+  }, []);
+
+  const handleSave = async () => {
+    if (!selectedPublisher) {
+      alert("Pilih penerbit terlebih dahulu!");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/admin/proposals/assign-publisher", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          proposalId: publication?.id,
+          publisherId: selectedPublisher,
+          note,
+          supportingUrl,
+        }),
+      });
+
+      const result = await response.json();
+      if (result.status === "success") {
+        alert("Proposal berhasil di-assign!");
+        setIsOpen(false);
+      } else {
+        console.error("Gagal mengassign proposal:", result.message);
+        alert("Gagal mengassign proposal. Coba lagi!");
+      }
+    } catch (error) {
+      console.error("Error assigning publisher:", error);
+      alert("Terjadi kesalahan. Coba lagi!");
+    }
+  };
+
+  return (
+    <div>
+      <button
+        className="bg-teal-500 hover:bg-teal-700 text-white px-3 py-1 rounded"
+        onClick={() => setIsOpen(true)}
+      >
+        Assign{" "}
+      </button>
+
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-8">
+            <h3 className="text-2xl font-semibold text-gray-900 text-center mb-4">
+              Assign Penerbit
+            </h3>
+            <form>
+              <div className="mb-3">
+                <label className="block text-sm font-medium text-black pb-1">
+                  Pilih Penerbit
+                </label>
+                <select
+                  className="w-full border border-gray-400 p-3 rounded-xl text-black text-center"
+                  value={selectedPublisher || ""}
+                  onChange={(e) => setSelectedPublisher(Number(e.target.value))}
+                >
+                  <option value="">.:: Pilih Penerbit ::.</option>
+                  {publisherList.map((publisher) => (
+                    <option key={publisher.id} value={publisher.id}>
+                      {publisher.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="mb-1">
+                <label className="block text-sm font-medium text-black pb-1">
+                  Catatan
+                </label>
+                <textarea
+                  className="w-full border border-gray-400 p-3 rounded-xl text-black"
+                  placeholder="Masukkan Catatan Keterangan yang Diinginkan"
+                  rows={4}
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                ></textarea>
+              </div>
+              <div className="mb-5">
+                <label className="block text-sm font-medium text-black pb-1">
+                  Link URL Pendukung
+                </label>
+                <input
+                  type="text"
+                  className="w-full border border-gray-400 p-3 rounded-xl text-black"
+                  placeholder="Masukkan URL Pendukung"
+                  value={supportingUrl}
+                  onChange={(e) => setSupportingUrl(e.target.value)}
+                />
+                <label className="pt-1 block text-sm font-normal text-black pb-1">
+                  <CircleAlert className="inline pr-1" />
+                  Isi Bila Diperlukan (Opsional)
+                </label>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="submit"
+                  className="bg-primary font-semibold px-3 py-2 rounded-lg text-white"
+                  onClick={handleSave}
+                >
+                  Simpan
+                </button>
+                <button
+                  type="button"
+                  className="bg-white border font-semibold border-red-600 px-3 py-2 rounded-lg text-red-600"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Batal
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ModalPublisher;

@@ -23,7 +23,7 @@ export default function ProposalPage() {
               Export Excel
             </button>
           </div>{" "}
-          <Example />
+          {/* <Example /> */}
           <AllProposalAdmin />
         </div>
       ),

@@ -1,10 +1,87 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { uuid } from "uuidv4";
 import { getSession } from "@/lib/session";
 
-const prisma = new PrismaClient();
-
+export async function GET(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const status = searchParams.get("status") || "all";
+    console.log("Fetching proposals with status:", status);
+    const session = await getSession();
+    if (!session || !session.user_id) {
+      console.log("Session tidak valid");
+      return NextResponse.json({ error: "Invalid session" }, { status: 401 });
+    }
+    const userId = Number(session.user_id);
+    console.log("User ID:", userId);
+    let proposals;
+    if (status === "revision") {
+      proposals = await prisma.publication.findMany({
+        where: {
+          user_id: userId,
+          current_status_id: 2,
+          deleted: false,
+        },
+        include: {
+          lecturer: true,
+          status: true,
+          publisher: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+    } else if (status === "approved") {
+      proposals = await prisma.publication.findMany({
+        where: {
+          user_id: userId,
+          current_status_id: 3,
+          deleted: false,
+        },
+        include: {
+          lecturer: true,
+          status: true,
+          publisher: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+    } else {
+      proposals = await prisma.publication.findMany({
+        where: {
+          user_id: userId,
+          deleted: false,
+        },
+        include: {
+          lecturer: true,
+          status: true,
+          publisher: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+    }
+    const serializzedProposals = proposals.map((proposal) => ({
+      ...proposal,
+      lecturer: proposal.lecturer.name,
+      publisher: proposal.publisher?.name || null,
+    }));
+    return NextResponse.json({
+      status: "success",
+      message: "Proposals fetched successfully",
+      data: serializzedProposals,
+    });
+  } catch (error) {
+    console.error("Error fetching proposals:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
 export async function POST(req: NextRequest) {
   try {
     console.log("Menerima request POST ke /api/lecturer/proposals");

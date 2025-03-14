@@ -1,11 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 import { formatDate } from "@/utils/dateFormatter";
+import { useRouter } from "next/navigation";
 import BadgeStatus from "@/components/BadgeStatus";
-import { Eye, Trash2 } from "lucide-react";
-import PublicationType from "@/types/publicationTypes";
+import { Eye } from "lucide-react";
+import { PublicationType } from "@/types/publicationTypes";
 import LoadingIndicator from "@/components/Loading";
 const AllProposalAdmin = () => {
+  const router = useRouter();
   const [proposals, setProposals] = useState<PublicationType[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -24,9 +26,7 @@ const AllProposalAdmin = () => {
     };
     fetchData();
   }, []);
-  if (loading) {
-    return <LoadingIndicator />;
-  }
+  if (loading) return <LoadingIndicator />;
   return (
     <table className="w-full text-left border border-gray-300 mt-2">
       <thead>
@@ -42,6 +42,9 @@ const AllProposalAdmin = () => {
           </th>
           <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
             Tanggal Pengajuan
+          </th>
+          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
+            Penerbit
           </th>
           <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
             Status
@@ -73,6 +76,9 @@ const AllProposalAdmin = () => {
                   <td className="p-4 text-black border ">
                     {formatDate(proposal.createdAt)}
                   </td>
+                  <td className="p-4 text-black border ">
+                    {proposal.publisher?.name || "-"}
+                  </td>
                   <td className="p-4 text-black border">
                     <BadgeStatus
                       text={
@@ -80,7 +86,8 @@ const AllProposalAdmin = () => {
                       }
                       color={
                         proposal.current_status_id === 1 ||
-                        proposal.current_status_id === 4
+                        proposal.current_status_id === 4 ||
+                        proposal.current_status_id === 5
                           ? "badgePendingText"
                           : proposal.current_status_id === 2
                           ? "badgeRevText"
@@ -88,7 +95,8 @@ const AllProposalAdmin = () => {
                       }
                       bgColor={
                         proposal.current_status_id === 1 ||
-                        proposal.current_status_id === 4
+                        proposal.current_status_id === 4 ||
+                        proposal.current_status_id === 5
                           ? "badgePending"
                           : proposal.current_status_id === 2
                           ? "badgeRev"
@@ -98,14 +106,13 @@ const AllProposalAdmin = () => {
                   </td>
                   <td className="p-4 text-black border">
                     <div className="flex items-center gap-2">
-                      <button className="bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800">
+                      <button
+                        onClick={() =>
+                          router.push(`/admin/proposal/${proposal.id}`)
+                        }
+                        className="bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800"
+                      >
                         <Eye />
-                      </button>
-                      {/* <button className="bg-yellow-100 p-2 rounded-lg text-yellow-500 hover:text-yellow-800">
-                        <Pencil />
-                      </button> */}
-                      <button className="bg-red-100 p-2 rounded-lg text-red-500 hover:text-red-800">
-                        <Trash2 />
                       </button>
                     </div>
                   </td>

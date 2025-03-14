@@ -1,4 +1,4 @@
-type PublicationType = {
+export type PublicationType = {
   id: number;
   publication_ticket: string;
   publication_title: string;
@@ -15,6 +15,8 @@ type PublicationType = {
     id: number;
     name: string;
   };
+  publisher: {
+    id: number;
+    name: string;
+  };
 };
-
-export default PublicationType;
