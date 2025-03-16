@@ -4,18 +4,21 @@ import { getSession } from "@/lib/session";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  // { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
-    const id = parseInt(params.id, 10);
-    if (isNaN(id)) {
+    const { id } = await context.params;
+    const parsedId = parseInt(id, 10);
+    // const id = parseInt(params.id, 10);
+    if (isNaN(parsedId)) {
       return NextResponse.json(
         { status: "error", message: "Invalid Proposal ID" },
         { status: 400 }
       );
     }
     const proposal = await prisma.publication.findUnique({
-      where: { id },
+      where: { id: parsedId },
       select: {
         id: true,
         publication_ticket: true,
@@ -32,6 +35,7 @@ export async function GET(
         { status: 404 }
       );
     }
+    console.log("Successfully fetched proposal:", proposal);
     return NextResponse.json({ status: "success", data: proposal });
   } catch (error) {
     console.error("Error fetching publisher:", error);

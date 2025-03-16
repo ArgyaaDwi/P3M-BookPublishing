@@ -1,21 +1,20 @@
 import { NextResponse } from "next/server";
-import  prisma  from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 
+// PUT /api/publisher/status/:id handler untuk memperbarui status dari suatu proposal
 export async function PUT(
   req: Request,
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = params; 
+    const { id } = params;
     const { newStatusId, note, supporting_url } = await req.json();
     console.log("Updating proposal ID:", id);
-
     const session = await getSession();
     if (!session || !session.user_id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
     const proposal = await prisma.publication.findUnique({
       where: { id: Number(id) },
     });
@@ -25,12 +24,10 @@ export async function PUT(
         { status: 404 }
       );
     }
-
     await prisma.publication.update({
       where: { id: Number(id) },
       data: { current_status_id: Number(newStatusId) },
     });
-
     // Catat aktivitas untuk keperluan log
     await prisma.publicationActivity.create({
       data: {

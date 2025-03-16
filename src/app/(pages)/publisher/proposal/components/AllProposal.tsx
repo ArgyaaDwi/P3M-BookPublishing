@@ -7,14 +7,14 @@ import { Eye } from "lucide-react";
 import { PublicationType } from "@/types/publicationTypes";
 import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
-const AllProposalAdmin = () => {
+const AllProposalPublisher = () => {
   const router = useRouter();
   const [proposals, setProposals] = useState<PublicationType[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/admin/proposals?status=all");
+        const res = await fetch("/api/publisher/proposals?status=all");
         const data = await res.json();
         console.log("Proposals:", data);
         setProposals(data.data || []);
@@ -37,7 +37,6 @@ const AllProposalAdmin = () => {
             "Judul Proposal",
             "Dosen Pemohon",
             "Tanggal Pengajuan",
-            "Penerbit",
             "Status",
             "Aksi",
           ]}
@@ -65,29 +64,24 @@ const AllProposalAdmin = () => {
                   <td className="p-4 text-black border ">
                     {formatDate(proposal.createdAt)}
                   </td>
-                  <td className="p-4 text-black border ">
-                    {proposal.publisher?.name || "-"}
-                  </td>
                   <td className="p-4 text-black border">
                     <BadgeStatus
                       text={
                         proposal.status?.status_name || "Status Tidak Diketahui"
                       }
                       color={
-                        proposal.current_status_id === 1 ||
-                        proposal.current_status_id === 4 ||
+                        proposal.current_status_id === 9 ||
                         proposal.current_status_id === 5
                           ? "badgePendingText"
-                          : proposal.current_status_id === 2
+                          : proposal.current_status_id === 6
                           ? "badgeRevText"
                           : "badgeSuccessText"
                       }
                       bgColor={
-                        proposal.current_status_id === 1 ||
-                        proposal.current_status_id === 4 ||
+                        proposal.current_status_id === 9 ||
                         proposal.current_status_id === 5
                           ? "badgePending"
-                          : proposal.current_status_id === 2
+                          : proposal.current_status_id === 6
                           ? "badgeRev"
                           : "badgeSuccess"
                       }
@@ -97,7 +91,7 @@ const AllProposalAdmin = () => {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() =>
-                          router.push(`/admin/proposal/${proposal.id}`)
+                          router.push(`/publisher/proposal/${proposal.id}`)
                         }
                         className="bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800"
                       >
@@ -112,7 +106,7 @@ const AllProposalAdmin = () => {
         ) : (
           <tr>
             <td colSpan={6} className="text-center p-4 text-gray-500">
-              Tidak Ada Data Ajuan Proposal.
+              Tidak Ada Ajuan Penerbitan Buku.
             </td>
           </tr>
         )}
@@ -121,4 +115,4 @@ const AllProposalAdmin = () => {
   );
 };
 
-export default AllProposalAdmin;
+export default AllProposalPublisher;

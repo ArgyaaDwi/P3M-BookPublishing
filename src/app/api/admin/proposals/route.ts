@@ -24,13 +24,13 @@ export async function GET(req: NextRequest) {
             in: [1, 4, 5],
           },
         },
-        include: { lecturer: true, status: true },
+        include: { lecturer: true, status: true, publisher: true },
       });
     } else {
       proposals = await prisma.publication.findMany({
         include: { lecturer: true, status: true, publisher: true },
       });
-      console.log("Fetched proposals:", proposals); 
+      console.log("Fetched proposals:", proposals);
     }
     const serializedProposals = proposals.map((proposal) => ({
       ...proposal,

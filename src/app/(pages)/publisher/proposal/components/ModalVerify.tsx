@@ -11,7 +11,7 @@ type ModalStatusProps = {
   } | null;
 };
 
-const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
+const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [statusList, setStatusList] = useState<StatusType[]>([]);
   const [currentStatus, setCurrentStatus] = useState<string>("");
@@ -22,7 +22,7 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
   useEffect(() => {
     const getStatus = async () => {
       try {
-        const response = await fetch("/api/admin/status");
+        const response = await fetch("/api/publisher/status");
         const result = await response.json();
         if (result.status === "success" && Array.isArray(result.data)) {
           setStatusList(result.data);
@@ -49,7 +49,7 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
     if (!proposal || !selectedStatus) return;
 
     try {
-      const res = await fetch(`/api/admin/status/${proposal.id}`, {
+      const res = await fetch(`/api/publisher/status/${proposal.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -168,4 +168,4 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
   );
 };
 
-export default ModalStatus;
+export default ModalVerifyStatus;

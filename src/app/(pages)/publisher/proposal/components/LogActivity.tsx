@@ -17,7 +17,11 @@ interface Activity {
   supporting_url?: string;
 }
 
-const LogActivity = ({ publicationId }: { publicationId: number }) => {
+const LogActivityPublisher = ({
+  publicationId,
+}: {
+  publicationId: number;
+}) => {
   const [activities, setActivities] = useState([]);
   const [loggedInUser, setLoggedInUser] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -46,6 +50,7 @@ const LogActivity = ({ publicationId }: { publicationId: number }) => {
         setLoading(false);
       }
     };
+
     fetchSession();
     fetchActivities();
   }, [publicationId]);
@@ -100,4 +105,4 @@ const LogActivity = ({ publicationId }: { publicationId: number }) => {
   );
 };
 
-export default LogActivity;
+export default LogActivityPublisher;

@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
       proposals = await prisma.publication.findMany({
         where: {
           user_id: userId,
-          current_status_id: 2,
+          current_status_id: { in: [2, 6] },
           deleted: false,
         },
         include: {
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
       proposals = await prisma.publication.findMany({
         where: {
           user_id: userId,
-          current_status_id: 3,
+          current_status_id: { in: [3, 7] },
           deleted: false,
         },
         include: {

@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
-
-
 // GET Handler untuk menampilkan daftar dosen
 export async function GET() {
   try {

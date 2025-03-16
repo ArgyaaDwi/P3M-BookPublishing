@@ -2,10 +2,10 @@
 
 import Breadcrumb from "@/components/BreadCrumb";
 import Tabs from "@/components/Tabs";
-import AllProposalAdmin from "./components/AllProposal";
-import ApproveProposalAdmin from "./components/ApproveProposal";
-import RevisionProposalAdmin from "./components/RevisionProposal";
-import VerifyProposalAdmin from "./components/VerifProposal";
+import AllProposalPublisher from "./components/AllProposal";
+import ApproveProposalPublisher from "./components/ApproveProposal";
+import RevisionProposalPublisher from "./components/RevisionProposal";
+import VerifyProposalPublisher from "./components/VerifyProposal";
 import { ChartBar, FileText } from "lucide-react";
 // import Example from "@/components/tables/TestTable";
 export default function ProposalPage() {
@@ -24,7 +24,7 @@ export default function ProposalPage() {
             </button>
           </div>{" "}
           {/* <Example /> */}
-          <AllProposalAdmin />
+          <AllProposalPublisher />
         </div>
       ),
     },
@@ -41,7 +41,7 @@ export default function ProposalPage() {
               Export Excel
             </button>
           </div>{" "}
-          <VerifyProposalAdmin />
+          <VerifyProposalPublisher />
         </div>
       ),
     },
@@ -58,7 +58,7 @@ export default function ProposalPage() {
               Export Excel
             </button>
           </div>{" "}
-          <RevisionProposalAdmin />
+          <RevisionProposalPublisher />
         </div>
       ),
     },
@@ -75,7 +75,7 @@ export default function ProposalPage() {
               Export Excel
             </button>
           </div>{" "}
-          <ApproveProposalAdmin />
+          <ApproveProposalPublisher />
         </div>
       ),
     },

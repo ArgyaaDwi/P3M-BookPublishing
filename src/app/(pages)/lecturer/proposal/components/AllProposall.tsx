@@ -5,7 +5,8 @@ import BadgeStatus from "@/components/BadgeStatus";
 import LoadingIndicator from "@/components/Loading";
 import { PublicationType } from "@/types/publicationTypes";
 import { useRouter } from "next/navigation";
-import { Eye, Trash2 } from "lucide-react";
+import { Eye, Pencil, Trash2 } from "lucide-react";
+import TableHeader from "@/components/TableHeader";
 const LecturerProposals = () => {
   const [proposals, setProposals] = useState<PublicationType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,23 +67,15 @@ const LecturerProposals = () => {
   return (
     <table className="w-full text-left border border-gray-300 mt-2">
       <thead>
-        <tr>
-          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
-            No
-          </th>
-          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
-            Judul Proposal
-          </th>
-          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
-            Status
-          </th>
-          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
-            Tanggal Pengajuan
-          </th>
-          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
-            Aksi
-          </th>
-        </tr>
+        <TableHeader
+          columns={[
+            "No",
+            "Judul Proposal",
+            "Status",
+            "Tanggal Pengajuan",
+            "Aksi",
+          ]}
+        />
       </thead>
       <tbody>
         {proposals.length > 0 ? (
@@ -107,7 +100,8 @@ const LecturerProposals = () => {
                     proposal.current_status_id === 4 ||
                     proposal.current_status_id === 5
                       ? "badgePendingText"
-                      : proposal.current_status_id === 2
+                      : proposal.current_status_id === 2 ||
+                        proposal.current_status_id === 6
                       ? "badgeRevText"
                       : "badgeSuccessText"
                   }
@@ -116,7 +110,8 @@ const LecturerProposals = () => {
                     proposal.current_status_id === 4 ||
                     proposal.current_status_id === 5
                       ? "badgePending"
-                      : proposal.current_status_id === 2
+                      : proposal.current_status_id === 2 ||
+                        proposal.current_status_id === 6
                       ? "badgeRev"
                       : "badgeSuccess"
                   }
@@ -141,6 +136,16 @@ const LecturerProposals = () => {
                       onClick={() => handleDeleteProposalById(proposal.id)}
                     >
                       <Trash2 />
+                    </button>
+                  )}
+                  {proposal.current_status_id === 2 && (
+                    <button className="bg-yellow-100 p-2 rounded-lg text-yellow-500 hover:text-yellow-800">
+                      <Pencil />
+                    </button>
+                  )}
+                  {proposal.current_status_id === 6 && (
+                    <button className="bg-yellow-100 p-2 rounded-lg text-yellow-500 hover:text-yellow-800">
+                      <Pencil />
                     </button>
                   )}
                 </div>

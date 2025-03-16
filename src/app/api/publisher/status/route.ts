@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import prisma  from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 export async function GET() {
   try {
     const status = await prisma.publicationStatus.findMany({
       select: { status_name: true, id: true },
       where: {
-        id: { in: [2, 3] },
+        id: { in: [6, 7] },
       },
     });
     console.log("Successfully fetched status:", status);

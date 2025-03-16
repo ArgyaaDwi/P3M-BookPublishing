@@ -6,16 +6,16 @@ import Breadcrumb from "@/components/BreadCrumb";
 import Tabs from "@/components/Tabs";
 import { formatDate } from "@/utils/dateFormatter";
 import LoadingIndicator from "@/components/Loading";
-import PublicationActivityAdmin from "../components/PublicationActivity";
-const ProposalDetail = () => {
+import LogActivityPublisher from "../components/LogActivity";
+const ProposalDetailPublisher = () => {
   const { id } = useParams();
   const proposalId = String(id);
   const [proposal, setProposal] = useState<PublicationType | null>(null);
   const [loading, setLoading] = useState(true);
   const [breadcrumbItems, setBreadcrumbItems] = useState([
-    { name: "Dashboard", url: "/admin/dashboard" },
-    { name: "Proposal", url: "/admin/proposal" },
-    { name: "Loading...", url: `/admin/proposal/${proposalId}` },
+    { name: "Dashboard", url: "/publisher/dashboard" },
+    { name: "Proposal", url: "/publisher/proposal" },
+    { name: "Loading...", url: `/publisher/publisher/${proposalId}` },
   ]);
 
   useEffect(() => {
@@ -28,11 +28,11 @@ const ProposalDetail = () => {
         if (data.status === "success") {
           setProposal(data.data || null);
           setBreadcrumbItems([
-            { name: "Dashboard", url: "/admin/dashboard" },
-            { name: "Proposal", url: "/admin/proposal" },
+            { name: "Dashboard", url: "/publisher/dashboard" },
+            { name: "Proposal", url: "/publisher/proposal" },
             {
               name: data.data.publication_title,
-              url: `/admin/lecturer/${proposalId}`,
+              url: `/publisher/lecturer/${proposalId}`,
             },
           ]);
         } else {
@@ -82,7 +82,18 @@ const ProposalDetail = () => {
       content: (
         <div>
           <h3 className="text-black font-bold">Riwayat Aktivitas</h3>
-          <PublicationActivityAdmin publicationId={Number(id)} />
+          <LogActivityPublisher publicationId={Number(id)} />
+        </div>
+      ),
+    },
+    {
+      title: "Invoice",
+      content: (
+        <div>
+          <h3 className="text-black font-bold">Invoice</h3>
+          <p className="text-gray-500 font-thin">
+            Belum ada invoice yang terkait dengan proposal ini.
+          </p>
         </div>
       ),
     },
@@ -97,4 +108,4 @@ const ProposalDetail = () => {
   );
 };
 
-export default ProposalDetail;
+export default ProposalDetailPublisher;

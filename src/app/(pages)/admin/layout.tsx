@@ -2,7 +2,13 @@ import Sidebar from "@/components/sidebar/Sidebar";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import SidebarItem from "@/components/sidebar/SidebarItem";
-import { LayoutDashboard, Files, Users, UserRoundPen } from "lucide-react";
+import {
+  LayoutDashboard,
+  Files,
+  Users,
+  UserRoundPen,
+  Receipt,
+} from "lucide-react";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -12,7 +18,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <main className="flex h-screen">
       <Sidebar title="Dashboard Admin">
-      <p className="pl-1 text-gray-400 text-xs font-thin">Dashboard</p>
+        <p className="pl-1 text-gray-400 text-xs font-thin">Dashboard</p>
 
         <SidebarItem
           icon={<LayoutDashboard size={20} />}
@@ -35,10 +41,17 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           text="Penerbit"
           url="/admin/publisher"
         />
+        <SidebarItem
+          icon={<Receipt size={20} />}
+          text="Invoice"
+          url="/admin/invoice"
+        />
       </Sidebar>
       <div className="flex-1 flex flex-col h-screen">
         <Header />
-        <div className="flex-1 overflow-y-auto bg-backgroundDash p-4">{children}</div>
+        <div className="flex-1 overflow-y-auto bg-backgroundDash p-4">
+          {children}
+        </div>
         <Footer />
       </div>
     </main>
