@@ -9,7 +9,7 @@ export async function PUT(
 ) {
   try {
     const { id } = params;
-    const { newStatusId, note, supporting_url } = await req.json();
+    const { newStatusId, note, supportingUrl } = await req.json();
     console.log("Updating proposal ID:", id);
     const session = await getSession();
     if (!session || !session.user_id) {
@@ -35,7 +35,7 @@ export async function PUT(
         user_id: Number(session.user_id),
         publication_status_id: Number(newStatusId),
         publication_notes: note,
-        supporting_url: supporting_url,
+        supporting_url: supportingUrl,
       },
     });
     return NextResponse.json({ status: "success" }, { status: 200 });

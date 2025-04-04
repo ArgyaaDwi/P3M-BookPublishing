@@ -8,6 +8,7 @@ interface InputProps {
   type: string;
   placeholder: string;
   isPassword?: boolean;
+  isDisabled?: boolean;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   
@@ -17,6 +18,7 @@ const Input = ({
   label,
   type,
   placeholder,
+  isDisabled = false,
   isPassword = false,
   value,
   onChange,
@@ -36,6 +38,7 @@ const Input = ({
           className="p-3 flex-1 bg-transparent outline-none"
           value={value}
           onChange={onChange}
+          disabled={isDisabled}
         />
         {isPassword && (
           <button

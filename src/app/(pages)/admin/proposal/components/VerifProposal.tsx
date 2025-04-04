@@ -109,7 +109,8 @@ const VerifyProposalAdmin = () => {
                   >
                     <Eye />
                   </button>
-                  {proposal.current_status_id === 1 && (
+                  {(proposal.current_status_id === 1 ||
+                    proposal.current_status_id === 4) && (
                     <ModalStatus proposal={proposal} />
                   )}
                 </div>

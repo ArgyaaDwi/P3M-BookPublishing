@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { CircleAlert } from "lucide-react";
+import { CircleAlert, Clipboard } from "lucide-react";
 import { Publisher } from "@/types/publisherTypes";
+import { handlePasteText } from "@/utils/handlePaste";
 type ProposalType = {
   id: number;
   current_status_id: number;
@@ -9,10 +10,12 @@ type ProposalType = {
 };
 
 type ModalPublisherProps = {
-  proposal: ProposalType; 
+  proposal: ProposalType;
 };
 
-const ModalPublisher: React.FC<ModalPublisherProps> = ({ proposal: publication }) => {
+const ModalPublisher: React.FC<ModalPublisherProps> = ({
+  proposal: publication,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [publisherList, setPublisherList] = useState<Publisher[]>([]);
   const [selectedPublisher, setSelectedPublisher] = useState<number | null>(
@@ -66,7 +69,10 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({ proposal: publication }
       alert("Terjadi kesalahan. Coba lagi!");
     }
   };
-
+  const handlePaste = async () => {
+    const url = await handlePasteText();
+    if (url) setSupportingUrl(url);
+  };
   return (
     <div>
       <button
@@ -116,13 +122,31 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({ proposal: publication }
                 <label className="block text-sm font-medium text-black pb-1">
                   Link URL Pendukung
                 </label>
-                <input
-                  type="text"
-                  className="w-full border border-gray-400 p-3 rounded-xl text-black"
-                  placeholder="Masukkan URL Pendukung"
-                  value={supportingUrl}
-                  onChange={(e) => setSupportingUrl(e.target.value)}
-                />
+                <div className="relative">
+                  <input
+                    type="url"
+                    className="w-full border border-gray-400 p-3 rounded-xl text-black pr-12"
+                    placeholder="Masukkan URL Pendukung"
+                    value={supportingUrl}
+                    onChange={(e) => setSupportingUrl(e.target.value)}
+                    onBlur={() => {
+                      if (
+                        supportingUrl &&
+                        !supportingUrl.startsWith("http://") &&
+                        !supportingUrl.startsWith("https://")
+                      ) {
+                        setSupportingUrl(`https://${supportingUrl}`);
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 border border-gray-400 bg-gray-100 p-2 rounded-lg hover:bg-gray-200 hover:border-black"
+                    onClick={handlePaste}
+                  >
+                    <Clipboard className="h-5 w-5 text-black" />
+                  </button>
+                </div>
                 <label className="pt-1 block text-sm font-normal text-black pb-1">
                   <CircleAlert className="inline pr-1" />
                   Isi Bila Diperlukan (Opsional)

@@ -4,13 +4,11 @@ import { getSession } from "@/lib/session";
 
 export async function GET(
   request: NextRequest,
-  // { params }: { params: { id: string } }
   context: { params: { id: string } }
 ) {
   try {
     const { id } = await context.params;
     const parsedId = parseInt(id, 10);
-    // const id = parseInt(params.id, 10);
     if (isNaN(parsedId)) {
       return NextResponse.json(
         { status: "error", message: "Invalid Proposal ID" },

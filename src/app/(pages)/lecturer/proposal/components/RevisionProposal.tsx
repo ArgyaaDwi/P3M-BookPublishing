@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { PublicationType } from "@/types/publicationTypes";
 import BadgeStatus from "@/components/BadgeStatus";
 import LoadingIndicator from "@/components/Loading";
-import { Eye } from "lucide-react";
+import { Eye, Pencil } from "lucide-react";
 const RevisionProposal = () => {
   const router = useRouter();
   const [proposals, setProposals] = useState<PublicationType[]>([]);
@@ -99,6 +99,32 @@ const RevisionProposal = () => {
                   >
                     <Eye />
                   </button>
+                  {proposal.current_status_id === 2 && (
+                    <button
+                      className="bg-yellow-100 p-2 rounded-lg text-yellow-500 hover:text-yellow-800 flex items-center gap-2"
+                      onClick={() =>
+                        router.push(
+                          `/lecturer/proposal/submit-revision/${proposal.id}`
+                        )
+                      }
+                    >
+                      <Pencil />
+                      Submit Revisi
+                    </button>
+                  )}
+                  {proposal.current_status_id === 6 && (
+                    <button
+                      className="bg-yellow-100 p-2 rounded-lg text-yellow-500 hover:text-yellow-800 flex items-center gap-2"
+                      onClick={() =>
+                        router.push(
+                          `/lecturer/proposal/book-revision/${proposal.id}`
+                        )
+                      }
+                    >
+                      <Pencil />
+                      Submit Revisi
+                    </button>
+                  )}
                 </div>
               </td>
             </tr>

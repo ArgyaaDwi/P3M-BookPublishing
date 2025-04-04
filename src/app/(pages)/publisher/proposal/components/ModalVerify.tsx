@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Pencil, CircleAlert } from "lucide-react";
+import { Pencil, CircleAlert, Clipboard } from "lucide-react";
 import StatusType from "@/types/statusTypes";
-
+import { handlePasteText } from "@/utils/handlePaste";
 type ModalStatusProps = {
   proposal: {
     id: number;
@@ -44,6 +44,10 @@ const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
       setSupportingUrl("");
     }
   }, [proposal, isOpen]);
+  const handlePaste = async () => {
+    const url = await handlePasteText();
+    if (url) setSupportingUrl(url);
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!proposal || !selectedStatus) return;
@@ -79,7 +83,7 @@ const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
         onClick={() => setIsOpen(true)}
       >
         <Pencil className="w-5 h-5" />
-        Ubah Status
+        Verifikasi{" "}
       </button>
 
       {isOpen && proposal && (
@@ -133,13 +137,31 @@ const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
                 <label className="block text-sm font-medium text-black pb-1">
                   Link URL Pendukung
                 </label>
-                <input
-                  type="text"
-                  className="w-full border border-gray-400 p-3 rounded-xl text-black"
-                  placeholder="Masukkan URL Pendukung"
-                  value={supportingUrl}
-                  onChange={(e) => setSupportingUrl(e.target.value)}
-                />
+                <div className="relative">
+                  <input
+                    type="url"
+                    className="w-full border border-gray-400 p-3 rounded-xl text-black pr-12"
+                    placeholder="Masukkan URL Pendukung"
+                    value={supportingUrl}
+                    onChange={(e) => setSupportingUrl(e.target.value)}
+                    onBlur={() => {
+                      if (
+                        supportingUrl &&
+                        !supportingUrl.startsWith("http://") &&
+                        !supportingUrl.startsWith("https://")
+                      ) {
+                        setSupportingUrl(`https://${supportingUrl}`);
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 border border-gray-400 bg-gray-100 p-2 rounded-lg hover:bg-gray-200 hover:border-black"
+                    onClick={handlePaste}
+                  >
+                    <Clipboard className="h-5 w-5 text-black" />
+                  </button>
+                </div>
                 <label className="pt-1 block text-sm font-normal text-black pb-1">
                   <CircleAlert className="inline pr-1" />
                   Isi Bila Diperlukan (Opsional)

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Eye } from "lucide-react";
 import { PublicationType } from "@/types/publicationTypes";
 import LoadingIndicator from "@/components/Loading";
+
 const RevisionProposalAdmin = () => {
   const router = useRouter();
   const [proposals, setProposals] = useState<PublicationType[]>([]);

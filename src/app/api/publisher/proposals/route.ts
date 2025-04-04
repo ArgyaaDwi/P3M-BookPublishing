@@ -52,7 +52,9 @@ export async function GET(req: NextRequest) {
       proposals = await prisma.publication.findMany({
         where: {
           publisher_id: publisherId,
-          current_status_id: 5,
+          current_status_id: {
+            in: [5, 9]
+          },
           deleted: false,
         },
         include: {

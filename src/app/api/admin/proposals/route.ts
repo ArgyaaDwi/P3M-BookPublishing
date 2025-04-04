@@ -25,10 +25,12 @@ export async function GET(req: NextRequest) {
           },
         },
         include: { lecturer: true, status: true, publisher: true },
+        orderBy: { createdAt: "asc" },
       });
     } else {
       proposals = await prisma.publication.findMany({
         include: { lecturer: true, status: true, publisher: true },
+        orderBy: { createdAt: "desc" },
       });
       console.log("Fetched proposals:", proposals);
     }

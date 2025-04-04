@@ -7,6 +7,7 @@ import Tabs from "@/components/Tabs";
 import { formatDate } from "@/utils/dateFormatter";
 import LoadingIndicator from "@/components/Loading";
 import LogActivityPublisher from "../components/LogActivity";
+import InvoiceSection from "../components/InvoiceSection";
 const ProposalDetailPublisher = () => {
   const { id } = useParams();
   const proposalId = String(id);
@@ -90,10 +91,8 @@ const ProposalDetailPublisher = () => {
       title: "Invoice",
       content: (
         <div>
-          <h3 className="text-black font-bold">Invoice</h3>
-          <p className="text-gray-500 font-thin">
-            Belum ada invoice yang terkait dengan proposal ini.
-          </p>
+          
+          <InvoiceSection />
         </div>
       ),
     },

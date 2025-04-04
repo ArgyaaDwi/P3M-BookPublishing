@@ -76,7 +76,8 @@ const AllProposalAdmin = () => {
                       color={
                         proposal.current_status_id === 1 ||
                         proposal.current_status_id === 4 ||
-                        proposal.current_status_id === 5
+                        proposal.current_status_id === 5 ||
+                        proposal.current_status_id === 9
                           ? "badgePendingText"
                           : proposal.current_status_id === 2
                           ? "badgeRevText"
@@ -85,7 +86,8 @@ const AllProposalAdmin = () => {
                       bgColor={
                         proposal.current_status_id === 1 ||
                         proposal.current_status_id === 4 ||
-                        proposal.current_status_id === 5
+                        proposal.current_status_id === 5 ||
+                        proposal.current_status_id === 9
                           ? "badgePending"
                           : proposal.current_status_id === 2
                           ? "badgeRev"
