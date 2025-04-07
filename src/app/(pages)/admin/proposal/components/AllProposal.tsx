@@ -34,7 +34,7 @@ const AllProposalAdmin = () => {
         <TableHeader
           columns={[
             "No",
-            "Judul Proposal",
+            "Judul Ajuan",
             "Dosen Pemohon",
             "Tanggal Pengajuan",
             "Penerbit",
@@ -113,7 +113,7 @@ const AllProposalAdmin = () => {
           )
         ) : (
           <tr>
-            <td colSpan={6} className="text-center p-4 text-gray-500">
+            <td colSpan={7} className="text-center p-4 text-gray-500">
               Tidak Ada Data Ajuan Proposal.
             </td>
           </tr>

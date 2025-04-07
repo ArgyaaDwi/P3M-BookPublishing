@@ -9,6 +9,8 @@ generator client {
 }
 generator typescriptInterfaces {
   provider = "prisma-generator-typescript-interfaces"
+  output   = "../src/types/interfaces.ts"
+
 }
 
 datasource db {
@@ -42,6 +44,8 @@ model User {
   role user_role
   major_id Int?
   major Major? @relation(fields: [major_id], references: [id])
+
+  nidn String?
   address String? 
   phone_number BigInt?
   profile_pic String?
@@ -49,6 +53,8 @@ model User {
   publications Publication[] @relation("LecturerPublication")
   publisherPublication Publication[] @relation("PublisherPublication")
   activities PublicationActivity[] @relation("ActivityUser")
+  transactions Transaction[] @relation("UserTransaction")
+  transactionLogs TransactionLog[] @relation("UserTransactionLog")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -81,6 +87,7 @@ model Publication{
   publisher User? @relation(fields: [publisher_id], references: [id], name: "PublisherPublication")
   status PublicationStatus @relation(fields: [current_status_id], references: [id], name: "StatusPublication")
   activities PublicationActivity[] @relation("PublicationActivities")
+  items TransactionItem[] @relation("Publications")
 
   publication_ticket String
   publication_title String
@@ -112,4 +119,63 @@ model PublicationActivity{
   updatedAt DateTime @updatedAt
   deleted Boolean @default(false)
   @@map("publication_activities")
+}
+model Transaction {
+  id          Int               @id @default(autoincrement())
+  user_id     Int
+  current_status_id       Int
+  payment_proof String?          
+  transaction_notes String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  deleted         Boolean           @default(false)
+  @@map("transactions")
+
+  user  User @relation(fields: [user_id], references: [id], name: "UserTransaction")
+  status          TransactionStatus @relation(fields: [current_status_id], references: [id], name: "TransactionStatus")
+  items           TransactionItem[] @relation("TransactionItems")
+  logs            TransactionLog[] @relation("TransactionLogs")
+}
+model TransactionItem {
+  id            Int         @id @default(autoincrement())
+  transaction_id Int
+  publication_id Int
+  cost          Int
+  quantity Int @default(1)
+  total_cost    Int
+
+  @@map("transaction_items")
+  transaction   Transaction @relation(fields: [transaction_id], references: [id], name: "TransactionItems")
+  publication   Publication @relation(fields: [publication_id], references: [id], name: "Publications")
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  deleted         Boolean           @default(false)
+}
+model TransactionLog {
+  id            Int         @id @default(autoincrement())
+  transaction_id Int
+  transaction_status_id      Int
+  user_id        Int?       
+  note          String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  deleted         Boolean           @default(false)
+  @@map("transaction_logs")
+  
+
+  transaction   Transaction @relation(fields: [transaction_id], references: [id], name: "TransactionLogs")
+  user          User?       @relation(fields: [user_id], references: [id], name: "UserTransactionLog")
+  status        TransactionStatus @relation(fields: [transaction_status_id], references: [id])
+}
+model TransactionStatus {
+  id    Int    @id @default(autoincrement())
+  status_name  String
+
+  transaction Transaction[] @relation("TransactionStatus")
+
+  logs         TransactionLog[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  deleted         Boolean           @default(false)
+  @@map("transaction_status")
 }

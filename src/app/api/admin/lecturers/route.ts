@@ -11,6 +11,7 @@ export async function GET() {
         id: true,
         name: true,
         email: true,
+        nidn: true,
         phone_number: true,
         major: { select: { major_name: true } },
         createdAt: true,
@@ -40,7 +41,14 @@ export async function GET() {
 // POST Handler untuk membuat akun dosen
 export async function POST(req: Request) {
   try {
-    const { name, email, password, major, role = "DOSEN" } = await req.json();
+    const {
+      name,
+      email,
+      password,
+      major,
+      role = "DOSEN",
+      nidn,
+    } = await req.json();
     if (!name || !email || !password || !major) {
       return NextResponse.json(
         { status: "error", message: "All fields are required" },
@@ -52,6 +60,7 @@ export async function POST(req: Request) {
       data: {
         name,
         email,
+        nidn,
         password: hashedPassword,
         major: major ? { connect: { major_name: major } } : undefined,
         role,
@@ -71,4 +80,3 @@ export async function POST(req: Request) {
     );
   }
 }
-

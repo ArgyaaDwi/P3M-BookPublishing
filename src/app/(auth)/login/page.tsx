@@ -88,9 +88,9 @@ export default function LoginPage() {
           </a>
         </p>
       </div>
-      <div className="hidden md:flex w-1/2 justify-center items-center">
+      <div className=" hidden md:flex w-1/2 justify-center items-center">
         <Image
-          src="/assets/images/login_img.png"
+          src="/assets/images/ilusbook.jpg"
           alt="Placeholder"
           width={600}
           height={400}

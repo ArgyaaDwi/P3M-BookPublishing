@@ -1,5 +1,5 @@
-export const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
+export const formatDate = (dateInput: string | Date): string => {
+  const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
   return new Intl.DateTimeFormat("id-ID", {
     weekday: "long",
     day: "2-digit",

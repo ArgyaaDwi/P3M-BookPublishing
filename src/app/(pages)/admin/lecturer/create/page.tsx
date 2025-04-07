@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 export default function AddLecturerPage() {
   const router = useRouter();
   const [nameInput, setNameInput] = useState("");
+  const [nidnInput, setNIDNInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -17,6 +18,8 @@ export default function AddLecturerPage() {
     setNameInput(e.target.value);
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setEmailInput(e.target.value);
+  const handleNIDNChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setNIDNInput(e.target.value);
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setPasswordInput(e.target.value);
   const handleConfirmPasswordChange = (
@@ -61,10 +64,10 @@ export default function AddLecturerPage() {
       alert("Password dan konfirmasi password tidak cocok.");
       return;
     }
-
     const data = {
       name: nameInput,
       email: emailInput,
+      nidn: nidnInput,
       password: passwordInput,
       major: selectedOption,
     };
@@ -126,12 +129,21 @@ export default function AddLecturerPage() {
               value={emailInput}
               onChange={handleEmailChange}
             />
-            <Select
-              label="Pilih Jurusan"
-              options={majors}
-              value={selectedOption}
-              onChange={handleSelectChange}
-            />
+            <div className="flex gap-4">
+              <Select
+                label="Jurusan"
+                options={majors}
+                value={selectedOption}
+                onChange={handleSelectChange}
+              />
+              <Input
+                type="number"
+                placeholder="Masukkan NIDN Dosen"
+                label="NIDN Dosen"
+                value={nidnInput}
+                onChange={handleNIDNChange}
+              />
+            </div>
             <Input
               type="password"
               placeholder="Masukkan Password"

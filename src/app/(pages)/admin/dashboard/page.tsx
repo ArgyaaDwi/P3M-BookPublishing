@@ -12,7 +12,7 @@ export default function DashboardAdminPage() {
   return (
     <div>
       <Breadcrumb title="Hai, Admin P3M" breadcrumbItems={breadcrumbItems} />
-      <p className="text-gray-600">Kelola Ajuan Proposal Penerbitan Sekarang!</p>
+      <p className="text-gray-600">Kelola Ajuan Penerbitan Buku Sekarang!</p>
       <p className="text-black mt-4 font-semibold">Overview</p>
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
         <Card

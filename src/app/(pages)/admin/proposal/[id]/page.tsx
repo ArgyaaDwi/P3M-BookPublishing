@@ -14,7 +14,7 @@ const ProposalDetail = () => {
   const [loading, setLoading] = useState(true);
   const [breadcrumbItems, setBreadcrumbItems] = useState([
     { name: "Dashboard", url: "/admin/dashboard" },
-    { name: "Proposal", url: "/admin/proposal" },
+    { name: "Ajuan", url: "/admin/proposal" },
     { name: "Loading...", url: `/admin/proposal/${proposalId}` },
   ]);
 
@@ -29,7 +29,7 @@ const ProposalDetail = () => {
           setProposal(data.data || null);
           setBreadcrumbItems([
             { name: "Dashboard", url: "/admin/dashboard" },
-            { name: "Proposal", url: "/admin/proposal" },
+            { name: "Ajuan", url: "/admin/proposal" },
             {
               name: data.data.publication_title,
               url: `/admin/lecturer/${proposalId}`,
@@ -52,11 +52,11 @@ const ProposalDetail = () => {
   if (loading) return <LoadingIndicator />;
   if (!proposal)
     return (
-      <p className="text-center text-gray-500">Proposal tidak ditemukan.</p>
+      <p className="text-center text-gray-500">Ajuan tidak ditemukan.</p>
     );
   const tabItems = [
     {
-      title: "Informasi Proposal",
+      title: "Informasi Ajuan Penerbitan", 
       content: (
         <div>
           <h1 className="text-black text-xl font-semibold">
@@ -78,7 +78,7 @@ const ProposalDetail = () => {
       ),
     },
     {
-      title: "Log Aktivitas",
+      title: "Log Aktivitas Ajuan Penerbitan",
       content: (
         <div>
           <h3 className="text-black font-bold">Riwayat Aktivitas</h3>
@@ -89,7 +89,7 @@ const ProposalDetail = () => {
   ];
   return (
     <div>
-      <Breadcrumb title="Detail Proposal" breadcrumbItems={breadcrumbItems} />
+      <Breadcrumb title="Detail Ajuan" breadcrumbItems={breadcrumbItems} />
       <div className="bg-white rounded-lg mt-3 overflow-hidden pb-4">
         <Tabs tabs={tabItems} />
       </div>

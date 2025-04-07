@@ -6,6 +6,7 @@ export type Lecturer = {
   major: {
     major_name: string;
   };
+  nidn: string | null;
   username: string;
   createdAt: string;
   updatedAt: string;

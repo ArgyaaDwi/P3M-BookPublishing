@@ -3,9 +3,9 @@
 import Breadcrumb from "@/components/BreadCrumb";
 import Tabs from "@/components/Tabs";
 import AllProposalAdmin from "./components/AllProposal";
-import ApproveProposalAdmin from "./components/ApproveProposal";
-import RevisionProposalAdmin from "./components/RevisionProposal";
-import VerifyProposalAdmin from "./components/VerifProposal";
+import ApprovedProposalAdmin from "./components/ApprovedProposal";
+import RevisedProposalAdmin from "./components/RevisedProposal";
+import VerifyProposalAdmin from "./components/VerifyProposal";
 import { ChartBar, FileText } from "lucide-react";
 // import Example from "@/components/tables/TestTable";
 export default function ProposalPage() {
@@ -58,7 +58,7 @@ export default function ProposalPage() {
               Export Excel
             </button>
           </div>{" "}
-          <RevisionProposalAdmin />
+          <RevisedProposalAdmin />
         </div>
       ),
     },
@@ -75,7 +75,7 @@ export default function ProposalPage() {
               Export Excel
             </button>
           </div>{" "}
-          <ApproveProposalAdmin />
+          <ApprovedProposalAdmin />
         </div>
       ),
     },
@@ -87,7 +87,7 @@ export default function ProposalPage() {
       url: "/admin/dashboard",
     },
     {
-      name: "Proposal",
+      name: "Ajuan",
       url: "/admin/proposal",
     },
   ];
@@ -95,7 +95,7 @@ export default function ProposalPage() {
   return (
     <div>
       <Breadcrumb
-        title="Halaman Ajuan Proposal"
+        title="Halaman Ajuan Penerbitan"
         breadcrumbItems={breadcrumbItems}
       />
       <div className="bg-white rounded-lg mt-3">

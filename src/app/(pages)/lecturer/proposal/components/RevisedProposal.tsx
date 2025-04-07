@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { PublicationType } from "@/types/publicationTypes";
 import BadgeStatus from "@/components/BadgeStatus";
 import LoadingIndicator from "@/components/Loading";
-import { Eye, Pencil } from "lucide-react";
-const RevisionProposal = () => {
+import { Eye, SquarePen } from "lucide-react";
+import TableHeader from "@/components/TableHeader";
+const RevisedProposal = () => {
   const router = useRouter();
   const [proposals, setProposals] = useState<PublicationType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,23 +31,9 @@ const RevisionProposal = () => {
   return (
     <table className="w-full text-left border border-gray-300 mt-2">
       <thead>
-        <tr>
-          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
-            No
-          </th>
-          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
-            Judul Proposal
-          </th>
-          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
-            Status
-          </th>
-          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
-            Tanggal Pengajuan
-          </th>
-          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
-            Aksi
-          </th>
-        </tr>
+        <TableHeader
+          columns={["No", "Judul Ajuan", "Status", "Tanggal Pengajuan", "Aksi"]}
+        />
       </thead>
       <tbody>
         {proposals.length > 0 ? (
@@ -95,34 +82,34 @@ const RevisionProposal = () => {
                     onClick={() =>
                       router.push(`/lecturer/proposal/${proposal.id}`)
                     }
-                    className="bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800"
+                    className="h-10 w-10 bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800 transition-all duration-300 ease-in-out"
                   >
                     <Eye />
                   </button>
                   {proposal.current_status_id === 2 && (
                     <button
-                      className="bg-yellow-100 p-2 rounded-lg text-yellow-500 hover:text-yellow-800 flex items-center gap-2"
+                      className=" bg-yellow-100 p-2 rounded-lg text-yellow-500 hover:text-yellow-800 transition-all duration-300 ease-in-out flex items-center gap-2"
                       onClick={() =>
                         router.push(
                           `/lecturer/proposal/submit-revision/${proposal.id}`
                         )
                       }
                     >
-                      <Pencil />
-                      Submit Revisi
+                      <SquarePen />
+                      Revisi
                     </button>
                   )}
                   {proposal.current_status_id === 6 && (
                     <button
-                      className="bg-yellow-100 p-2 rounded-lg text-yellow-500 hover:text-yellow-800 flex items-center gap-2"
+                      className=" bg-yellow-100 p-2 rounded-lg text-yellow-700 hover:text-yellow-900 transition-all duration-300 ease-in-out flex items-center gap-2"
                       onClick={() =>
                         router.push(
                           `/lecturer/proposal/book-revision/${proposal.id}`
                         )
                       }
                     >
-                      <Pencil />
-                      Submit Revisi
+                      <SquarePen />
+                      Revisi
                     </button>
                   )}
                 </div>
@@ -141,4 +128,4 @@ const RevisionProposal = () => {
   );
 };
 
-export default RevisionProposal;
+export default RevisedProposal;

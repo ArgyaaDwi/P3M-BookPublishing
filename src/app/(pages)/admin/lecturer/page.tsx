@@ -113,8 +113,16 @@ export default function LecturerPage() {
                   <td className="p-4 text-black border font-semibold">
                     {index + 1}
                   </td>
-                  <td className="p-4 text-black border font-semibold">
+                  {/* <td className="p-4 text-black border font-semibold">
                     {lecturer.name}
+                  </td> */}
+                  <td className="p-4 text-black border font-semibold">
+                    <div className="flex flex-col">
+                      <span>{lecturer.name}</span>
+                      <span className="text-gray-500 font-medium">
+                        {lecturer.nidn ? `#${lecturer.nidn}` : ""}
+                      </span>
+                    </div>
                   </td>
                   <td className="p-4 text-black border font-semibold">
                     {lecturer.major?.major_name || "-"}

@@ -34,7 +34,7 @@ const AllProposalPublisher = () => {
         <TableHeader
           columns={[
             "No",
-            "Judul Proposal",
+            "Judul Ajuan",
             "Dosen Pemohon",
             "Tanggal Pengajuan",
             "Status",
@@ -93,7 +93,7 @@ const AllProposalPublisher = () => {
                         onClick={() =>
                           router.push(`/publisher/proposal/${proposal.id}`)
                         }
-                        className="bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800"
+                        className="bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800 transition-all duration-300 ease-in-out"
                       >
                         <Eye />
                       </button>

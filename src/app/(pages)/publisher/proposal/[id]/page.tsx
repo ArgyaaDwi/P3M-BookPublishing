@@ -15,7 +15,7 @@ const ProposalDetailPublisher = () => {
   const [loading, setLoading] = useState(true);
   const [breadcrumbItems, setBreadcrumbItems] = useState([
     { name: "Dashboard", url: "/publisher/dashboard" },
-    { name: "Proposal", url: "/publisher/proposal" },
+    { name: "Ajuan", url: "/publisher/proposal" },
     { name: "Loading...", url: `/publisher/publisher/${proposalId}` },
   ]);
 
@@ -30,7 +30,7 @@ const ProposalDetailPublisher = () => {
           setProposal(data.data || null);
           setBreadcrumbItems([
             { name: "Dashboard", url: "/publisher/dashboard" },
-            { name: "Proposal", url: "/publisher/proposal" },
+            { name: "Ajuan", url: "/publisher/proposal" },
             {
               name: data.data.publication_title,
               url: `/publisher/lecturer/${proposalId}`,
@@ -53,11 +53,11 @@ const ProposalDetailPublisher = () => {
   if (loading) return <LoadingIndicator />;
   if (!proposal)
     return (
-      <p className="text-center text-gray-500">Proposal tidak ditemukan.</p>
+      <p className="text-center text-gray-500">Ajuan Buku tidak ditemukan.</p>
     );
   const tabItems = [
     {
-      title: "Informasi Proposal",
+      title: "Informasi Ajuan Buku",
       content: (
         <div>
           <h1 className="text-black text-xl font-semibold">
@@ -79,7 +79,7 @@ const ProposalDetailPublisher = () => {
       ),
     },
     {
-      title: "Log Aktivitas",
+      title: "Log Aktivitas Ajuan Buku",
       content: (
         <div>
           <h3 className="text-black font-bold">Riwayat Aktivitas</h3>
@@ -92,14 +92,14 @@ const ProposalDetailPublisher = () => {
       content: (
         <div>
           
-          <InvoiceSection />
+          <InvoiceSection proposalId={Number(id)}/>
         </div>
       ),
     },
   ];
   return (
     <div>
-      <Breadcrumb title="Detail Proposal" breadcrumbItems={breadcrumbItems} />
+      <Breadcrumb title="Detail Ajuan Buku" breadcrumbItems={breadcrumbItems} />
       <div className="bg-white rounded-lg mt-3 overflow-hidden pb-4">
         <Tabs tabs={tabItems} />
       </div>

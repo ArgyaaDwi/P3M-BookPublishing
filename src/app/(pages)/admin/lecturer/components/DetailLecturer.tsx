@@ -57,6 +57,9 @@ export default function DetailLecturer() {
           <p className="text-gray-600 text-xl font-semibold mb-4">Dosen</p>
           <p className="text-black mb-2 ">Nama: {lecturer.name}</p>
           <p className="text-black mb-2 ">
+            NIDN: {lecturer.nidn ? lecturer.nidn : "-"}
+          </p>
+          <p className="text-black mb-2 ">
             Jurusan: {lecturer.major?.major_name || "-"}
           </p>
           <p className="text-black mb-2 ">Email: {lecturer.email}</p>

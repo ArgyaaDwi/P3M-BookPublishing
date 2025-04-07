@@ -19,7 +19,7 @@ interface Activity {
   createdAt: string;
   supporting_url?: string;
 }
-export default function SubmitRevisionBook() {
+export default function SubmitBookRevision() {
   const [proposal, setProposal] = useState<PublicationType | null>(null);
   const [loading, setLoading] = useState(true);
   const [activities, setActivities] = useState([]);
@@ -30,7 +30,7 @@ export default function SubmitRevisionBook() {
   const router = useRouter();
   const [breadcrumbItems, setBreadcrumbItems] = useState([
     { name: "Dashboard", url: "/lecturer/dashboard" },
-    { name: "Proposal", url: "/lecturer/proposal" },
+    { name: "Ajuan", url: "/lecturer/proposal" },
     { name: "Loading...", url: `/lecturer/lecturer/${proposalId}` },
   ]);
 
@@ -44,7 +44,7 @@ export default function SubmitRevisionBook() {
           setProposal(data.data || null);
           setBreadcrumbItems([
             { name: "Dashboard", url: "/lecturer/dashboard" },
-            { name: "Proposal", url: "/lecturer/proposal" },
+            { name: "Ajuan", url: "/lecturer/proposal" },
             {
               name: data.data.publication_title,
               url: `/lecturer/lecturer/${proposalId}`,
@@ -113,8 +113,8 @@ export default function SubmitRevisionBook() {
     <div>
       <Breadcrumb title="Halaman Revisi" breadcrumbItems={breadcrumbItems} />
       <div className="bg-white rounded-lg mt-3 py-2">
-        <h3 className="text-black text-2xl font-bold px-4 pb-4 pt-2">
-          Form Submit Revisi
+        <h3 className="text-black text-2xl font-semibold px-4 pb-4 pt-2">
+          Form Revisi Buku
         </h3>
         <hr className="mb-3" />
         <div className="flex gap-6 px-4">
@@ -129,15 +129,19 @@ export default function SubmitRevisionBook() {
               </h3>
               <h3 className="text-black text-base self-start font-normal mb-1">
                 Status:{" "}
-                <span className="bg-yellow-50 p-2 rounded-lg text-yellow-600">
+                <span className="bg-orange-50 p-2 rounded-lg text-orange-500">
                   {proposal?.status.status_name || ""}
                 </span>
               </h3>
               <div className="mb-1">
-                <h3 className="text-black text-base self-start font-normal mb-1">
+                <label
+                  htmlFor="notes"
+                  className="text-black text-base self-start font-normal mb-1"
+                >
                   Pesan Revisi
-                </h3>
+                </label>
                 <textarea
+                  id="notes"
                   className="w-full border bg-inputColor border-borderInput p-3 rounded-xl text-black"
                   placeholder="Masukkan pesan keterangan revisi"
                   rows={4}
@@ -146,13 +150,17 @@ export default function SubmitRevisionBook() {
                 ></textarea>
               </div>
               <div className="mb-1">
-                <h3 className="text-black text-base self-start font-normal mb-1">
+                <label
+                  htmlFor="supportingUrl"
+                  className="text-black text-base self-start font-normal mb-1"
+                >
                   Link URL Pendukung
-                </h3>
+                </label>
                 <div className="relative">
                   <input
+                    id="supportingUrl"
                     type="url"
-                    className="w-full border border-gray-400 p-3 rounded-xl text-black pr-12"
+                    className="w-full border bg-inputColor border-borderInput p-3 rounded-xl text-black pr-12"
                     placeholder="Masukkan URL Pendukung"
                     value={supportingUrl}
                     onChange={(e) => setSupportingUrl(e.target.value)}
@@ -192,9 +200,7 @@ export default function SubmitRevisionBook() {
               </div>
             </form>
           </div>
-
-          {/* Log Aktivitas (40%) */}
-          <div className="w-2/5 bg-white p-4 rounded-lg shadow-md">
+          {/* <div className="w-2/5 bg-white p-4 rounded-lg shadow-md">
             <h3 className="text-black text-lg font-semibold border-b pb-2 mb-4 -mx-4 px-4">
               Riwayat Catatan Revisi
             </h3>
@@ -241,6 +247,59 @@ export default function SubmitRevisionBook() {
               ))
             ) : (
               <p>Belum Ada Aktivitas</p>
+            )}
+          </div> */}
+          <div className="w-2/5 bg-white p-4 rounded-lg shadow-md max-h-[500px] overflow-y-auto">
+            <h3 className="text-black text-lg font-semibold border-b pb-2 mb-4 -mx-4 px-4">
+              Riwayat Catatan Revisi
+            </h3>
+
+            {loading ? (
+              <LoadingIndicator />
+            ) : activities.length > 0 ? (
+              <div className="space-y-3">
+                {activities.map((activity: Activity, index) => (
+                  <div
+                    key={index}
+                    className={`p-3 border rounded-lg shadow ${
+                      index === 0 ? "bg-gray-50" : "bg-green-50"
+                    }`}
+                  >
+                    <p className="text-md font-semibold text-black">
+                      {activity.user?.name}
+                    </p>
+                    <p className="text-sm font-thin text-gray-600">
+                      Status: {activity.status?.status_name}
+                    </p>
+                    <p className="text-xs text-gray-700">Catatan:</p>
+                    <p className="text-sm text-gray-700">
+                      {activity.publication_notes}
+                    </p>
+
+                    {activity.supporting_url && (
+                      <a
+                        href={
+                          activity.supporting_url.startsWith("http")
+                            ? activity.supporting_url
+                            : `https://${activity.supporting_url}`
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 text-xs flex items-center gap-1 mt-2"
+                      >
+                        <Eye className="w-4 h-4" />
+                        Lihat Url Lampiran
+                      </a>
+                    )}
+
+                    <p className="mt-2 text-xs text-gray-500">
+                      {formatDate(activity.createdAt)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-black">Belum Ada Aktivitas</p>
             )}
           </div>
         </div>

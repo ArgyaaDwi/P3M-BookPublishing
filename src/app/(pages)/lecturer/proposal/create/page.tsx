@@ -17,7 +17,7 @@ export default function AddLecturerPage() {
   const breadcrumbItems = [
     { name: "Dashboard", url: "/lecturer/dashboard" },
     { name: "Ajuan", url: "/lecturer/proposal" },
-    { name: "Buat Ajuan Proposal", url: "/lecturer/proposal/create" },
+    { name: "Buat Ajuan", url: "/lecturer/proposal/create" },
   ];
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

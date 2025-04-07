@@ -2,8 +2,8 @@
 import Breadcrumb from "@/components/BreadCrumb";
 import Tabs from "@/components/Tabs";
 import Link from "next/link";
-import ApproveProposal from "./components/ApproveProposal";
-import RevisionProposal from "./components/RevisionProposal";
+import ApprovedProposal from "./components/ApprovedProposal";
+import RevisedProposal from "./components/RevisedProposal";
 import AllProposal from "./components/AllProposall";
 import { ChartBar, FileText } from "lucide-react";
 
@@ -53,7 +53,7 @@ export default function ProposalPage() {
               </button>
             </Link>
           </div>
-          <RevisionProposal />
+          <RevisedProposal />
         </div>
       ),
     },
@@ -77,7 +77,7 @@ export default function ProposalPage() {
               </button>
             </Link>
           </div>
-          <ApproveProposal />
+          <ApprovedProposal />
         </div>
       ),
     },
@@ -97,7 +97,7 @@ export default function ProposalPage() {
   return (
     <div>
       <Breadcrumb
-        title="Halaman Proposal Ajuan"
+        title="Halaman Ajuan Buku"
         breadcrumbItems={breadcrumbItems}
       />
       <div className="bg-white rounded-lg mt-3 overflow-hidden px-4 pb-4">

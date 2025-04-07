@@ -4,22 +4,24 @@ import prisma from "@/lib/prisma";
 // GET Handler untuk mengambil dosen berdasarkan ID
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
-    const id = parseInt(params.id, 10);
-    if (isNaN(id)) {
+    const { id } = await context.params;
+    const parsedId = parseInt(id, 10);
+    if (isNaN(parsedId)) {
       return NextResponse.json(
         { status: "error", message: "Invalid lecturer ID" },
         { status: 400 }
       );
     }
     const lecturer = await prisma.user.findUnique({
-      where: { id },
+      where: { id: parsedId },
       select: {
         id: true,
         name: true,
         email: true,
+        nidn: true,
         phone_number: true,
         address: true,
         major: { select: { major_name: true } },
@@ -36,9 +38,7 @@ export async function GET(
 
     const lecturerWithStringPhone = {
       ...lecturer,
-      phone_number: lecturer.phone_number
-        ? lecturer.phone_number.toString()
-        : null,
+      phone_number: lecturer.phone_number?.toString() ?? null,
     };
 
     return NextResponse.json({

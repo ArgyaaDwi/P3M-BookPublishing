@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import { Eye } from "lucide-react";
 import { PublicationType } from "@/types/publicationTypes";
 import LoadingIndicator from "@/components/Loading";
+import TableHeader from "@/components/TableHeader";
 
-const RevisionProposalAdmin = () => {
+const RevisedProposalAdmin = () => {
   const router = useRouter();
   const [proposals, setProposals] = useState<PublicationType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,26 +34,16 @@ const RevisionProposalAdmin = () => {
   return (
     <table className="w-full text-left border border-gray-300 mt-2">
       <thead>
-        <tr>
-          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
-            No
-          </th>
-          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
-            Judul Proposal
-          </th>
-          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
-            Dosen Pemohon
-          </th>
-          <th className="p-4 text-base font-semibold bg-gray-50  text-gray-600 border text-left">
-            Tanggal Pengajuan
-          </th>
-          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
-            Status
-          </th>
-          <th className="p-4 text-base font-semibold bg-gray-50 text-gray-600 border text-left">
-            Aksi
-          </th>
-        </tr>
+        <TableHeader
+          columns={[
+            "No",
+            "Judul Ajuan",
+            "Dosen Pemohon",
+            "Tanggal Pengajuan",
+            "Status",
+            "Aksi",
+          ]}
+        />
       </thead>
       <tbody>
         {proposals.length > 0 ? (
@@ -131,4 +122,4 @@ const RevisionProposalAdmin = () => {
   );
 };
 
-export default RevisionProposalAdmin;
+export default RevisedProposalAdmin;

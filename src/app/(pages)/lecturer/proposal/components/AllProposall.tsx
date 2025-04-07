@@ -5,7 +5,7 @@ import BadgeStatus from "@/components/BadgeStatus";
 import LoadingIndicator from "@/components/Loading";
 import { PublicationType } from "@/types/publicationTypes";
 import { useRouter } from "next/navigation";
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Eye, SquarePen, Trash2 } from "lucide-react";
 import TableHeader from "@/components/TableHeader";
 const LecturerProposals = () => {
   const [proposals, setProposals] = useState<PublicationType[]>([]);
@@ -68,13 +68,7 @@ const LecturerProposals = () => {
     <table className="w-full text-left border border-gray-300 mt-2">
       <thead>
         <TableHeader
-          columns={[
-            "No",
-            "Judul Proposal",
-            "Status",
-            "Tanggal Pengajuan",
-            "Aksi",
-          ]}
+          columns={["No", "Judul Ajuan", "Status", "Tanggal Pengajuan", "Aksi"]}
         />
       </thead>
       <tbody>
@@ -128,26 +122,42 @@ const LecturerProposals = () => {
                     onClick={() =>
                       router.push(`/lecturer/proposal/${proposal.id}`)
                     }
-                    className="bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800"
+                    className="bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800 transition-all duration-300 ease-in-out"
                   >
                     <Eye />
                   </button>
                   {proposal.current_status_id === 1 && (
                     <button
-                      className="bg-red-100 p-2 rounded-lg text-red-500 hover:text-red-800"
+                      className="bg-red-100 p-2 rounded-lg text-red-500 hover:text-red-800 transition-all duration-300 ease-in-out"
                       onClick={() => handleDeleteProposalById(proposal.id)}
                     >
                       <Trash2 />
                     </button>
                   )}
                   {proposal.current_status_id === 2 && (
-                    <button className="bg-yellow-100 p-2 rounded-lg text-yellow-500 hover:text-yellow-800">
-                      <Pencil />
+                    <button
+                      className=" bg-yellow-100 p-2 rounded-lg text-yellow-700 hover:text-yellow-900 transition-all duration-300 ease-in-out flex items-center gap-2"
+                      onClick={() =>
+                        router.push(
+                          `/lecturer/proposal/submit-revision/${proposal.id}`
+                        )
+                      }
+                    >
+                      <SquarePen />
+                      Revisi
                     </button>
                   )}
                   {proposal.current_status_id === 6 && (
-                    <button className="bg-yellow-100 p-2 rounded-lg text-yellow-500 hover:text-yellow-800">
-                      <Pencil />
+                    <button
+                      className=" bg-yellow-100 p-2 rounded-lg text-yellow-700 hover:text-yellow-900 transition-all duration-300 ease-in-out flex items-center gap-2"
+                      onClick={() =>
+                        router.push(
+                          `/lecturer/proposal/book-revision/${proposal.id}`
+                        )
+                      }
+                    >
+                      <SquarePen />
+                      Revisi
                     </button>
                   )}
                 </div>
@@ -156,7 +166,7 @@ const LecturerProposals = () => {
           ))
         ) : (
           <tr>
-            <td colSpan={4} className="text-center p-4 text-gray-500">
+            <td colSpan={5} className="text-center p-4 text-gray-500">
               Tidak ada proposal yang diajukan.
             </td>
           </tr>

@@ -18,21 +18,22 @@ export async function GET(
       where: { publication_id: publicationId, deleted: false },
       select: {
         id: true,
+        publication_status_id: true,
         publication_notes: true,
         supporting_url: true,
         createdAt: true,
         user: {
           select: {
-            name: true, // Pastikan ini ada di model User
+            name: true, 
           },
         },
         status: {
           select: {
-            status_name: true, // Sesuaikan dengan model PublicationStatus
+            status_name: true, 
           },
         },
       },
-      orderBy: { createdAt: "asc" }, // Biar urut sesuai waktu
+      orderBy: { createdAt: "asc" },
     });
 
     return NextResponse.json(

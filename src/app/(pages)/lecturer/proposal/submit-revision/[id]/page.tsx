@@ -30,7 +30,7 @@ export default function SubmitRevisionAdmin() {
   const router = useRouter();
   const [breadcrumbItems, setBreadcrumbItems] = useState([
     { name: "Dashboard", url: "/lecturer/dashboard" },
-    { name: "Proposal", url: "/lecturer/proposal" },
+    { name: "Ajuan", url: "/lecturer/proposal" },
     { name: "Loading...", url: `/lecturer/lecturer/${proposalId}` },
   ]);
 
@@ -44,7 +44,7 @@ export default function SubmitRevisionAdmin() {
           setProposal(data.data || null);
           setBreadcrumbItems([
             { name: "Dashboard", url: "/lecturer/dashboard" },
-            { name: "Proposal", url: "/lecturer/proposal" },
+            { name: "Ajuan", url: "/lecturer/proposal" },
             {
               name: data.data.publication_title,
               url: `/lecturer/lecturer/${proposalId}`,
@@ -113,8 +113,8 @@ export default function SubmitRevisionAdmin() {
     <div>
       <Breadcrumb title="Halaman Revisi" breadcrumbItems={breadcrumbItems} />
       <div className="bg-white rounded-lg mt-3 py-2">
-        <h3 className="text-black text-2xl font-bold px-4 pb-4 pt-2">
-          Form Submit Revisi
+        <h3 className="text-black text-2xl font-semibold px-4 pb-4 pt-2">
+          Form Revisi Administrasi
         </h3>
         <hr className="mb-3" />
         <div className="flex gap-6 px-4">
@@ -134,10 +134,14 @@ export default function SubmitRevisionAdmin() {
                 </span>
               </h3>
               <div className="mb-1">
-                <h3 className="text-black text-base self-start font-normal mb-1">
+                <label
+                  htmlFor="notes"
+                  className="text-black text-base self-start font-normal mb-1"
+                >
                   Pesan Revisi
-                </h3>
+                </label>
                 <textarea
+                  id="notes"
                   className="w-full border bg-inputColor border-borderInput p-3 rounded-xl text-black"
                   placeholder="Masukkan pesan keterangan revisi"
                   rows={4}
@@ -146,13 +150,17 @@ export default function SubmitRevisionAdmin() {
                 ></textarea>
               </div>
               <div className="mb-1">
-                <h3 className="text-black text-base self-start font-normal mb-1">
+                <label
+                  htmlFor="supportingUrl"
+                  className="text-black text-base self-start font-normal mb-1"
+                >
                   Link URL Pendukung
-                </h3>
+                </label>
                 <div className="relative">
                   <input
+                    id="supportingUrl"
                     type="url"
-                    className="w-full border border-gray-400 p-3 rounded-xl text-black pr-12"
+                    className="w-full border bg-inputColor border-borderInput p-3 rounded-xl text-black pr-12"
                     placeholder="Masukkan URL Pendukung"
                     value={supportingUrl}
                     onChange={(e) => setSupportingUrl(e.target.value)}
@@ -240,7 +248,7 @@ export default function SubmitRevisionAdmin() {
                 </div>
               ))
             ) : (
-              <p>Belum Ada Aktivitas</p>
+              <p className="text-black">Belum Ada Aktivitas</p>
             )}
           </div>
         </div>
