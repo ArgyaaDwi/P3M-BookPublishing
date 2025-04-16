@@ -1,5 +1,10 @@
 import React from "react";
-const LoadingIndicator = () => {
+interface LoadingIndicatorProps {
+  withText?: boolean;
+}
+const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
+  withText = true,
+}) => {
   return (
     <div className="flex flex-col items-center">
       <svg
@@ -18,7 +23,9 @@ const LoadingIndicator = () => {
           fill="currentFill"
         />
       </svg>
-      <span className="text-black font-medium mt-2">Loading...</span>
+      {withText && (
+        <span className="text-black font-medium mt-2">Loading...</span>
+      )}{" "}
     </div>
   );
 };

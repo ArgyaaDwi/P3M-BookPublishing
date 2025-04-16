@@ -2,20 +2,19 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Input from "@/components/form/Input";
-import Button from "@/components/form/Button";
 import Image from "next/image";
-
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const handleSubmitLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     try {
+      setLoading(true);
       const response = await fetch("/api/login", {
         method: "POST",
         headers: {
@@ -50,9 +49,6 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
- if (loading) {
-    return <div>Loading...</div>;
-  }
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-white overflow-hidden">
       <div className="w-full md:w-1/2 flex flex-col justify-center p-12 bg-white-50 mx-4 md:mx-12 rounded-lg border border-gray-200 shadow-lg">
@@ -79,7 +75,12 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button text="Masuk" />
+          <button
+            className="bg-yellow-500 text-white p-3 mt-3 font-semibold rounded-xl w-full hover:bg-primary"
+            type="submit"
+          >
+            {loading ? "Login" : "Loading..."}
+          </button>
         </form>
         <p className="text-black text-center text-base mt-6 font-normal">
           Belum punya akun?{" "}

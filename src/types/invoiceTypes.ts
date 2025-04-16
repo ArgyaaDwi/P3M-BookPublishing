@@ -10,6 +10,7 @@ export type InvoiceType = {
       id: number;
       name: string;
     };
+    payment_proof: string | null;
    createdAt: string;
   };
   

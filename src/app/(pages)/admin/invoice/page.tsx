@@ -3,10 +3,9 @@
 import Breadcrumb from "@/components/BreadCrumb";
 import Tabs from "@/components/Tabs";
 import AllInvoiceAdmin from "./components/AllInvoice";
-import ApproveProposalPublisher from "../proposal/components/ApprovedProposal";
-import RevisionProposalPublisher from "../proposal/components/RevisedProposal";
+import VerifyInvoiceAdmin from "./components/VerifyInvoice";
+import SuccessInvoiceAdmin from "./components/SuccessInvoice";
 import { ChartBar, FileText } from "lucide-react";
-import Link from "next/link";
 // import Example from "@/components/tables/TestTable";
 export default function InvoicePageAdmin() {
   const tabItems = [
@@ -14,7 +13,7 @@ export default function InvoicePageAdmin() {
       title: "Semua Transaksi",
       content: (
         <div>
-          <div className="flex justify-between pb-2">   
+          <div className="flex justify-between pb-2">
             <div className="flex gap-2">
               <button className="bg-white border border-gray-500 text-gray-500 px-3 py-2 font-semibold rounded-lg hover:bg-gray-500 hover:text-white transition-all duration-300 flex items-center gap-2">
                 <FileText className="w-5 h-5" /> Export PDF
@@ -24,11 +23,6 @@ export default function InvoicePageAdmin() {
                 Export Excel
               </button>
             </div>
-            <Link href="/publisher/invoice/create">
-              <button className="bg-secondary text-black px-3 py-2 font-semibold rounded-lg hover:text-white hover:bg-primary transition-all duration-300">
-                + Buat Invoice
-              </button>
-            </Link>
           </div>
           <AllInvoiceAdmin />
         </div>
@@ -48,13 +42,8 @@ export default function InvoicePageAdmin() {
                 Export Excel
               </button>
             </div>
-            <Link href="/publisher/invoice/create">
-              <button className="bg-secondary text-black px-3 py-2 font-semibold rounded-lg hover:text-white hover:bg-primary transition-all duration-300">
-                + Buat Invoice
-              </button>
-            </Link>
           </div>
-          <RevisionProposalPublisher />
+          <VerifyInvoiceAdmin />
         </div>
       ),
     },
@@ -72,13 +61,8 @@ export default function InvoicePageAdmin() {
                 Export Excel
               </button>
             </div>
-            <Link href="/publisher/invoice/create">
-              <button className="bg-secondary text-black px-3 py-2 font-semibold rounded-lg hover:text-white hover:bg-primary transition-all duration-300">
-                + Buat Invoice
-              </button>
-            </Link>
           </div>
-          <ApproveProposalPublisher />
+          <SuccessInvoiceAdmin />
         </div>
       ),
     },
@@ -91,7 +75,7 @@ export default function InvoicePageAdmin() {
     },
     {
       name: "Invoice",
-      url: "/publisher/invoice",
+      url: "/admin/invoice",
     },
   ];
 

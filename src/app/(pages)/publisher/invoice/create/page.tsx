@@ -205,7 +205,7 @@ export default function AddInvoicePage() {
             </div>
             <div className="flex items-center gap-2">
               <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
-                {loading ? "Menyimpan..." : "Simpan"}
+                {loading ? "Simpan" : "Menyimpan..."}
               </button>
               <button
                 type="button"

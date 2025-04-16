@@ -3,8 +3,8 @@
 import Breadcrumb from "@/components/BreadCrumb";
 import Tabs from "@/components/Tabs";
 import AllInvoicePublisher from "./components/AllInvoice";
-import ApproveProposalPublisher from "../proposal/components/ApprovedProposal";
-import RevisionProposalPublisher from "../proposal/components/RevisedProposal";
+import VerifyInvoicePublisher from "./components/VerifyInvoice";
+import SuccessInvoicePublisher from "./components/SuccessInvoice";
 import { ChartBar, FileText } from "lucide-react";
 import Link from "next/link";
 // import Example from "@/components/tables/TestTable";
@@ -54,7 +54,7 @@ export default function InvoicePage() {
               </button>
             </Link>
           </div>
-          <RevisionProposalPublisher />
+          <VerifyInvoicePublisher />
         </div>
       ),
     },
@@ -78,7 +78,7 @@ export default function InvoicePage() {
               </button>
             </Link>
           </div>
-          <ApproveProposalPublisher />
+          <SuccessInvoicePublisher />
         </div>
       ),
     },

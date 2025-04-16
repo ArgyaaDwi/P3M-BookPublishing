@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { InvoiceType } from "@/types/invoiceTypes";
 import { useParams } from "next/navigation";
+import { Eye } from "lucide-react";
 import Breadcrumb from "@/components/BreadCrumb";
 import Tabs from "@/components/Tabs";
 import { formatDate } from "@/utils/dateFormatter";
@@ -52,9 +53,7 @@ const InvoiceDetailPublisher = () => {
 
   if (loading) return <LoadingIndicator />;
   if (!invoice)
-    return (
-      <p className="text-center text-gray-500">Proposal tidak ditemukan.</p>
-    );
+    return <p className="text-center text-gray-500">Ajuan tidak ditemukan.</p>;
   const tabItems = [
     {
       title: "Informasi Invoice",
@@ -79,19 +78,33 @@ const InvoiceDetailPublisher = () => {
             color={
               invoice.current_status_id === 1
                 ? "badgePendingText"
-                : invoice.current_status_id === 2
+                : invoice.current_status_id === 3
                 ? "badgeRevText"
                 : "badgeSuccessText"
             }
             bgColor={
               invoice.current_status_id === 1
                 ? "badgePending"
-                : invoice.current_status_id === 2
+                : invoice.current_status_id === 3
                 ? "badgeRev"
                 : "badgeSuccess"
             }
           />
-
+          {invoice.payment_proof && (
+            <a
+              href={
+                invoice.payment_proof.startsWith("http")
+                  ? invoice.payment_proof
+                  : `https://${invoice.payment_proof}`
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 text-s flex items-center gap-1"
+            >
+              <Eye className="w-4 h-4" />
+              Bukti Pembayaran
+            </a>
+          )}
           <div>
             <h2 className="text-lg font-medium text-black mt-4 mb-2">
               Item Transaksi
@@ -139,7 +152,7 @@ const InvoiceDetailPublisher = () => {
       title: "Log Aktivitas",
       content: (
         <div>
-          <h3 className="text-black font-bold">Log</h3>
+          <h3 className="text-black font-bold">Log Invoice</h3>
           <TransactionLogs id={invoice.id} />
         </div>
       ),

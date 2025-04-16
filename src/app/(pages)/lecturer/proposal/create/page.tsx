@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import Breadcrumb from "@/components/BreadCrumb";
 import Input from "@/components/form/Input";
-import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 export default function AddLecturerPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -95,6 +94,7 @@ export default function AddLecturerPage() {
             <h3 className="text-black text-base self-start font-normal mb-1">
               Draf PDF Buku
             </h3>
+
             <div className="flex items-center justify-center w-full">
               <label
                 htmlFor="dropzone-file"
@@ -151,6 +151,7 @@ export default function AddLecturerPage() {
                 </div>
               )}
             </div>
+
             <div className="flex items-center gap-2 pt-4">
               <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
                 Simpan

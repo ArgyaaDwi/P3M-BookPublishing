@@ -101,10 +101,10 @@ const VerifyProposalPublisher = () => {
                   >
                     <Eye />
                   </button>
-                  {proposal.current_status_id === 5 ||
-                    (proposal.current_status_id === 9 && (
-                      <ModalVerifyStatus proposal={proposal} />
-                    ))}
+                  {(proposal.current_status_id === 5 ||
+                    proposal.current_status_id === 9) && (
+                    <ModalVerifyStatus proposal={proposal} />
+                  )}
                 </div>
               </td>
             </tr>

@@ -7,15 +7,14 @@ import { Eye } from "lucide-react";
 import { InvoiceType } from "@/types/invoiceTypes";
 import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
-import PaymentModal from "./PaymentModal";
-const AllInvoiceAdmin = () => {
+const SuccessInvoicePublisher = () => {
   const router = useRouter();
   const [invoices, setInvoices] = useState<InvoiceType[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/admin/invoices?status=all");
+        const res = await fetch("/api/admin/invoices?status=success");
         const data = await res.json();
         console.log("Invoices:", data);
         setInvoices(data.data || []);
@@ -38,6 +37,7 @@ const AllInvoiceAdmin = () => {
             "ID Transaksi",
             "Tanggal Transaksi",
             "Status",
+            "Bukti Pembayaran",
             "Aksi",
           ]}
         />
@@ -62,7 +62,7 @@ const AllInvoiceAdmin = () => {
                         invoice.status?.status_name || "Status Tidak Diketahui"
                       }
                       color={
-                        invoice.current_status_id === 1 
+                        invoice.current_status_id === 1
                           ? "badgePendingText"
                           : invoice.current_status_id === 3
                           ? "badgeRevText"
@@ -78,18 +78,33 @@ const AllInvoiceAdmin = () => {
                     />
                   </td>
                   <td className="p-4 text-black border">
+                    {invoice.payment_proof ? (
+                      <a
+                        href={
+                          invoice.payment_proof.startsWith("http")
+                            ? invoice.payment_proof
+                            : `https://${invoice.payment_proof}`
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline flex"
+                      >
+                        Cek Bukti Pembayaran
+                      </a>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+                  <td className="p-4 text-black border">
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() =>
-                          router.push(`/admin/invoice/${invoice.id}`)
+                          router.push(`/publisher/invoice/${invoice.id}`)
                         }
                         className="bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800"
                       >
                         <Eye />
                       </button>
-                      {invoice.current_status_id === 1 && (
-                        <PaymentModal invoice={invoice} />
-                      )}
                     </div>
                   </td>
                 </tr>
@@ -98,8 +113,8 @@ const AllInvoiceAdmin = () => {
           )
         ) : (
           <tr>
-            <td colSpan={5} className="text-center p-4 text-gray-500">
-              Tidak Ada Invoice.
+            <td colSpan={6} className="text-center p-4 text-gray-500">
+              Tidak Ada Invoice Sukses.
             </td>
           </tr>
         )}
@@ -108,4 +123,4 @@ const AllInvoiceAdmin = () => {
   );
 };
 
-export default AllInvoiceAdmin;
+export default SuccessInvoicePublisher;

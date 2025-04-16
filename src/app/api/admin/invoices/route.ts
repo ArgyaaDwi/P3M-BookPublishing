@@ -22,6 +22,20 @@ export async function GET(req: NextRequest) {
           createdAt: "desc",
         },
       });
+    } else if (status === "waiting") {
+      invoices = await prisma.transaction.findMany({
+        where: {
+          current_status_id: 3,
+          deleted: false,
+        },
+        include: {
+          user: true,
+          status: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
     } else {
       invoices = await prisma.transaction.findMany({
         where: {

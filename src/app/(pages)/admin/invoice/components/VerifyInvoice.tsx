@@ -7,15 +7,14 @@ import { Eye } from "lucide-react";
 import { InvoiceType } from "@/types/invoiceTypes";
 import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
-import PaymentModal from "./PaymentModal";
-const AllInvoiceAdmin = () => {
+const VerifyInvoiceAdmin = () => {
   const router = useRouter();
   const [invoices, setInvoices] = useState<InvoiceType[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/admin/invoices?status=all");
+        const res = await fetch("/api/admin/invoices?status=waiting");
         const data = await res.json();
         console.log("Invoices:", data);
         setInvoices(data.data || []);
@@ -62,7 +61,7 @@ const AllInvoiceAdmin = () => {
                         invoice.status?.status_name || "Status Tidak Diketahui"
                       }
                       color={
-                        invoice.current_status_id === 1 
+                        invoice.current_status_id === 1
                           ? "badgePendingText"
                           : invoice.current_status_id === 3
                           ? "badgeRevText"
@@ -81,15 +80,12 @@ const AllInvoiceAdmin = () => {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() =>
-                          router.push(`/admin/invoice/${invoice.id}`)
+                          router.push(`/publisher/invoice/${invoice.id}`)
                         }
                         className="bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800"
                       >
                         <Eye />
                       </button>
-                      {invoice.current_status_id === 1 && (
-                        <PaymentModal invoice={invoice} />
-                      )}
                     </div>
                   </td>
                 </tr>
@@ -99,7 +95,7 @@ const AllInvoiceAdmin = () => {
         ) : (
           <tr>
             <td colSpan={5} className="text-center p-4 text-gray-500">
-              Tidak Ada Invoice.
+              Tidak Ada Ajuan Penerbitan Buku.
             </td>
           </tr>
         )}
@@ -108,4 +104,4 @@ const AllInvoiceAdmin = () => {
   );
 };
 
-export default AllInvoiceAdmin;
+export default VerifyInvoiceAdmin;
