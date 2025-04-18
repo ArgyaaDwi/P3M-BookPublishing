@@ -54,7 +54,7 @@ const PublicationActivityAdmin = ({
             <div
               key={activity.id}
               className={`p-3 border rounded-lg shadow max-w-xl ${
-                isUser ? "bg-blue-50 ml-auto" : "bg-gray-50 "
+                isUser ? "bg-yellow-50 ml-auto" : "bg-gray-50 "
               }`}
             >
               <p className="mb-1 text-md font-semibold text-black">

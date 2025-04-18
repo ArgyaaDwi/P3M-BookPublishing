@@ -11,7 +11,7 @@ type PaymentModalProps = {
   } | null;
 };
 
-const PaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
+const SubmitPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [note, setNote] = useState<string>("");
   const [paymentProof, setPaymentProof] = useState<string>("");
@@ -65,15 +65,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
             </h3>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label className="block text-sm font-medium text-black pb-1">
-                  Status Sekarang
-                </label>
-                <input
-                  type="text"
-                  className="w-full border border-gray-400 p-3 rounded-xl text-black text-center"
-                  value={invoice.status.status_name}
-                  disabled
-                />
+                <p className="block text-sm font-medium text-black pb-1">
+                  Status Sekarang:{" "}
+                  <span className="font-semibold">
+                    {invoice.status.status_name}
+                  </span>
+                </p>
               </div>
               <div className="mb-5">
                 <label
@@ -144,4 +141,4 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
   );
 };
 
-export default PaymentModal;
+export default SubmitPaymentModal;

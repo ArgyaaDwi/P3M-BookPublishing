@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import { formatDate } from "@/utils/dateFormatter";
 import { useRouter } from "next/navigation";
 import BadgeStatus from "@/components/BadgeStatus";
-import { Eye, CircleCheck } from "lucide-react";
+import { Eye } from "lucide-react";
 import { InvoiceType } from "@/types/invoiceTypes";
 import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
+import ModalVerifyInvoice from "./ModalVerify";
 const AllInvoicePublisher = () => {
   const router = useRouter();
   const [invoices, setInvoices] = useState<InvoiceType[]>([]);
@@ -91,14 +92,16 @@ const AllInvoicePublisher = () => {
                       color={
                         invoice.current_status_id === 1
                           ? "badgePendingText"
-                          : invoice.current_status_id === 3
+                          : invoice.current_status_id === 3 ||
+                            invoice.current_status_id === 4
                           ? "badgeRevText"
                           : "badgeSuccessText"
                       }
                       bgColor={
                         invoice.current_status_id === 1
                           ? "badgePending"
-                          : invoice.current_status_id === 3
+                          : invoice.current_status_id === 3 ||
+                            invoice.current_status_id === 4
                           ? "badgeRev"
                           : "badgeSuccess"
                       }
@@ -134,13 +137,7 @@ const AllInvoicePublisher = () => {
                         <Eye />
                       </button>
                       {invoice.current_status_id === 3 && (
-                        <button
-                          className="bg-emerald-100 p-2 rounded-lg text-emerald-700 hover:text-black flex items-center gap-2"
-                          onClick={() => handleVerifiyPayment(invoice.id)}
-                        >
-                          <CircleCheck />
-                          Verifikasi Pembayaran
-                        </button>
+                        <ModalVerifyInvoice invoice={invoice} />
                       )}
                     </div>
                   </td>

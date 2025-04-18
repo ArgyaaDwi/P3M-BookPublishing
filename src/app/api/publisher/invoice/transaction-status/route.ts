@@ -3,31 +3,30 @@ import prisma from "@/lib/prisma";
 
 export async function GET() {
   try {
-    const approvedBooks = await prisma.publication.findMany({
-      select: { status: true, id: true, publication_title: true },
+    const status = await prisma.transactionStatus.findMany({
+      select: { status_name: true, id: true },
       where: {
-        current_status_id: 7,
-        is_invoice: false,
+        id: { in: [2, 4] },
       },
     });
-    console.log("Successfully fetched approved books:", approvedBooks);
+    console.log("Successfully fetched status:", status);
     return NextResponse.json(
       {
         status: "success",
-        data: approvedBooks,
+        data: status,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching approved books:", error);
-    let errorMessage = "Failed to fetch approved books";
+    console.error("Error fetching status:", error);
+    let errorMessage = "Failed to fetch status";
     if (error instanceof Error) {
       errorMessage = error.message;
     }
     return NextResponse.json(
       {
         status: "error",
-        message: "Failed to fetch approved books",
+        message: "Failed to fetch status",
         error: errorMessage,
       },
       { status: 500 }

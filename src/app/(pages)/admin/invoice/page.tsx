@@ -29,7 +29,7 @@ export default function InvoicePageAdmin() {
       ),
     },
     {
-      title: "Menunggu Verifikasi",
+      title: "Revisi Bukti",
       content: (
         <div>
           <div className="flex justify-between pb-2">

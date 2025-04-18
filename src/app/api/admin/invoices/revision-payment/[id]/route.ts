@@ -8,8 +8,9 @@ export async function PUT(
 ) {
   try {
     const { id } = params;
-    const { newStatusId, note } = await req.json();
+    const { paymentProof, note } = await req.json();
     console.log("Updating Invoice ID:", id);
+
     const session = await getSession();
     if (!session || !session.user_id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -27,7 +28,7 @@ export async function PUT(
 
     await prisma.transaction.update({
       where: { id: Number(id) },
-      data: { current_status_id: Number(newStatusId) },
+      data: { current_status_id: 3, payment_proof: paymentProof },
     });
 
     // Catat aktivitas untuk keperluan log
@@ -35,8 +36,8 @@ export async function PUT(
       data: {
         transaction_id: Number(id),
         user_id: Number(session.user_id),
-        transaction_status_id: Number(newStatusId),
-        note: note,
+        transaction_status_id: 3,
+        note: note || "Payment Proof Uploaded",
       },
     });
     return NextResponse.json({ status: "success" }, { status: 200 });

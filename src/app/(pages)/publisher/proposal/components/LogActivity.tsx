@@ -4,24 +4,10 @@ import { formatDate } from "@/utils/dateFormatter";
 import { Eye } from "lucide-react";
 import { getSession } from "@/lib/session";
 import LoadingIndicator from "@/components/Loading";
-interface Activity {
-  id: number;
-  user?: {
-    name: string;
-  };
-  status?: {
-    status_name: string;
-  };
-  publication_notes?: string;
-  createdAt: string;
-  supporting_url?: string;
-}
+import BadgeStatus from "@/components/BadgeStatus";
+import { PublicationActivity } from "@/types/interfaces";
 
-const LogActivityPublisher = ({
-  publicationId,
-}: {
-  publicationId: number;
-}) => {
+const LogActivityPublisher = ({ publicationId }: { publicationId: number }) => {
   const [activities, setActivities] = useState([]);
   const [loggedInUser, setLoggedInUser] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -58,22 +44,44 @@ const LogActivityPublisher = ({
   return (
     <div className="space-y-4">
       {activities.length > 0 ? (
-        activities.map((activity: Activity) => {
+        activities.map((activity: PublicationActivity) => {
           const isUser = activity.user?.name === loggedInUser;
           return (
             <div
               key={activity.id}
               className={`p-3 border rounded-lg shadow max-w-xl ${
-                isUser ? "bg-blue-50 ml-auto" : "bg-gray-50 "
+                isUser ? "bg-yellow-50 ml-auto" : "bg-gray-50 "
               }`}
             >
-              <p className="text-md font-semibold text-black">
+              <p className="mb-1text-md font-semibold text-black">
                 {activity.user?.name || "Unknown User"}
               </p>
-              <p className="text-sm font-thin text-gray-600">
-                Status: {activity.status?.status_name || "Unknown Status"}
-              </p>
-              <p className="text-xs text-gray-700">Catatan:</p>
+              <BadgeStatus
+                text={activity.status?.status_name || "Status Tidak Diketahui"}
+                color={
+                  activity.publication_status_id === 1 ||
+                  activity.publication_status_id === 4 ||
+                  activity.publication_status_id === 5 ||
+                  activity.publication_status_id === 9
+                    ? "badgePendingText"
+                    : activity.publication_status_id === 2 ||
+                      activity.publication_status_id === 6
+                    ? "badgeRevText"
+                    : "badgeSuccessText"
+                }
+                bgColor={
+                  activity.publication_status_id === 1 ||
+                  activity.publication_status_id === 4 ||
+                  activity.publication_status_id === 5 ||
+                  activity.publication_status_id === 9
+                    ? "badgePending"
+                    : activity.publication_status_id === 2 ||
+                      activity.publication_status_id === 6
+                    ? "badgeRev"
+                    : "badgeSuccess"
+                }
+              />
+              <p className="mt-1 text-xs text-gray-700">Catatan:</p>
               <p className="text-sm text-gray-700">
                 {activity.publication_notes || "No notes"}
               </p>

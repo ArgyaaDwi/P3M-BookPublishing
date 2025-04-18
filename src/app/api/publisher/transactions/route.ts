@@ -23,7 +23,8 @@ export async function POST(req: NextRequest) {
     let parsed;
     try {
       parsed = JSON.parse(rawBody);
-    } catch (e ) {
+    } catch (e) {
+      console.error("Error parsing JSON:", e);
       return NextResponse.json(
         { error: "Invalid JSON format" },
         { status: 400 }
@@ -62,6 +63,25 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // const itemData = items.map((item: ItemInput) => ({
+    //   transaction_id: newTransaction.id,
+    //   publication_id: item.publication_id,
+    //   cost: item.cost,
+    //   quantity: item.quantity,
+    //   total_cost: item.cost * item.quantity,
+    // }));
+
+    // await prisma.transactionItem.createMany({
+    //   data: itemData,
+    // });
+    // await prisma.transactionLog.create({
+    //   data: {
+    //     transaction_id: newTransaction.id,
+    //     user_id: userId,
+    //     transaction_status_id: current_status_id,
+    //     note: transaction_notes || null,
+    //   },
+    // });
     const itemData = items.map((item: ItemInput) => ({
       transaction_id: newTransaction.id,
       publication_id: item.publication_id,
@@ -70,17 +90,24 @@ export async function POST(req: NextRequest) {
       total_cost: item.cost * item.quantity,
     }));
 
-    await prisma.transactionItem.createMany({
-      data: itemData,
-    });
-    await prisma.transactionLog.create({
-      data: {
-        transaction_id: newTransaction.id,
-        user_id: userId,
-        transaction_status_id: current_status_id,
-        note: transaction_notes || null,
-      },
-    })
+
+    const publicationIds = items.map((item) => item.publication_id);
+    await Promise.all([
+      prisma.transactionItem.createMany({ data: itemData }),
+      prisma.publication.updateMany({
+        where: { id: { in: publicationIds } },
+        data: { is_invoice: true },
+      }),
+      prisma.transactionLog.create({
+        data: {
+          transaction_id: newTransaction.id,
+          user_id: userId,
+          transaction_status_id: current_status_id,
+          note: transaction_notes || null,
+        },
+      }),
+    ]);
+
     return NextResponse.json({
       status: "success",
       message: "Transaction created with items",
@@ -89,16 +116,18 @@ export async function POST(req: NextRequest) {
         items: itemData,
       },
     });
-
-  } catch (error: any) {
-    console.error(
-      "Error creating transaction:",
-      error?.message || error || "Unknown error"
-    );
+  } catch (error: unknown) {
+    let errorMessage = "Unknown error";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === "string") {
+      errorMessage = error;
+    }
+    console.error("Error creating transaction:", errorMessage);
     return NextResponse.json(
       {
         error: "Failed to create transaction",
-        message: error?.message || "Unknown error",
+        message: errorMessage,
       },
       { status: 500 }
     );

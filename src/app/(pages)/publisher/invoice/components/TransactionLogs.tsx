@@ -56,14 +56,16 @@ const TransactionLogs = ({ id }: { id: number }) => {
                 color={
                   log.transaction_status_id === 1
                     ? "badgePendingText"
-                    : log.transaction_status_id === 3
+                    : log.transaction_status_id === 3 ||
+                      log.transaction_status_id === 4
                     ? "badgeRevText"
                     : "badgeSuccessText"
                 }
                 bgColor={
                   log.transaction_status_id === 1
                     ? "badgePending"
-                    : log.transaction_status_id === 3
+                    : log.transaction_status_id === 3 ||
+                      log.transaction_status_id === 4
                     ? "badgeRev"
                     : "badgeSuccess"
                 }

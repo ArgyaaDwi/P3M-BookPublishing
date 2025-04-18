@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-
 interface SelectProps {
   label: string;
   options: { value: string; label: string }[];

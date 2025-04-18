@@ -7,7 +7,8 @@ import { Eye } from "lucide-react";
 import { InvoiceType } from "@/types/invoiceTypes";
 import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
-import PaymentModal from "./PaymentModal";
+import SubmitPaymentModal from "./SubmitPaymentModal";
+import RevisionPaymentModal from "./RevisionPaymentModal";
 const AllInvoiceAdmin = () => {
   const router = useRouter();
   const [invoices, setInvoices] = useState<InvoiceType[]>([]);
@@ -62,16 +63,18 @@ const AllInvoiceAdmin = () => {
                         invoice.status?.status_name || "Status Tidak Diketahui"
                       }
                       color={
-                        invoice.current_status_id === 1 
+                        invoice.current_status_id === 1
                           ? "badgePendingText"
-                          : invoice.current_status_id === 3
+                          : invoice.current_status_id === 3 ||
+                            invoice.current_status_id === 4
                           ? "badgeRevText"
                           : "badgeSuccessText"
                       }
                       bgColor={
                         invoice.current_status_id === 1
                           ? "badgePending"
-                          : invoice.current_status_id === 3
+                          : invoice.current_status_id === 3 ||
+                            invoice.current_status_id === 4
                           ? "badgeRev"
                           : "badgeSuccess"
                       }
@@ -88,7 +91,10 @@ const AllInvoiceAdmin = () => {
                         <Eye />
                       </button>
                       {invoice.current_status_id === 1 && (
-                        <PaymentModal invoice={invoice} />
+                        <SubmitPaymentModal invoice={invoice} />
+                      )}
+                      {invoice.current_status_id === 4 && (
+                        <RevisionPaymentModal invoice={invoice} />
                       )}
                     </div>
                   </td>

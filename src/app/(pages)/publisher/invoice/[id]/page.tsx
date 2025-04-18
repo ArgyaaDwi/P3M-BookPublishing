@@ -78,14 +78,16 @@ const InvoiceDetailPublisher = () => {
             color={
               invoice.current_status_id === 1
                 ? "badgePendingText"
-                : invoice.current_status_id === 3
+                : invoice.current_status_id === 3 ||
+                  invoice.current_status_id === 4
                 ? "badgeRevText"
                 : "badgeSuccessText"
             }
             bgColor={
               invoice.current_status_id === 1
                 ? "badgePending"
-                : invoice.current_status_id === 3
+                : invoice.current_status_id === 3 ||
+                  invoice.current_status_id === 4
                 ? "badgeRev"
                 : "badgeSuccess"
             }
@@ -110,7 +112,7 @@ const InvoiceDetailPublisher = () => {
               Item Transaksi
             </h2>
             <div className="space-y-2">
-              {invoice.items.map((item: any, index: number) => (
+              {invoice.items.map((item, index: number) => (
                 <div
                   key={index}
                   className="p-3 border rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center"
@@ -140,7 +142,7 @@ const InvoiceDetailPublisher = () => {
               <p className="text-lg font-semibold text-black text-right">
                 Total Keseluruhan: Rp
                 {invoice.items
-                  .reduce((acc: number, item: any) => acc + item.total_cost, 0)
+                  .reduce((acc: number, item) => acc + item.total_cost, 0)
                   .toLocaleString("id-ID")}
               </p>
             </div>

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Breadcrumb from "@/components/BreadCrumb";
 import { useRouter } from "next/navigation";
-
+import Select from "@/components/form/Select";
 interface ApprovedBooks {
   id: number;
   publication_title: string;
@@ -55,23 +55,6 @@ export default function AddInvoicePage() {
       transaction_notes: notes,
     };
     try {
-      // const response = await fetch("/api/publisher/transactions", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(data),
-      // });
-
-      // const result = await response.json();
-      // if (response.ok) {
-      //   console.log("Transaksi berhasil:", result.data);
-      //   alert("Transaksi berhasil dibuat!");
-      //   router.push("/publisher/invoice");
-      // } else {
-      //   console.error("Gagal:", result.message);
-      //   alert("Gagal membuat transaksi: " + result.message);
-      // }
       const response = await fetch("/api/publisher/transactions", {
         method: "POST",
         headers: {
@@ -130,37 +113,38 @@ export default function AddInvoicePage() {
                 Buku ke-{index + 1}
               </h3>
               <div className="flex items-center gap-2">
-                <div className="flex gap-2 w-full">
-                  <select
+                <div className="w-full flex flex-col">
+                  <Select
+                    label="Pilih Buku"
                     value={book.bookId}
-                    onChange={(e) => {
+                    onChange={(value) => {
                       const updated = [...books];
-                      updated[index].bookId = e.target.value;
+                      updated[index].bookId = value;
                       setBooks(updated);
                     }}
-                    className="p-2 border bg-inputColor border-borderInput rounded-lg flex-[7] text-black"
-                  >
-                    <option value="" className="text-center">
-                      .:: Pilih Buku ::.
-                    </option>
-                    {bookOptions.map((b: ApprovedBooks) => (
-                      <option key={b.id} value={b.id} className="text-center">
-                        {b.publication_title}
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    type="number"
-                    placeholder="Biaya"
-                    value={book.cost}
-                    onChange={(e) => {
-                      const updated = [...books];
-                      updated[index].cost = e.target.value;
-                      setBooks(updated);
-                    }}
-                    className="p-2 border bg-inputColor border-borderInput rounded-lg flex-[3] text-black"
+                    options={bookOptions.map((b: ApprovedBooks) => ({
+                      value: b.id.toString(),
+                      label: b.publication_title,
+                    }))}
                   />
+                  <div className="flex flex-col">
+                    <label className="text-base text-black mb-1">
+                      Biaya Penerbitan Buku
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="Masukkan biaya"
+                      value={book.cost}
+                      onChange={(e) => {
+                        const updated = [...books];
+                        updated[index].cost = e.target.value;
+                        setBooks(updated);
+                      }}
+                      className="p-3 border bg-inputColor border-borderInput rounded-lg text-black w-full max-w-[200px]"
+                    />
+                  </div>
                 </div>
+
                 {books.length > 1 && (
                   <button
                     onClick={() => {

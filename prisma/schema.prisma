@@ -94,6 +94,7 @@ model Publication{
   publication_document String
   current_status_id Int
   supporting_url String?
+  is_invoice Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

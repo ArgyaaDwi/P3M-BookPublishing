@@ -59,6 +59,7 @@ export interface Publication {
   publication_document: string;
   current_status_id: number;
   supporting_url: string | null;
+  is_invoice: boolean;
   createdAt: Date;
   updatedAt: Date;
   deleted: boolean;

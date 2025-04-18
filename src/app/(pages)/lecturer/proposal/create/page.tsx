@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { Trash2 } from "lucide-react";
 import Breadcrumb from "@/components/BreadCrumb";
 import Input from "@/components/form/Input";
 import { useRouter } from "next/navigation";
