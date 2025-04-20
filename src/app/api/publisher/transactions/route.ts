@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { uuid } from "uuidv4";
 import { getSession } from "@/lib/session";
 import { ItemInput } from "@/types/itemInput";
 export async function POST(req: NextRequest) {
@@ -54,34 +55,16 @@ export async function POST(req: NextRequest) {
 
     const userId = Number(session.user_id);
     const current_status_id = 1;
-
+    const transaction_ticket = uuid();
     const newTransaction = await prisma.transaction.create({
       data: {
         user_id: userId,
         current_status_id,
+        transaction_ticket: transaction_ticket,
         transaction_notes: transaction_notes || null,
       },
     });
 
-    // const itemData = items.map((item: ItemInput) => ({
-    //   transaction_id: newTransaction.id,
-    //   publication_id: item.publication_id,
-    //   cost: item.cost,
-    //   quantity: item.quantity,
-    //   total_cost: item.cost * item.quantity,
-    // }));
-
-    // await prisma.transactionItem.createMany({
-    //   data: itemData,
-    // });
-    // await prisma.transactionLog.create({
-    //   data: {
-    //     transaction_id: newTransaction.id,
-    //     user_id: userId,
-    //     transaction_status_id: current_status_id,
-    //     note: transaction_notes || null,
-    //   },
-    // });
     const itemData = items.map((item: ItemInput) => ({
       transaction_id: newTransaction.id,
       publication_id: item.publication_id,

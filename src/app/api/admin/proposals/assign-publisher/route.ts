@@ -37,13 +37,13 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({
       status: "success",
-      message: "Proposal berhasil diperbarui dan aktivitas dicatat.",
+      message: "Berhasil Assign Proposal",
       data: updatedProposal,
     });
   } catch (error) {
     console.error("Error updating proposal:", error);
     return NextResponse.json(
-      { status: "error", message: "Gagal memperbarui proposal" },
+      { status: "error", message: "Gagal Assign Proposal" },
       { status: 500 }
     );
   }

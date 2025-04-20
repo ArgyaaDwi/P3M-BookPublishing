@@ -6,7 +6,7 @@ import { Eye } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
 import LoadingIndicator from "@/components/Loading";
 import { PublicationType } from "@/types/publicationTypes";
-import ModalPublisher from "@/components/modals/ModalPublisher";
+import ModalPublisher from "./ModalAssignPublisher";
 import TableHeader from "@/components/TableHeader";
 const ApprovedProposalAdmin = () => {
   const router = useRouter();
@@ -64,9 +64,6 @@ const ApprovedProposalAdmin = () => {
               <td className="p-4 text-black border">
                 {formatDate(proposal.createdAt)}
               </td>
-              <td className="p-4 text-black border">
-                <ModalPublisher proposal={proposal} />
-              </td>
               <td className="p-4 text-black border font-semibold">
                 <BadgeStatus
                   text={
@@ -98,6 +95,7 @@ const ApprovedProposalAdmin = () => {
                   >
                     <Eye />
                   </button>
+                  <ModalPublisher proposal={proposal} />
                 </div>
               </td>
             </tr>

@@ -6,7 +6,7 @@ import BadgeStatus from "@/components/BadgeStatus";
 import { Eye } from "lucide-react";
 import { PublicationType } from "@/types/publicationTypes";
 import LoadingIndicator from "@/components/Loading";
-import ModalStatus from "@/components/ModalStatus";
+import ModalStatus from "./ModalVerifyStatus";
 import TableHeader from "@/components/TableHeader";
 const VerifyProposalAdmin = () => {
   const router = useRouter();

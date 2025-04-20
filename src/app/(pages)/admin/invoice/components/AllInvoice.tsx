@@ -7,8 +7,8 @@ import { Eye } from "lucide-react";
 import { InvoiceType } from "@/types/invoiceTypes";
 import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
-import SubmitPaymentModal from "./SubmitPaymentModal";
-import RevisionPaymentModal from "./RevisionPaymentModal";
+import SubmitPaymentModal from "./ModalSubmitPayment";
+import RevisionPaymentModal from "./ModalRevisionPayment";
 const AllInvoiceAdmin = () => {
   const router = useRouter();
   const [invoices, setInvoices] = useState<InvoiceType[]>([]);
@@ -36,7 +36,7 @@ const AllInvoiceAdmin = () => {
         <TableHeader
           columns={[
             "No",
-            "ID Transaksi",
+            "Transaksi Tiket",
             "Tanggal Transaksi",
             "Status",
             "Aksi",
@@ -52,7 +52,7 @@ const AllInvoiceAdmin = () => {
                 <tr key={invoice.id}>
                   <td className="p-4 text-black border">{index + 1}</td>
                   <td className="p-4 text-black border font-semibold">
-                    {invoice.id}
+                    {invoice.transaction_ticket}
                   </td>
                   <td className="p-4 text-black border ">
                     {formatDate(invoice.createdAt)}

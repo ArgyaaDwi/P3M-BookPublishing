@@ -62,7 +62,7 @@ const AllInvoicePublisher = () => {
         <TableHeader
           columns={[
             "No",
-            "ID Transaksi",
+            "Transaksi Tiket",
             "Tanggal Transaksi",
             "Status",
             "Bukti Pembayaran",
@@ -79,7 +79,7 @@ const AllInvoicePublisher = () => {
                 <tr key={invoice.id}>
                   <td className="p-4 text-black border">{index + 1}</td>
                   <td className="p-4 text-black border font-semibold">
-                    {invoice.id}
+                    {invoice.transaction_ticket}
                   </td>
                   <td className="p-4 text-black border ">
                     {formatDate(invoice.createdAt)}

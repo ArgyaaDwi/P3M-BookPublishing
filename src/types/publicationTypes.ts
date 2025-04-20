@@ -14,6 +14,7 @@ export type PublicationType = {
   lecturer: {
     id: number;
     name: string;
+    nidn: string | null;
   };
   publisher: {
     id: number;

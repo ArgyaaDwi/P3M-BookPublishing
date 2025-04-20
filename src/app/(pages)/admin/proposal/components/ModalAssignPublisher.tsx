@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { CircleAlert, Clipboard } from "lucide-react";
 import { Publisher } from "@/types/publisherTypes";
 import { handlePasteText } from "@/utils/handlePaste";
+import Select from "@/components/form/Select";
 type ProposalType = {
   id: number;
   current_status_id: number;
@@ -89,26 +90,21 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
               Assign Penerbit
             </h3>
             <form>
-              <div className="mb-3">
-                <label className="block text-sm font-medium text-black pb-1">
-                  Pilih Penerbit
-                </label>
-                <select
-                  className="w-full border border-gray-400 p-3 rounded-xl text-black text-center"
-                  value={selectedPublisher || ""}
-                  onChange={(e) => setSelectedPublisher(Number(e.target.value))}
-                >
-                  <option value="">.:: Pilih Penerbit ::.</option>
-                  {publisherList.map((publisher) => (
-                    <option key={publisher.id} value={publisher.id}>
-                      {publisher.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <Select
+                label="Pilih Penerbit"
+                value={selectedPublisher?.toString() || ""}
+                onChange={(val) => setSelectedPublisher(Number(val))}
+                placeholder=".:: Pilih Penerbit ::."
+                options={[
+                  ...publisherList.map((p) => ({
+                    value: p.id.toString(),
+                    label: p.name,
+                  })),
+                ]}
+              />
               <div className="mb-1">
-                <label className="block text-sm font-medium text-black pb-1">
-                  Catatan
+                <label className="block font-medium text-black pb-1">
+                  Catatan:
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"
@@ -119,8 +115,8 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
                 ></textarea>
               </div>
               <div className="mb-5">
-                <label className="block text-sm font-medium text-black pb-1">
-                  Link URL Pendukung
+                <label className="block font-medium text-black pb-1">
+                  Link URL Pendukung:
                 </label>
                 <div className="relative">
                   <input

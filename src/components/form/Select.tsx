@@ -42,7 +42,7 @@ const Select = ({
         className="flex items-center border bg-inputColor text-black border-borderInput rounded-xl focus-within:border-black transition duration-300 cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <div className="flex-1 p-3 flex items-center">
+        <div className="flex-1 p-3 flex items-center justify-center">
           <span className="text-black">
             {value
               ? options.find((o) => o.value === value)?.label
@@ -80,7 +80,7 @@ const Select = ({
                 </li>
               ))
             ) : (
-              <li className="p-2 text-black text-center">Tidak ditemukan</li>
+              <li className="p-2 text-black text-center">Data Tidak Ditemukan</li>
             )}
           </ul>
         </div>

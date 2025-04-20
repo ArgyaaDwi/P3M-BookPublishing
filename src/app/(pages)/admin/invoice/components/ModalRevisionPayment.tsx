@@ -64,17 +64,17 @@ const RevisionPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
               Revisi Bukti Pembayaran
             </h3>
             <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <p className="block text-sm font-medium text-black pb-1">
+              <div className="mb-2">
+                <p className="block font-medium text-black pb-1">
                   Status Sekarang: <span className="font-semibold">{invoice.status.status_name}</span>
                 </p>
               </div>
-              <div className="mb-5">
+              <div className="mb-3">
                 <label
                   htmlFor="paymentProof"
-                  className="block text-sm font-medium text-black pb-1"
+                  className="block font-medium text-black pb-1"
                 >
-                  Bukti Pembayaran{" "}
+                  Bukti Pembayaran:{" "}
                 </label>
                 <div className="relative">
                   <input
@@ -104,8 +104,8 @@ const RevisionPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
                 </div>
               </div>
               <div className="mb-1">
-                <label className="block text-sm font-medium text-black pb-1">
-                  Catatan
+                <label className="block font-medium text-black pb-1">
+                  Catatan:
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"

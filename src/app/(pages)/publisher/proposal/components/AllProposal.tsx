@@ -7,6 +7,7 @@ import { Eye } from "lucide-react";
 import { PublicationType } from "@/types/publicationTypes";
 import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
+import ModalVerifyStatus from "./ModalVerify";
 const AllProposalPublisher = () => {
   const router = useRouter();
   const [proposals, setProposals] = useState<PublicationType[]>([]);
@@ -97,6 +98,10 @@ const AllProposalPublisher = () => {
                       >
                         <Eye />
                       </button>
+                      {(proposal.current_status_id === 5 ||
+                        proposal.current_status_id === 9) && (
+                        <ModalVerifyStatus proposal={proposal} />
+                      )}
                     </div>
                   </td>
                 </tr>

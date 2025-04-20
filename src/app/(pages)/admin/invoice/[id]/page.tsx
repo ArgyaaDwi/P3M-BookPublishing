@@ -15,9 +15,9 @@ const InvoiceDetailAdmin = () => {
   const [invoice, setInvoice] = useState<InvoiceType | null>(null);
   const [loading, setLoading] = useState(true);
   const [breadcrumbItems, setBreadcrumbItems] = useState([
-    { name: "Dashboard", url: "/publisher/dashboard" },
-    { name: "Invoice", url: "/publisher/proposal" },
-    { name: "Loading...", url: `/publisher/publisher/${invoiceId}` },
+    { name: "Dashboard", url: "/admin/dashboard" },
+    { name: "Invoice", url: "/admin/invoice" },
+    { name: "Loading...", url: `/admin/invoice/${invoiceId}` },
   ]);
 
   useEffect(() => {
@@ -30,8 +30,8 @@ const InvoiceDetailAdmin = () => {
         if (data.status === "success") {
           setInvoice(data.data || null);
           setBreadcrumbItems([
-            { name: "Dashboard", url: "/publisher/dashboard" },
-            { name: "Invoice", url: "/publisher/invoice" },
+            { name: "Dashboard", url: "/admin/dashboard" },
+            { name: "Invoice", url: "/admin/invoice" },
             {
               name: data.id,
               url: `/publisher/lecturer/${invoiceId}`,
@@ -135,6 +135,7 @@ const InvoiceDetailAdmin = () => {
                       Total: Rp{item.total_cost.toLocaleString("id-ID")}
                     </p>
                   </div>
+                  
                 </div>
               ))}
               <p className="text-lg font-semibold text-black text-right">

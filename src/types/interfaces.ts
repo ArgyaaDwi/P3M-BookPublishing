@@ -57,6 +57,8 @@ export interface Publication {
   publication_ticket: string;
   publication_title: string;
   publication_document: string;
+  publication_book_cover: string | null;
+  publication_authenticity_proof: string | null;
   current_status_id: number;
   supporting_url: string | null;
   is_invoice: boolean;
@@ -85,6 +87,7 @@ export interface Transaction {
   user_id: number;
   current_status_id: number;
   payment_proof: string | null;
+  transaction_ticket: string | null;
   transaction_notes: string | null;
   createdAt: Date;
   updatedAt: Date;

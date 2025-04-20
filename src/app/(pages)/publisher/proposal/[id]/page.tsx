@@ -4,9 +4,9 @@ import { PublicationType } from "@/types/publicationTypes";
 import { useParams } from "next/navigation";
 import Breadcrumb from "@/components/BreadCrumb";
 import Tabs from "@/components/Tabs";
-import { formatDate } from "@/utils/dateFormatter";
+import DetailProposalSection from "../components/DetailProposal";
 import LoadingIndicator from "@/components/Loading";
-import LogActivityPublisher from "../components/LogActivity";
+import LogPublicationActivity from "@/components/publication/LogActivity";
 import InvoiceSection from "../components/InvoiceSection";
 const ProposalDetailPublisher = () => {
   const { id } = useParams();
@@ -60,21 +60,7 @@ const ProposalDetailPublisher = () => {
       title: "Informasi Ajuan Buku",
       content: (
         <div>
-          <h1 className="text-black text-xl font-semibold">
-            {proposal.publication_title}
-          </h1>
-          <p className="text-gray-500 font-thin">
-            Ticket: #{proposal.publication_ticket}
-          </p>
-          <p className="text-black">
-            Dosen Pengusul: {proposal.lecturer?.name || "Tidak diketahui"}
-          </p>
-          <p className="text-black">
-            Status: {proposal.status?.status_name || "Tidak diketahui"}
-          </p>
-          <p className="text-black">
-            Diajukan pada: {formatDate(proposal.createdAt)}
-          </p>{" "}
+          <DetailProposalSection proposal={proposal} />
         </div>
       ),
     },
@@ -83,7 +69,7 @@ const ProposalDetailPublisher = () => {
       content: (
         <div>
           <h3 className="text-black font-bold">Riwayat Aktivitas</h3>
-          <LogActivityPublisher publicationId={Number(id)} />
+          <LogPublicationActivity publicationId={Number(id)} />
         </div>
       ),
     },
@@ -91,8 +77,7 @@ const ProposalDetailPublisher = () => {
       title: "Invoice",
       content: (
         <div>
-          
-          <InvoiceSection proposalId={Number(id)}/>
+          <InvoiceSection proposalId={Number(id)} />
         </div>
       ),
     },

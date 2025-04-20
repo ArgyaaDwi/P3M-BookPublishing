@@ -4,9 +4,9 @@ import { PublicationType } from "@/types/publicationTypes";
 import { useParams } from "next/navigation";
 import Breadcrumb from "@/components/BreadCrumb";
 import Tabs from "@/components/Tabs";
-import { formatDate } from "@/utils/dateFormatter";
 import LoadingIndicator from "@/components/Loading";
-import LogActivity from "../components/LogActivityProposal";
+import LogPublicationActivity from "@/components/publication/LogActivity";
+import DetailProposalSection from "../components/DetailProposal";
 const ProposalDetail = () => {
   const { id } = useParams();
   const proposalId = String(id);
@@ -51,38 +51,18 @@ const ProposalDetail = () => {
 
   if (loading) return <LoadingIndicator />;
   if (!proposal)
-    return (
-      <p className="text-center text-gray-500">Ajuan tidak ditemukan.</p>
-    );
+    return <p className="text-center text-gray-500">Ajuan tidak ditemukan.</p>;
   const tabItems = [
     {
       title: "Informasi Ajuan Buku",
-      content: (
-        <div>
-          <h1 className="text-black text-xl font-semibold">
-            {proposal.publication_title}
-          </h1>
-          <p className="text-gray-500 font-thin">
-            Ticket: #{proposal.publication_ticket}
-          </p>
-          <p className="text-black">
-            Dosen Pengusul: {proposal.lecturer?.name || "Tidak diketahui"}
-          </p>
-          <p className="text-black">
-            Status: {proposal.status?.status_name || "Tidak diketahui"}
-          </p>
-          <p className="text-black">
-            Diajukan pada: {formatDate(proposal.createdAt)}
-          </p>{" "}
-        </div>
-      ),
+      content: <DetailProposalSection proposal={proposal} />,
     },
     {
       title: "Log Aktivitas Ajuan Buku",
       content: (
         <div>
           <h3 className="text-black font-bold">Riwayat Aktivitas</h3>
-          <LogActivity publicationId={Number(id)} />
+          <LogPublicationActivity publicationId={Number(id)} />
         </div>
       ),
     },

@@ -92,6 +92,9 @@ model Publication{
   publication_ticket String
   publication_title String
   publication_document String
+  publication_book_cover String?
+  publication_authenticity_proof String?
+
   current_status_id Int
   supporting_url String?
   is_invoice Boolean @default(false)
@@ -126,6 +129,7 @@ model Transaction {
   user_id     Int
   current_status_id       Int
   payment_proof String?          
+  transaction_ticket String?
   transaction_notes String?
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt

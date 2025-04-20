@@ -139,7 +139,7 @@ const LecturerProposals = () => {
                       className=" bg-yellow-100 p-2 rounded-lg text-yellow-700 hover:text-yellow-900 transition-all duration-300 ease-in-out flex items-center gap-2"
                       onClick={() =>
                         router.push(
-                          `/lecturer/proposal/submit-revision/${proposal.id}`
+                          `/lecturer/proposal/administration-revision/${proposal.id}`
                         )
                       }
                     >

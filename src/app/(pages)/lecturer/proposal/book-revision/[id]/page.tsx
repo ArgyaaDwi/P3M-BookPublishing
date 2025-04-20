@@ -108,13 +108,13 @@ export default function SubmitBookRevision() {
       console.error("Error submitting form:", error);
     }
   };
-
+  if (loading) return <LoadingIndicator />;
   return (
     <div>
       <Breadcrumb title="Halaman Revisi" breadcrumbItems={breadcrumbItems} />
       <div className="bg-white rounded-lg mt-3 py-2">
         <h3 className="text-black text-2xl font-semibold px-4 pb-4 pt-2">
-          Form Revisi Buku
+          Form Revisi Penerbitan Buku
         </h3>
         <hr className="mb-3" />
         <div className="flex gap-6 px-4">
@@ -129,7 +129,7 @@ export default function SubmitBookRevision() {
               </h3>
               <h3 className="text-black text-base self-start font-normal mb-1">
                 Status:{" "}
-                <span className="bg-orange-50 p-2 rounded-lg text-orange-500">
+                <span className="bg-orange-100 p-2 rounded-lg text-orange-700">
                   {proposal?.status.status_name || ""}
                 </span>
               </h3>
@@ -138,12 +138,12 @@ export default function SubmitBookRevision() {
                   htmlFor="notes"
                   className="text-black text-base self-start font-normal mb-1"
                 >
-                  Pesan Revisi
+                  Catatan Revisi:
                 </label>
                 <textarea
                   id="notes"
                   className="w-full border bg-inputColor border-borderInput p-3 rounded-xl text-black"
-                  placeholder="Masukkan pesan keterangan revisi"
+                  placeholder="Masukkan Catatan Keterangan Revisi"
                   rows={4}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
@@ -154,7 +154,7 @@ export default function SubmitBookRevision() {
                   htmlFor="supportingUrl"
                   className="text-black text-base self-start font-normal mb-1"
                 >
-                  Link URL Pendukung
+                  Link URL Pendukung:
                 </label>
                 <div className="relative">
                   <input
@@ -189,7 +189,7 @@ export default function SubmitBookRevision() {
               </div>
               <div className="flex items-center gap-2 pt-4">
                 <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
-                  Simpan
+                  {loading ? "Loading..." : "Simpan"}
                 </button>
                 <button
                   type="button"

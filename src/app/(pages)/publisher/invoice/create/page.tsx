@@ -116,6 +116,7 @@ export default function AddInvoicePage() {
                 <div className="w-full flex flex-col">
                   <Select
                     label="Pilih Buku"
+                    placeholder=".:: Pilih Buku ::."
                     value={book.bookId}
                     onChange={(value) => {
                       const updated = [...books];
@@ -177,7 +178,7 @@ export default function AddInvoicePage() {
           <form onSubmit={handleFormSubmit}>
             <div className="mb-1 mt-2">
               <h3 className="text-black text-base self-start font-normal mb-1">
-                Catatan
+                Catatan Transaksi
               </h3>
               <textarea
                 className="w-full border bg-inputColor border-borderInput p-3 rounded-xl text-black"

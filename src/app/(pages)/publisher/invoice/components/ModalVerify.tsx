@@ -36,14 +36,17 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
     e.preventDefault();
     if (!invoice || !selectedStatus) return;
     try {
-      const res = await fetch(`/api/publisher/invoice/verify-payment/${invoice.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          newStatusId: selectedStatus,
-          note,
-        }),
-      });
+      const res = await fetch(
+        `/api/publisher/invoice/verify-payment/${invoice.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            newStatusId: selectedStatus,
+            note,
+          }),
+        }
+      );
 
       const result = await res.json();
       if (res.ok) {
@@ -76,8 +79,8 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
             </h3>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label className="block text-sm font-medium text-black pb-1">
-                  Verifikasi
+                <label className="block font-medium text-black pb-1">
+                  Verifikasi:
                 </label>
                 <div className="flex flex-col gap-2">
                   {statusList.map((status) => (
@@ -106,8 +109,8 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
                 </div>
               </div>
               <div className="mb-1">
-                <label className="block text-sm font-medium text-black pb-1">
-                  Catatan
+                <label className="block font-medium text-black pb-1">
+                  Catatan:
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"

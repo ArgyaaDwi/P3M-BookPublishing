@@ -90,7 +90,7 @@ const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-8">
             <h3 className="text-2xl font-semibold text-gray-900 text-center mb-4">
-              Update Status Ajuan Proposal
+              Verifikasi Ajuan Penerbitan
             </h3>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
@@ -106,20 +106,34 @@ const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
               </div>
               <div className="mb-3">
                 <label className="block text-sm font-medium text-black pb-1">
-                  Pilih Status Baru
+                  Verifikasi
                 </label>
-                <select
-                  className="w-full border border-gray-400 p-3 rounded-xl text-black text-center"
-                  value={selectedStatus || ""}
-                  onChange={(e) => setSelectedStatus(Number(e.target.value))}
-                >
-                  <option value="">.:: Pilih Status ::.</option>
+                <div className="flex flex-col gap-2">
                   {statusList.map((status) => (
-                    <option key={status.id} value={status.id}>
-                      {status.status_name}
-                    </option>
+                    <label
+                      key={status.id}
+                      className={`flex items-center justify-between border p-3
+                        rounded-xl cursor-pointer transition-all duration-200
+                        ${
+                          selectedStatus === status.id
+                            ? "bg-blue-100 border-blue-500 shadow-sm"
+                            : "bg-white border-gray-300 hover:bg-gray-50"
+                        }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="radio"
+                          name="status"
+                          value={status.id}
+                          checked={selectedStatus === status.id}
+                          onChange={() => setSelectedStatus(status.id)}
+                          className="form-radio text-blue-600"
+                        />
+                        <span className="text-black">{status.status_name}</span>
+                      </div>
+                    </label>
                   ))}
-                </select>
+                </div>
               </div>
               <div className="mb-1">
                 <label className="block text-sm font-medium text-black pb-1">

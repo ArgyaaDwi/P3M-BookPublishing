@@ -19,7 +19,7 @@ interface Activity {
   createdAt: string;
   supporting_url?: string;
 }
-export default function SubmitRevisionAdmin() {
+export default function SubmitAdministrationRevision() {
   const [proposal, setProposal] = useState<PublicationType | null>(null);
   const [loading, setLoading] = useState(true);
   const [activities, setActivities] = useState([]);
@@ -108,7 +108,7 @@ export default function SubmitRevisionAdmin() {
       console.error("Error submitting form:", error);
     }
   };
-
+  if (loading) return <LoadingIndicator />;
   return (
     <div>
       <Breadcrumb title="Halaman Revisi" breadcrumbItems={breadcrumbItems} />
@@ -129,7 +129,7 @@ export default function SubmitRevisionAdmin() {
               </h3>
               <h3 className="text-black text-base self-start font-normal mb-1">
                 Status:{" "}
-                <span className="bg-yellow-50 p-2 rounded-lg text-yellow-600">
+                <span className="bg-yellow-100 p-2 rounded-lg text-yellow-700">
                   {proposal?.status.status_name || ""}
                 </span>
               </h3>
@@ -138,12 +138,12 @@ export default function SubmitRevisionAdmin() {
                   htmlFor="notes"
                   className="text-black text-base self-start font-normal mb-1"
                 >
-                  Pesan Revisi
+                  Catatan Revisi:
                 </label>
                 <textarea
                   id="notes"
                   className="w-full border bg-inputColor border-borderInput p-3 rounded-xl text-black"
-                  placeholder="Masukkan pesan keterangan revisi"
+                  placeholder="Masukkan Catatan Keterangan Revisi"
                   rows={4}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
@@ -154,7 +154,7 @@ export default function SubmitRevisionAdmin() {
                   htmlFor="supportingUrl"
                   className="text-black text-base self-start font-normal mb-1"
                 >
-                  Link URL Pendukung
+                  Link URL Pendukung:
                 </label>
                 <div className="relative">
                   <input
@@ -189,7 +189,8 @@ export default function SubmitRevisionAdmin() {
               </div>
               <div className="flex items-center gap-2 pt-4">
                 <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
-                  Simpan
+                    {loading ? "Loading..." : "Simpan"}
+                  
                 </button>
                 <button
                   type="button"

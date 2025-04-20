@@ -4,10 +4,14 @@ import { formatDate } from "@/utils/dateFormatter";
 import { Eye } from "lucide-react";
 import { getSession } from "@/lib/session";
 import LoadingIndicator from "@/components/Loading";
-import { PublicationActivity } from "@/types/interfaces";
 import BadgeStatus from "@/components/BadgeStatus";
+import { PublicationActivity } from "@/types/interfaces";
 
-const LogActivity = ({ publicationId }: { publicationId: number }) => {
+const LogPublicationActivity = ({
+  publicationId,
+}: {
+  publicationId: number;
+}) => {
   const [activities, setActivities] = useState([]);
   const [loggedInUser, setLoggedInUser] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -36,10 +40,13 @@ const LogActivity = ({ publicationId }: { publicationId: number }) => {
         setLoading(false);
       }
     };
+
     fetchSession();
     fetchActivities();
   }, [publicationId]);
-  if (loading) return <LoadingIndicator />;
+//   if (loading) return <LoadingIndicator />;
+  if (loading || loggedInUser === null) return <LoadingIndicator />;
+
   return (
     <div className="space-y-4">
       {activities.length > 0 ? (
@@ -80,15 +87,9 @@ const LogActivity = ({ publicationId }: { publicationId: number }) => {
                     : "badgeSuccess"
                 }
               />
-              {/* <p className="text-sm font-thin text-gray-600">
-                Status: {activity.status?.status_name || "Unknown Status"}
-              </p> */}
               <p className="mt-1 text-xs text-gray-700">Catatan:</p>
               <p className="text-sm text-gray-700">
                 {activity.publication_notes || "No notes"}
-              </p>
-              <p className="mt-1 text-xs text-gray-500">
-                {formatDate(activity.createdAt)}
               </p>
               {activity.supporting_url && (
                 <a
@@ -105,6 +106,9 @@ const LogActivity = ({ publicationId }: { publicationId: number }) => {
                   Lihat Url Lampiran
                 </a>
               )}
+              <p className="mt-1 text-xs text-gray-500">
+                {formatDate(activity.createdAt)}
+              </p>
             </div>
           );
         })
@@ -115,4 +119,4 @@ const LogActivity = ({ publicationId }: { publicationId: number }) => {
   );
 };
 
-export default LogActivity;
+export default LogPublicationActivity;
