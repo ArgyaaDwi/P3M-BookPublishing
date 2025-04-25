@@ -32,12 +32,15 @@ export async function GET(
               select: {
                 publication_title: true,
                 user_id: true,
+                publication_book_cover: true,
+                publication_authenticity_proof: true,
+                current_status_id: true,
                 lecturer: {
                   select: {
                     name: true,
                     nidn: true,
                   },
-                }
+                },
               },
             },
           },
@@ -46,10 +49,7 @@ export async function GET(
     });
 
     if (!transaction) {
-      return NextResponse.json(
-        { error: "Invoice not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
     }
 
     return NextResponse.json({

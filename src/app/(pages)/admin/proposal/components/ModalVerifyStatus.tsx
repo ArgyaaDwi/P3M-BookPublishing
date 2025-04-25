@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Pencil, Clipboard, CircleAlert } from "lucide-react";
 import StatusType from "@/types/statusTypes";
 import { handlePasteText } from "@/utils/handlePaste";
+import ErrorValidation from "@/components/form/ErrorValidation";
 type ModalStatusProps = {
   proposal: {
     id: number;
@@ -18,6 +19,7 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
   const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
   const [note, setNote] = useState<string>("");
   const [supportingUrl, setSupportingUrl] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const getStatus = async () => {
@@ -50,17 +52,45 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!proposal || !selectedStatus) return;
+    setError(null);
+    if (!selectedStatus) {
+      setError(null);
+      setTimeout(() => {
+        setError("Status verifikasi wajib dipilih");
+      }, 10);
+      return;
+    }
+
+    if (!note) {
+      setError(null);
+      setTimeout(() => {
+        setError("Catatan wajib diisi");
+      }, 10);
+      return;
+    }
+
+    if (!proposal) {
+      setError(null);
+      setTimeout(() => {
+        setError("Proposal tidak ditemukan");
+      }, 10);
+      return;
+    }
+
     try {
-      const res = await fetch(`/api/admin/status/${proposal.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          newStatusId: selectedStatus,
-          note,
-          supportingUrl,
-        }),
-      });
+      const res = await fetch(
+        `/api/admin/proposals/verify-status/${proposal.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            newStatusId: selectedStatus,
+            note,
+            supportingUrl,
+          }),
+        }
+      );
+
       const result = await res.json();
       if (res.ok) {
         alert("Status berhasil diperbarui!");
@@ -92,7 +122,8 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
             </h3>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label className="block text-sm font-medium text-black pb-1">
+                {error && <ErrorValidation message={error} duration={3000} />}
+                <label className="block font-medium text-black pb-1">
                   Status Sekarang
                 </label>
                 <input
@@ -103,8 +134,8 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
                 />
               </div>
               <div className="mb-3">
-                <label className="block text-sm font-medium text-black pb-1">
-                  Verifikasi
+                <label className="block font-medium text-black pb-1">
+                  Verifikasi <span className="text-red-500">*</span>
                 </label>
                 <div className="flex flex-col gap-2">
                   {statusList.map((status) => (
@@ -134,8 +165,8 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
                 </div>
               </div>
               <div className="mb-1">
-                <label className="block text-sm font-medium text-black pb-1">
-                  Catatan:
+                <label className="block font-medium text-black pb-1">
+                  Catatan <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"
@@ -145,25 +176,9 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
                   onChange={(e) => setNote(e.target.value)}
                 ></textarea>
               </div>
-              {/* <div className="mb-5">
-                <label className="block text-sm font-medium text-black pb-1">
-                  Link URL Pendukung
-                </label>
-                <input
-                  type="text"
-                  className="w-full border border-gray-400 p-3 rounded-xl text-black"
-                  placeholder="Masukkan URL Pendukung"
-                  value={supportingUrl}
-                  onChange={(e) => setSupportingUrl(e.target.value)}
-                />
-                <label className="pt-1 block text-sm font-normal text-black pb-1">
-                  <CircleAlert className="inline pr-1" />
-                  Isi Bila Diperlukan (Opsional)
-                </label>
-              </div> */}
               <div className="mb-5">
-                <label className="block text-sm font-medium text-black pb-1">
-                  Link URL Pendukung:
+                <label className="block font-medium text-black pb-1">
+                  Link URL Pendukung
                 </label>
                 <div className="relative">
                   <input

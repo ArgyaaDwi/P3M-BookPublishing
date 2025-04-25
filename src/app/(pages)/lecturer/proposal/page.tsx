@@ -5,6 +5,7 @@ import Link from "next/link";
 import ApprovedProposal from "./components/ApprovedProposal";
 import RevisedProposal from "./components/RevisedProposal";
 import AllProposal from "./components/AllProposall";
+
 import { ChartBar, FileText } from "lucide-react";
 
 export default function ProposalPage() {

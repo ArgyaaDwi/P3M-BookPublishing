@@ -1,16 +1,16 @@
-
 export type InvoiceItem = {
-    publication: {
-      publication_title: string;
-      lecturer: {
-        name: string;
-        nidn: string;
-      };
-      publication_book_cover: string;
-      publication_authenticity_proof: string;
+  id: number;
+  publication: {
+    publication_title: string;
+    lecturer: {
+      name: string;
+      nidn: string;
     };
-    cost: number;
-    quantity: number;
-    total_cost: number;
+    publication_book_cover: string;
+    publication_authenticity_proof: string;
+    current_status_id: number;
   };
-  
+  cost: number;
+  quantity: number;
+  total_cost: number;
+};

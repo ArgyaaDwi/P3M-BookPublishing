@@ -1,5 +1,6 @@
 import { PublicationType } from "@/types/publicationTypes";
 import { formatDate } from "@/utils/dateFormatter";
+
 const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
   return (
     <div>
@@ -18,6 +19,29 @@ const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
       </p>
       <p className="text-black">
         Diajukan pada: {formatDate(proposal.createdAt)}
+      </p>
+      {proposal.publication_document && (
+        <a
+          href={proposal.publication_document}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 text-s flex items-center gap-1"
+        >
+          Draf Buku
+        </a>
+      )}
+      <p className="text-black">
+        Status Transaksi:{" "}
+        {proposal.items && proposal.items.length > 0
+          ? proposal.items
+              .map(
+                (item) =>
+                  item.transaction?.status?.status_name ||
+                  "Status Tidak Diketahui"
+              )
+              .filter((status, idx, self) => self.indexOf(status) === idx)
+              .sort((a, b) => (a && b ? (a > b ? -1 : 1) : 0))[0]
+          : "Belum ada transaksi"}
       </p>
     </div>
   );

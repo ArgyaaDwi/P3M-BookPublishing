@@ -25,21 +25,21 @@ export async function PUT(
         { status: 404 }
       );
     }
+    await Promise.all([
+      prisma.transaction.update({
+        where: { id: Number(id) },
+        data: { current_status_id: 3, payment_proof: paymentProof },
+      }),
+      prisma.transactionLog.create({
+        data: {
+          transaction_id: Number(id),
+          user_id: Number(session.user_id),
+          transaction_status_id: 3,
+          note: note || "Payment Proof Uploaded",
+        },
+      }),
+    ]);
 
-    await prisma.transaction.update({
-      where: { id: Number(id) },
-      data: { current_status_id: 3, payment_proof: paymentProof },
-    });
-
-    // Catat aktivitas untuk keperluan log
-    await prisma.transactionLog.create({
-      data: {
-        transaction_id: Number(id),
-        user_id: Number(session.user_id),
-        transaction_status_id: 3,
-        note: note || "Payment Proof Uploaded",
-      },
-    });
     return NextResponse.json({ status: "success" }, { status: 200 });
   } catch (error) {
     console.error("Error updating status:", error);

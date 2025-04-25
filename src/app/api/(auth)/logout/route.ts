@@ -6,7 +6,7 @@ export async function POST() {
     { status: 200 }
   );
 
-  // Hapus cookie session
+  // Hapus cookie sessionLo
   response.cookies.set("session", "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

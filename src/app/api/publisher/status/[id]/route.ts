@@ -24,20 +24,21 @@ export async function PUT(
         { status: 404 }
       );
     }
-    await prisma.publication.update({
-      where: { id: Number(id) },
-      data: { current_status_id: Number(newStatusId) },
-    });
-    // Catat aktivitas untuk keperluan log
-    await prisma.publicationActivity.create({
-      data: {
-        publication_id: Number(id),
-        user_id: Number(session.user_id),
-        publication_status_id: Number(newStatusId),
-        publication_notes: note,
-        supporting_url: supportingUrl,
-      },
-    });
+    await Promise.all([
+      prisma.publication.update({
+        where: { id: Number(id) },
+        data: { current_status_id: Number(newStatusId) },
+      }),
+      prisma.publicationActivity.create({
+        data: {
+          publication_id: Number(id),
+          user_id: Number(session.user_id),
+          publication_status_id: Number(newStatusId),
+          publication_notes: note,
+          supporting_url: supportingUrl,
+        },
+      }),
+    ]);
     return NextResponse.json({ status: "success" }, { status: 200 });
   } catch (error) {
     console.error("Error updating status:", error);

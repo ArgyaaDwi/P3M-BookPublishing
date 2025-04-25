@@ -6,7 +6,6 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   const publicationId = Number(params.id);
-
   if (isNaN(publicationId)) {
     return NextResponse.json(
       { error: "Invalid publication ID" },
@@ -18,7 +17,7 @@ export async function GET(
     const item = await prisma.transactionItem.findFirst({
       where: { publication_id: publicationId },
       include: {
-        transaction: true, // biar dapet catatan, tanggal, dsb
+        transaction: true, 
       },
     });
 
@@ -41,7 +40,7 @@ export async function GET(
         createdAt: item.transaction.createdAt,
       },
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error fetching invoice by publication:", error);
     return NextResponse.json(
       { status: "error", message: "Failed to fetch invoice" },

@@ -64,7 +64,7 @@ const LecturerProposals = () => {
 
   if (loading) return <LoadingIndicator />;
 
-  return (
+  return proposals.length > 0 ? (
     <table className="w-full text-left border border-gray-300 mt-2">
       <thead>
         <TableHeader
@@ -72,107 +72,108 @@ const LecturerProposals = () => {
         />
       </thead>
       <tbody>
-        {proposals.length > 0 ? (
-          proposals.map((proposal, index) => (
-            <tr key={proposal.id}>
-              <td className="p-4 text-black border">{index + 1}</td>
-              <td className="p-4 text-black border font-semibold">
-                <div className="flex flex-col">
-                  <span>{proposal.publication_title}</span>
-                  <span className="text-gray-500 font-medium">
-                    #{proposal.publication_ticket}
-                  </span>
-                </div>
-              </td>
-              <td className="p-4 text-black border">
-                <BadgeStatus
-                  text={
-                    proposal.status?.status_name || "Status Tidak Diketahui"
+        {proposals.map((proposal, index) => (
+          <tr key={proposal.id}>
+            <td className="p-4 text-black border">{index + 1}</td>
+            <td className="p-4 text-black border font-semibold">
+              <div className="flex flex-col">
+                <span>{proposal.publication_title}</span>
+                <span className="text-gray-500 font-medium">
+                  #{proposal.publication_ticket}
+                </span>
+              </div>
+            </td>
+            <td className="p-4 text-black border">
+              <BadgeStatus
+                text={proposal.status?.status_name || "Status Tidak Diketahui"}
+                color={
+                  proposal.current_status_id === 1 ||
+                  proposal.current_status_id === 4 ||
+                  proposal.current_status_id === 5 ||
+                  proposal.current_status_id === 9
+                    ? "badgePendingText"
+                    : proposal.current_status_id === 2 ||
+                      proposal.current_status_id === 6
+                    ? "badgeRevText"
+                    : "badgeSuccessText"
+                }
+                bgColor={
+                  proposal.current_status_id === 1 ||
+                  proposal.current_status_id === 4 ||
+                  proposal.current_status_id === 5 ||
+                  proposal.current_status_id === 9
+                    ? "badgePending"
+                    : proposal.current_status_id === 2 ||
+                      proposal.current_status_id === 6
+                    ? "badgeRev"
+                    : "badgeSuccess"
+                }
+              />
+            </td>
+            <td className="p-4 text-black border">
+              {formatDate(proposal.createdAt)}
+            </td>
+            <td className="p-4 text-black border">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() =>
+                    router.push(`/lecturer/proposal/${proposal.id}`)
                   }
-                  color={
-                    proposal.current_status_id === 1 ||
-                    proposal.current_status_id === 4 ||
-                    proposal.current_status_id === 5 ||
-                    proposal.current_status_id === 9
-                      ? "badgePendingText"
-                      : proposal.current_status_id === 2 ||
-                        proposal.current_status_id === 6
-                      ? "badgeRevText"
-                      : "badgeSuccessText"
-                  }
-                  bgColor={
-                    proposal.current_status_id === 1 ||
-                    proposal.current_status_id === 4 ||
-                    proposal.current_status_id === 5 ||
-                    proposal.current_status_id === 9
-                      ? "badgePending"
-                      : proposal.current_status_id === 2 ||
-                        proposal.current_status_id === 6
-                      ? "badgeRev"
-                      : "badgeSuccess"
-                  }
-                />
-              </td>
-              <td className="p-4 text-black border">
-                {formatDate(proposal.createdAt)}
-              </td>
-              <td className="p-4 text-black border">
-                <div className="flex items-center gap-2">
+                  className="bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800 transition-all duration-300 ease-in-out"
+                >
+                  <Eye />
+                </button>
+                {proposal.current_status_id === 1 && (
                   <button
-                    onClick={() =>
-                      router.push(`/lecturer/proposal/${proposal.id}`)
-                    }
-                    className="bg-blue-100 p-2 rounded-lg text-blue-500 hover:text-blue-800 transition-all duration-300 ease-in-out"
+                    className="bg-red-100 p-2 rounded-lg text-red-500 hover:text-red-800 transition-all duration-300 ease-in-out"
+                    onClick={() => handleDeleteProposalById(proposal.id)}
                   >
-                    <Eye />
+                    <Trash2 />
                   </button>
-                  {proposal.current_status_id === 1 && (
-                    <button
-                      className="bg-red-100 p-2 rounded-lg text-red-500 hover:text-red-800 transition-all duration-300 ease-in-out"
-                      onClick={() => handleDeleteProposalById(proposal.id)}
-                    >
-                      <Trash2 />
-                    </button>
-                  )}
-                  {proposal.current_status_id === 2 && (
-                    <button
-                      className=" bg-yellow-100 p-2 rounded-lg text-yellow-700 hover:text-yellow-900 transition-all duration-300 ease-in-out flex items-center gap-2"
-                      onClick={() =>
-                        router.push(
-                          `/lecturer/proposal/administration-revision/${proposal.id}`
-                        )
-                      }
-                    >
-                      <SquarePen />
-                      Revisi
-                    </button>
-                  )}
-                  {proposal.current_status_id === 6 && (
-                    <button
-                      className=" bg-yellow-100 p-2 rounded-lg text-yellow-700 hover:text-yellow-900 transition-all duration-300 ease-in-out flex items-center gap-2"
-                      onClick={() =>
-                        router.push(
-                          `/lecturer/proposal/book-revision/${proposal.id}`
-                        )
-                      }
-                    >
-                      <SquarePen />
-                      Revisi
-                    </button>
-                  )}
-                </div>
-              </td>
-            </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan={5} className="text-center p-4 text-gray-500">
-              Tidak ada proposal yang diajukan.
+                )}
+                {proposal.current_status_id === 2 && (
+                  <button
+                    className="bg-yellow-100 p-2 rounded-lg text-yellow-700 hover:text-yellow-900 transition-all duration-300 ease-in-out flex items-center gap-2"
+                    onClick={() =>
+                      router.push(
+                        `/lecturer/proposal/administration-revision/${proposal.id}`
+                      )
+                    }
+                  >
+                    <SquarePen />
+                    Revisi
+                  </button>
+                )}
+                {proposal.current_status_id === 6 && (
+                  <button
+                    className="bg-yellow-100 p-2 rounded-lg text-yellow-700 hover:text-yellow-900 transition-all duration-300 ease-in-out flex items-center gap-2"
+                    onClick={() =>
+                      router.push(
+                        `/lecturer/proposal/book-revision/${proposal.id}`
+                      )
+                    }
+                  >
+                    <SquarePen />
+                    Revisi
+                  </button>
+                )}
+              </div>
             </td>
           </tr>
-        )}
+        ))}
       </tbody>
     </table>
+  ) : (
+    <div className="w-full flex flex-col items-center justify-center mt-8">
+      <img
+        src="/assets/images/nodata.jpg"
+        alt="Data kosong"
+        className="w-60 opacity-70"
+      />
+      <p className="text-gray-500 mt-4 text-center">
+        Belum ada proposal yang diajukan.
+      </p>
+    </div>
   );
 };
 

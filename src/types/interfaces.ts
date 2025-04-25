@@ -76,6 +76,7 @@ export interface PublicationActivity {
   user?: User;
   status?: PublicationStatus;
   publication_notes: string | null;
+  publication_document_url: string | null;
   supporting_url: string | null;
   createdAt: Date;
   updatedAt: Date;

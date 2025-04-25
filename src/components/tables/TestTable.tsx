@@ -36,7 +36,7 @@ const AllProposalAdmin = () => {
   const columns = useMemo<MRT_ColumnDef<PublicationType>[]>(
     () => [
       {
-        accessorFn: (_, index) => index + 1,
+        accessorFn: (_, index: number) => index + 1,
         header: "No",
         size: 50,
       },

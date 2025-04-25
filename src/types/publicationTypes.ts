@@ -20,4 +20,13 @@ export type PublicationType = {
     id: number;
     name: string;
   };
+  publication_book_cover: string | null;
+  publication_authenticity_proof: string | null;
+  items?: Array<{
+    transaction?: {
+      status?: {
+        status_name: string | null;
+      };
+    };
+  }>;
 };

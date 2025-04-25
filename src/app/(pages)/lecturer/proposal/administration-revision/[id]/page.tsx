@@ -2,11 +2,13 @@
 import React, { useState, useEffect } from "react";
 import { PublicationType } from "@/types/publicationTypes";
 import Breadcrumb from "@/components/BreadCrumb";
-import { CircleAlert, Eye, Clipboard } from "lucide-react";
+import { Eye, Clipboard } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import LoadingIndicator from "@/components/Loading";
 import { formatDate } from "@/utils/dateFormatter";
 import { handlePasteText } from "@/utils/handlePaste";
+import ErrorValidation from "@/components/form/ErrorValidation";
+import HeaderForm from "@/components/form/HeaderForm";
 interface Activity {
   id: number;
   user?: {
@@ -26,8 +28,9 @@ export default function SubmitAdministrationRevision() {
   const { id } = useParams();
   const proposalId = String(id);
   const [notes, setNotes] = useState<string>("");
-  const [supportingUrl, setSupportingUrl] = useState<string>("");
+  const [documentUrl, setDocumentUrl] = useState<string>("");
   const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
   const [breadcrumbItems, setBreadcrumbItems] = useState([
     { name: "Dashboard", url: "/lecturer/dashboard" },
     { name: "Ajuan", url: "/lecturer/proposal" },
@@ -77,10 +80,25 @@ export default function SubmitAdministrationRevision() {
   }, [proposalId]);
   const handlePaste = async () => {
     const url = await handlePasteText();
-    if (url) setSupportingUrl(url);
+    if (url) setDocumentUrl(url);
   };
   const handleFormRevisionSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    if (!notes) {
+      setError(null);
+      setTimeout(() => {
+        setError("Catatan wajib diisi");
+      }, 10);
+      return;
+    }
+    if (!documentUrl) {
+      setError(null);
+      setTimeout(() => {
+        setError("URL wajib diisi");
+      }, 10);
+      return;
+    }
     try {
       const res = await fetch(
         `/api/lecturer/proposals/submit-revision/${proposalId}`,
@@ -89,7 +107,7 @@ export default function SubmitAdministrationRevision() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ notes, supportingUrl }),
+          body: JSON.stringify({ notes, documentUrl }),
         }
       );
       if (!res.ok) {
@@ -113,9 +131,7 @@ export default function SubmitAdministrationRevision() {
     <div>
       <Breadcrumb title="Halaman Revisi" breadcrumbItems={breadcrumbItems} />
       <div className="bg-white rounded-lg mt-3 py-2">
-        <h3 className="text-black text-2xl font-semibold px-4 pb-4 pt-2">
-          Form Revisi Administrasi
-        </h3>
+        <HeaderForm title="Form Revisi Administrasi" />
         <hr className="mb-3" />
         <div className="flex gap-6 px-4">
           {/* Form Input (60%) */}
@@ -133,12 +149,13 @@ export default function SubmitAdministrationRevision() {
                   {proposal?.status.status_name || ""}
                 </span>
               </h3>
+              {error && <ErrorValidation message={error} duration={3000} />}
               <div className="mb-1">
                 <label
                   htmlFor="notes"
                   className="text-black text-base self-start font-normal mb-1"
                 >
-                  Catatan Revisi:
+                  Catatan Revisi <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   id="notes"
@@ -154,23 +171,23 @@ export default function SubmitAdministrationRevision() {
                   htmlFor="supportingUrl"
                   className="text-black text-base self-start font-normal mb-1"
                 >
-                  Link URL Pendukung:
+                  Link URL Revisi <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <input
                     id="supportingUrl"
                     type="url"
                     className="w-full border bg-inputColor border-borderInput p-3 rounded-xl text-black pr-12"
-                    placeholder="Masukkan URL Pendukung"
-                    value={supportingUrl}
-                    onChange={(e) => setSupportingUrl(e.target.value)}
+                    placeholder="Masukkan URL Revisi Draf Buku"
+                    value={documentUrl}
+                    onChange={(e) => setDocumentUrl(e.target.value)}
                     onBlur={() => {
                       if (
-                        supportingUrl &&
-                        !supportingUrl.startsWith("http://") &&
-                        !supportingUrl.startsWith("https://")
+                        documentUrl &&
+                        !documentUrl.startsWith("http://") &&
+                        !documentUrl.startsWith("https://")
                       ) {
-                        setSupportingUrl(`https://${supportingUrl}`);
+                        setDocumentUrl(`https://${documentUrl}`);
                       }
                     }}
                   />
@@ -182,15 +199,10 @@ export default function SubmitAdministrationRevision() {
                     <Clipboard className="h-5 w-5 text-black" />
                   </button>
                 </div>
-                <label className="pt-1 block text-sm font-normal text-black pb-1">
-                  <CircleAlert className="inline pr-1" />
-                  Isi Bila Diperlukan (Opsional)
-                </label>
               </div>
               <div className="flex items-center gap-2 pt-4">
                 <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
-                    {loading ? "Loading..." : "Simpan"}
-                  
+                  {loading ? "Loading..." : "Simpan"}
                 </button>
                 <button
                   type="button"
@@ -207,7 +219,6 @@ export default function SubmitAdministrationRevision() {
             <h3 className="text-black text-lg font-semibold border-b pb-2 mb-4 -mx-4 px-4">
               Riwayat Catatan Revisi
             </h3>
-
             {loading ? (
               <LoadingIndicator />
             ) : activities.length > 0 ? (

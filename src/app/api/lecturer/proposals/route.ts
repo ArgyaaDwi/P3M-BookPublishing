@@ -91,12 +91,17 @@ export async function POST(req: NextRequest) {
       console.log("Session tidak valid");
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
     }
-    const requestBody = await req.json();
-    console.log("Request Body:", requestBody);
-    const { publication_title } = requestBody;
+    const { publication_title, publication_document } = await req.json();
+
     if (!publication_title) {
       return NextResponse.json(
         { error: "Publication title is required" },
+        { status: 400 }
+      );
+    }
+    if (!publication_document) {
+      return NextResponse.json(
+        { error: "Document URL is required" },
         { status: 400 }
       );
     }
@@ -109,7 +114,7 @@ export async function POST(req: NextRequest) {
         user_id: userId,
         publication_ticket: publication_ticket,
         publication_title: publication_title,
-        publication_document: "coba tes dulu",
+        publication_document: publication_document,
         current_status_id: current_status_id,
       },
     });
@@ -119,6 +124,7 @@ export async function POST(req: NextRequest) {
         user_id: userId,
         publication_status_id: current_status_id,
         publication_notes: "Proposal created",
+        publication_document_url: publication_document,
       },
     });
     console.log("Proposal created successfully:", newProposal);

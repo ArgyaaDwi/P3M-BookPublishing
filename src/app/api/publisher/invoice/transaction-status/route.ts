@@ -17,7 +17,7 @@ export async function GET() {
       },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error fetching status:", error);
     let errorMessage = "Failed to fetch status";
     if (error instanceof Error) {

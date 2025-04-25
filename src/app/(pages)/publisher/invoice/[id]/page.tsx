@@ -12,43 +12,12 @@ const InvoiceDetailPublisher = () => {
   const invoiceId = String(id);
   const [invoice, setInvoice] = useState<InvoiceType | null>(null);
   const [loading, setLoading] = useState(true);
-  const [pendingUploads, setPendingUploads] = useState({});
 
   const [breadcrumbItems, setBreadcrumbItems] = useState([
     { name: "Dashboard", url: "/publisher/dashboard" },
     { name: "Invoice", url: "/publisher/proposal" },
     { name: "Loading...", url: `/publisher/publisher/${invoiceId}` },
   ]);
-  const handleFileChange = (itemId, type, file) => {
-    setPendingUploads((prev) => ({
-      ...prev,
-      [itemId]: {
-        ...prev[itemId],
-        [type]: file,
-      },
-    }));
-  };
-  const handleSubmitUpload = async (itemId) => {
-    const files = pendingUploads[itemId];
-    if (!files) return;
-
-    const formData = new FormData();
-    if (files.cover) formData.append("cover", files.cover);
-    if (files.proof) formData.append("proof", files.proof);
-    formData.append("itemId", itemId);
-
-    try {
-      const res = await fetch("/api/upload-item-files", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!res.ok) throw new Error("Upload gagal");
-      alert("Berhasil upload!");
-    } catch (err) {
-      alert("Error upload: " + err.message);
-    }
-  };
 
   useEffect(() => {
     const fetchInvoice = async () => {

@@ -4,6 +4,7 @@ import { CircleAlert, Clipboard } from "lucide-react";
 import { Publisher } from "@/types/publisherTypes";
 import { handlePasteText } from "@/utils/handlePaste";
 import Select from "@/components/form/Select";
+import ErrorValidation from "@/components/form/ErrorValidation";
 type ProposalType = {
   id: number;
   current_status_id: number;
@@ -22,6 +23,7 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
   const [selectedPublisher, setSelectedPublisher] = useState<number | null>(
     null
   );
+  const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string>("");
   const [supportingUrl, setSupportingUrl] = useState<string>("");
   useEffect(() => {
@@ -38,10 +40,25 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
     };
     getData();
   }, []);
-
-  const handleSave = async () => {
+  const handlePaste = async () => {
+    const url = await handlePasteText();
+    if (url) setSupportingUrl(url);
+  };
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
     if (!selectedPublisher) {
-      alert("Pilih penerbit terlebih dahulu!");
+      setError(null);
+      setTimeout(() => {
+        setError("Penerbit wajib diisi");
+      }, 10);
+      return;
+    }
+    if (!note) {
+      setError(null);
+      setTimeout(() => {
+        setError("Catatan wajib diisi");
+      }, 10);
       return;
     }
 
@@ -58,9 +75,10 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
       });
 
       const result = await response.json();
-      if (result.status === "success") {
+      if (response.ok && result.status === "success") {
         alert("Proposal berhasil di-assign!");
         setIsOpen(false);
+        window.location.reload();
       } else {
         console.error("Gagal mengassign proposal:", result.message);
         alert("Gagal mengassign proposal. Coba lagi!");
@@ -70,10 +88,7 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
       alert("Terjadi kesalahan. Coba lagi!");
     }
   };
-  const handlePaste = async () => {
-    const url = await handlePasteText();
-    if (url) setSupportingUrl(url);
-  };
+
   return (
     <div>
       <button
@@ -90,11 +105,13 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
               Assign Penerbit
             </h3>
             <form>
+              {error && <ErrorValidation message={error} duration={3000} />}
               <Select
                 label="Pilih Penerbit"
                 value={selectedPublisher?.toString() || ""}
                 onChange={(val) => setSelectedPublisher(Number(val))}
                 placeholder=".:: Pilih Penerbit ::."
+                isRequired={true}
                 options={[
                   ...publisherList.map((p) => ({
                     value: p.id.toString(),
@@ -104,7 +121,7 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
               />
               <div className="mb-1">
                 <label className="block font-medium text-black pb-1">
-                  Catatan:
+                  Catatan <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"

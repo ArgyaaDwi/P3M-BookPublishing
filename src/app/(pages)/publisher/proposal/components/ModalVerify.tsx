@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Pencil, CircleAlert, Clipboard } from "lucide-react";
 import StatusType from "@/types/statusTypes";
 import { handlePasteText } from "@/utils/handlePaste";
+import ErrorValidation from "@/components/form/ErrorValidation";
 type ModalStatusProps = {
   proposal: {
     id: number;
@@ -13,6 +14,7 @@ type ModalStatusProps = {
 
 const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [statusList, setStatusList] = useState<StatusType[]>([]);
   const [currentStatus, setCurrentStatus] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
@@ -50,8 +52,29 @@ const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!proposal || !selectedStatus) return;
+    setError(null);
+    if (!selectedStatus) {
+      setError(null);
+      setTimeout(() => {
+        setError("Status verifikasi wajib dipilih");
+      }, 10);
+      return;
+    }
+    if (!note) {
+      setError(null);
+      setTimeout(() => {
+        setError("Catatan wajib diisi");
+      }, 10);
+      return;
+    }
 
+    if (!proposal) {
+      setError(null);
+      setTimeout(() => {
+        setError("Proposal tidak ditemukan");
+      }, 10);
+      return;
+    }
     try {
       const res = await fetch(`/api/publisher/status/${proposal.id}`, {
         method: "PUT",
@@ -94,7 +117,9 @@ const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
             </h3>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label className="block text-sm font-medium text-black pb-1">
+                {error && <ErrorValidation message={error} duration={3000} />}
+
+                <label className="block font-medium text-black pb-1">
                   Status Sekarang
                 </label>
                 <input
@@ -105,8 +130,8 @@ const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
                 />
               </div>
               <div className="mb-3">
-                <label className="block text-sm font-medium text-black pb-1">
-                  Verifikasi
+                <label className="block font-medium text-black pb-1">
+                  Verifikasi <span className="text-red-500">*</span>
                 </label>
                 <div className="flex flex-col gap-2">
                   {statusList.map((status) => (
@@ -136,8 +161,8 @@ const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
                 </div>
               </div>
               <div className="mb-1">
-                <label className="block text-sm font-medium text-black pb-1">
-                  Catatan
+                <label className="block font-medium text-black pb-1">
+                  Catatan <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"
@@ -148,7 +173,7 @@ const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
                 ></textarea>
               </div>
               <div className="mb-5">
-                <label className="block text-sm font-medium text-black pb-1">
+                <label className="block font-medium text-black pb-1">
                   Link URL Pendukung
                 </label>
                 <div className="relative">

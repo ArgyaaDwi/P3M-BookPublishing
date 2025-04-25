@@ -23,7 +23,9 @@ const LogPublicationActivity = ({
 
     const fetchActivities = async () => {
       try {
-        const res = await fetch(`/api/admin/activities/${publicationId}`);
+        const res = await fetch(
+          `/api/proposals/log-activities/${publicationId}`
+        );
         if (!res.ok) {
           throw new Error(`HTTP error! Status: ${res.status}`);
         }
@@ -44,9 +46,7 @@ const LogPublicationActivity = ({
     fetchSession();
     fetchActivities();
   }, [publicationId]);
-//   if (loading) return <LoadingIndicator />;
   if (loading || loggedInUser === null) return <LoadingIndicator />;
-
   return (
     <div className="space-y-4">
       {activities.length > 0 ? (
@@ -91,6 +91,20 @@ const LogPublicationActivity = ({
               <p className="text-sm text-gray-700">
                 {activity.publication_notes || "No notes"}
               </p>
+              {activity.publication_document_url && (
+                <a
+                  href={
+                    activity.publication_document_url.startsWith("http")
+                      ? activity.publication_document_url
+                      : `https://${activity.publication_document_url}`
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 text-xs flex items-center gap-1"
+                >
+                  Draf Buku
+                </a>
+              )}
               {activity.supporting_url && (
                 <a
                   href={

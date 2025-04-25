@@ -25,8 +25,24 @@ export async function GET(
         publisher: { select: { name: true } },
         status: { select: { status_name: true } },
         createdAt: true,
+        items: {
+          select: {
+            id: true,
+            transaction: {
+              select: {
+                id: true,
+                current_status_id: true,
+                status: {
+                  select: { status_name: true },
+                },
+                updatedAt: true, 
+              },
+            },
+          },
+        },
       },
     });
+
     if (!proposal) {
       return NextResponse.json(
         { status: "error", message: "Proposal not found" },

@@ -7,6 +7,7 @@ interface SelectProps {
   placeholder?: string;
   onChange?: (value: string) => void;
   value?: string;
+  isRequired?: boolean;
 }
 
 const Select = ({
@@ -15,6 +16,7 @@ const Select = ({
   placeholder = "Pilih...",
   onChange,
   value,
+  isRequired = false,
 }: SelectProps) => {
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -36,7 +38,7 @@ const Select = ({
   return (
     <div className="w-full mb-3 relative">
       <h3 className="text-black text-base self-start font-normal mb-1">
-        {label}
+        {label} {isRequired && <span className="text-red-500 ml-1">*</span>}{" "}
       </h3>
       <div
         className="flex items-center border bg-inputColor text-black border-borderInput rounded-xl focus-within:border-black transition duration-300 cursor-pointer"
@@ -80,7 +82,9 @@ const Select = ({
                 </li>
               ))
             ) : (
-              <li className="p-2 text-black text-center">Data Tidak Ditemukan</li>
+              <li className="p-2 text-black text-center">
+                Data Tidak Ditemukan
+              </li>
             )}
           </ul>
         </div>

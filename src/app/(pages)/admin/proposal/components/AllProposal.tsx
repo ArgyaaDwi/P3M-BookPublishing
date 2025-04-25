@@ -8,7 +8,7 @@ import { PublicationType } from "@/types/publicationTypes";
 import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
 import ModalStatus from "./ModalVerifyStatus";
-
+import ModalPublisher from "./ModalAssignPublisher";
 const AllProposalAdmin = () => {
   const router = useRouter();
   const [proposals, setProposals] = useState<PublicationType[]>([]);
@@ -110,6 +110,9 @@ const AllProposalAdmin = () => {
                       {(proposal.current_status_id === 1 ||
                         proposal.current_status_id === 4) && (
                         <ModalStatus proposal={proposal} />
+                      )}
+                      {proposal.current_status_id === 3 && (
+                        <ModalPublisher proposal={proposal} />
                       )}
                     </div>
                   </td>

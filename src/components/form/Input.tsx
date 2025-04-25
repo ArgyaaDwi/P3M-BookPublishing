@@ -11,7 +11,7 @@ interface InputProps {
   isDisabled?: boolean;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  
+  isRequired?: boolean;
 }
 
 const Input = ({
@@ -22,14 +22,16 @@ const Input = ({
   isPassword = false,
   value,
   onChange,
+  isRequired = false,
 }: InputProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const togglePassword = () => setShowPassword(!showPassword);
 
   return (
     <div className="w-full mb-3">
-      <h3 className="text-black text-base self-start font-normal mb-1">
+      <h3 className="text-black text-base self-start font-medium mb-1">
         {label}
+        {isRequired && <span className="text-red-500 ml-1">*</span>}{" "}
       </h3>
       <div className="flex items-center border bg-inputColor text-black border-borderInput rounded-xl focus-within:border-black transition duration-300">
         <input

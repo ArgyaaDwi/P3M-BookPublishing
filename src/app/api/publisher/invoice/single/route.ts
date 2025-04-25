@@ -20,9 +20,9 @@ export async function POST(req: NextRequest) {
     }
 
     const userId = Number(session.user_id);
-    const current_status_id = 1; // Pending
+    const current_status_id = 1; 
 
-    // Buat transaksi
+    
     const newTransaction = await prisma.transaction.create({
       data: {
         user_id: userId,
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Buat item-nya
+  
     const createdItem = await prisma.transactionItem.create({
       data: {
         transaction_id: newTransaction.id,
@@ -60,12 +60,14 @@ export async function POST(req: NextRequest) {
         item: createdItem,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error creating single transaction:", error);
+    let message = "Gagal membuat transaksi";
+    if (error instanceof Error) message = error.message;
     return NextResponse.json(
       {
         error: "Gagal membuat transaksi",
-        message: error?.message || "Unknown error",
+        message,
       },
       { status: 500 }
     );

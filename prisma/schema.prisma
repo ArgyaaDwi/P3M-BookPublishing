@@ -44,7 +44,6 @@ model User {
   role user_role
   major_id Int?
   major Major? @relation(fields: [major_id], references: [id])
-
   nidn String?
   address String? 
   phone_number BigInt?
@@ -79,7 +78,6 @@ model PublicationStatus{
 
 model Publication{
   id Int @id @default(autoincrement())
-
   user_id Int
   publisher_id Int?
 
@@ -95,7 +93,7 @@ model Publication{
   publication_book_cover String?
   publication_authenticity_proof String?
 
-  current_status_id Int
+  current_status_id Int 
   supporting_url String?
   is_invoice Boolean @default(false)
 
@@ -117,6 +115,7 @@ model PublicationActivity{
   status PublicationStatus @relation(fields: [publication_status_id], references: [id], name: "StatusActivities")
 
   publication_notes String?
+  publication_document_url String?
   supporting_url String?
 
   createdAt DateTime @default(now())

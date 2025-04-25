@@ -7,7 +7,7 @@ import ApprovedProposalAdmin from "./components/ApprovedProposal";
 import RevisedProposalAdmin from "./components/RevisedProposal";
 import VerifyProposalAdmin from "./components/VerifyProposal";
 import { ChartBar, FileText } from "lucide-react";
-// import Example from "@/components/tables/TestTable";
+//  
 export default function ProposalPage() {
   const tabItems = [
     {

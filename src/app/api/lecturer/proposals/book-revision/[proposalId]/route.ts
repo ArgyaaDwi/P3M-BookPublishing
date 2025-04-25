@@ -23,23 +23,27 @@ export async function PUT(
         { status: 404 }
       );
     }
-    await prisma.publication.update({
-      where: { id: Number(proposalId) },
-      data: {
-        current_status_id: 9,
-      },
+    await Promise.all([
+      prisma.publication.update({
+        where: { id: Number(proposalId) },
+        data: {
+          current_status_id: 9,
+        },
+      }),
+      prisma.publicationActivity.create({
+        data: {
+          publication_id: Number(proposalId),
+          user_id: Number(session.user_id),
+          publication_status_id: 9,
+          publication_notes: notes,
+          supporting_url: supportingUrl,
+        },
+      }),
+    ]);
+    return NextResponse.json({
+      status: "success",
+      message: "Revision submitted successfully",
     });
-    // Catat aktivitas untuk keperluan log
-    await prisma.publicationActivity.create({
-      data: {
-        publication_id: Number(proposalId),
-        user_id: Number(session.user_id),
-        publication_status_id: 9,
-        publication_notes: notes,
-        supporting_url: supportingUrl,
-      },
-    });
-    return NextResponse.json({ status: "success", message: "Revision submitted successfully" });
   } catch (error) {
     console.error("Error submitting revision:", error);
     return NextResponse.json(
