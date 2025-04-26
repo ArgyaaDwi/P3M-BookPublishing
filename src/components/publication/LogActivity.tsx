@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { formatDate } from "@/utils/dateFormatter";
-import { Eye } from "lucide-react";
+import { Eye, StickyNote } from "lucide-react";
 import { getSession } from "@/lib/session";
 import LoadingIndicator from "@/components/Loading";
 import BadgeStatus from "@/components/BadgeStatus";
@@ -56,7 +56,7 @@ const LogPublicationActivity = ({
             <div
               key={activity.id}
               className={`p-3 border rounded-lg shadow max-w-xl ${
-                isUser ? "bg-yellow-50 ml-auto" : "bg-gray-50 "
+                isUser ? "bg-indigo-50 ml-auto" : "bg-gray-50 "
               }`}
             >
               <p className="mb-1 text-md font-semibold text-black">
@@ -68,10 +68,12 @@ const LogPublicationActivity = ({
                   activity.publication_status_id === 1 ||
                   activity.publication_status_id === 4 ||
                   activity.publication_status_id === 5 ||
-                  activity.publication_status_id === 9
+                  activity.publication_status_id === 9 ||
+                  activity.publication_status_id === 10
                     ? "badgePendingText"
                     : activity.publication_status_id === 2 ||
-                      activity.publication_status_id === 6
+                      activity.publication_status_id === 6 ||
+                      activity.publication_status_id === 11
                     ? "badgeRevText"
                     : "badgeSuccessText"
                 }
@@ -79,10 +81,12 @@ const LogPublicationActivity = ({
                   activity.publication_status_id === 1 ||
                   activity.publication_status_id === 4 ||
                   activity.publication_status_id === 5 ||
-                  activity.publication_status_id === 9
+                  activity.publication_status_id === 9 ||
+                  activity.publication_status_id === 10
                     ? "badgePending"
                     : activity.publication_status_id === 2 ||
-                      activity.publication_status_id === 6
+                      activity.publication_status_id === 6 ||
+                      activity.publication_status_id === 11
                     ? "badgeRev"
                     : "badgeSuccess"
                 }
@@ -102,6 +106,7 @@ const LogPublicationActivity = ({
                   rel="noopener noreferrer"
                   className="text-blue-500 text-xs flex items-center gap-1"
                 >
+                  <StickyNote className="w-4 h-4" />
                   Draf Buku
                 </a>
               )}
@@ -117,7 +122,7 @@ const LogPublicationActivity = ({
                   className="text-blue-500 text-xs flex items-center gap-1"
                 >
                   <Eye className="w-4 h-4" />
-                  Lihat Url Lampiran
+                  Lihat Url Pendukung
                 </a>
               )}
               <p className="mt-1 text-xs text-gray-500">

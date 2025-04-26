@@ -9,7 +9,6 @@ export async function POST(req: NextRequest) {
     if (!session || !session.user_id) {
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
     }
-
     // Ambil raw body buat cek kalau kosong
     const rawBody = await req.text();
     console.log("Raw Body:", rawBody);

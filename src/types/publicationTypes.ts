@@ -23,6 +23,7 @@ export type PublicationType = {
   publication_book_cover: string | null;
   publication_authenticity_proof: string | null;
   items?: Array<{
+    id: number;
     transaction?: {
       status?: {
         status_name: string | null;

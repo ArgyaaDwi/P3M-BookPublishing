@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Pencil } from "lucide-react";
+import { Files } from "lucide-react";
 import StatusType from "@/types/statusTypes";
+import ErrorValidation from "@/components/form/ErrorValidation";
 type ModalVerifyDocumentProps = {
   proposal: {
     id: number;
@@ -18,6 +19,7 @@ const ModalVerifyDocument: React.FC<ModalVerifyDocumentProps> = ({
   const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
   const [note, setNote] = useState<string>("");
   const [supportingUrl, setSupportingUrl] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const getStatus = async () => {
@@ -41,10 +43,32 @@ const ModalVerifyDocument: React.FC<ModalVerifyDocumentProps> = ({
       setSupportingUrl("");
     }
   }, [proposal, isOpen]);
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!proposal || !selectedStatus) return;
+    setError(null);
+    if (!selectedStatus) {
+      setError(null);
+      setTimeout(() => {
+        setError("Status verifikasi wajib dipilih");
+      }, 10);
+      return;
+    }
+    if (!note) {
+      setError(null);
+      setTimeout(() => {
+        setError("Catatan wajib diisi");
+      }, 10);
+      return;
+    }
+
+    if (!proposal) {
+      setError(null);
+      setTimeout(() => {
+        setError("Proposal tidak ditemukan");
+      }, 10);
+      return;
+    }
     try {
       const res = await fetch(
         `/api/lecturer/proposals/verify-document/${proposal.id}`,
@@ -74,10 +98,10 @@ const ModalVerifyDocument: React.FC<ModalVerifyDocumentProps> = ({
   return (
     <div>
       <button
-        className="bg-yellow-100 p-2 rounded-lg text-yellow-500 hover:text-yellow-800 flex items-center gap-2"
+        className="bg-yellow-100 p-2 rounded-lg text-yellow-700 hover:text-yellow-800 flex items-center gap-2"
         onClick={() => setIsOpen(true)}
       >
-        <Pencil className="w-5 h-5" />
+        <Files className="w-5 h-5" />
         Verifikasi Dokumen
       </button>
       {isOpen && proposal && (
@@ -88,8 +112,9 @@ const ModalVerifyDocument: React.FC<ModalVerifyDocumentProps> = ({
             </h3>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label className="block text-sm font-medium text-black pb-1">
-                  Verifikasi
+                {error && <ErrorValidation message={error} duration={3000} />}
+                <label className="block  font-medium text-black pb-1">
+                  Verifikasi <span className="text-red-500">*</span>
                 </label>
                 <div className="flex flex-col gap-2">
                   {statusList.map((status) => (
@@ -120,7 +145,7 @@ const ModalVerifyDocument: React.FC<ModalVerifyDocumentProps> = ({
               </div>
               <div className="mb-1">
                 <label className="block text-sm font-medium text-black pb-1">
-                  Catatan:
+                  Catatan <span className="text-red-500">*📘</span>
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"

@@ -2,11 +2,13 @@
 import React, { useState, useEffect } from "react";
 import { PublicationType } from "@/types/publicationTypes";
 import Breadcrumb from "@/components/BreadCrumb";
-import { CircleAlert, Eye, Clipboard } from "lucide-react";
+import { Eye, Clipboard } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import LoadingIndicator from "@/components/Loading";
 import { formatDate } from "@/utils/dateFormatter";
 import { handlePasteText } from "@/utils/handlePaste";
+import HeaderForm from "@/components/form/HeaderForm";
+import ErrorValidation from "@/components/form/ErrorValidation";
 interface Activity {
   id: number;
   user?: {
@@ -26,7 +28,8 @@ export default function SubmitBookRevision() {
   const { id } = useParams();
   const proposalId = String(id);
   const [notes, setNotes] = useState<string>("");
-  const [supportingUrl, setSupportingUrl] = useState<string>("");
+  const [documentUrl, setDocumentUrl] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const [breadcrumbItems, setBreadcrumbItems] = useState([
     { name: "Dashboard", url: "/lecturer/dashboard" },
@@ -77,10 +80,25 @@ export default function SubmitBookRevision() {
   }, [proposalId]);
   const handlePaste = async () => {
     const url = await handlePasteText();
-    if (url) setSupportingUrl(url);
+    if (url) setDocumentUrl(url);
   };
   const handleFormRevisionSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    if (!notes) {
+      setError(null);
+      setTimeout(() => {
+        setError("Catatan wajib diisi");
+      }, 10);
+      return;
+    }
+    if (!documentUrl) {
+      setError(null);
+      setTimeout(() => {
+        setError("URL wajib diisi");
+      }, 10);
+      return;
+    }
     try {
       const res = await fetch(
         `/api/lecturer/proposals/book-revision/${proposalId}`,
@@ -89,7 +107,7 @@ export default function SubmitBookRevision() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ notes, supportingUrl }),
+          body: JSON.stringify({ notes, documentUrl }),
         }
       );
       if (!res.ok) {
@@ -113,9 +131,7 @@ export default function SubmitBookRevision() {
     <div>
       <Breadcrumb title="Halaman Revisi" breadcrumbItems={breadcrumbItems} />
       <div className="bg-white rounded-lg mt-3 py-2">
-        <h3 className="text-black text-2xl font-semibold px-4 pb-4 pt-2">
-          Form Revisi Penerbitan Buku
-        </h3>
+        <HeaderForm title="Form Revisi Penerbitan Buku" />
         <hr className="mb-3" />
         <div className="flex gap-6 px-4">
           {/* Form Input (60%) */}
@@ -129,16 +145,17 @@ export default function SubmitBookRevision() {
               </h3>
               <h3 className="text-black text-base self-start font-normal mb-1">
                 Status:{" "}
-                <span className="bg-orange-100 p-2 rounded-lg text-orange-700">
+                <span className="bg-yellow-100 p-2 rounded-lg text-yellow-700">
                   {proposal?.status.status_name || ""}
                 </span>
               </h3>
+              {error && <ErrorValidation message={error} duration={3000} />}
               <div className="mb-1">
                 <label
                   htmlFor="notes"
                   className="text-black text-base self-start font-normal mb-1"
                 >
-                  Catatan Revisi:
+                  Catatan Revisi <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   id="notes"
@@ -154,7 +171,7 @@ export default function SubmitBookRevision() {
                   htmlFor="supportingUrl"
                   className="text-black text-base self-start font-normal mb-1"
                 >
-                  Link URL Pendukung:
+                  Link URL Revisi <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <input
@@ -162,15 +179,15 @@ export default function SubmitBookRevision() {
                     type="url"
                     className="w-full border bg-inputColor border-borderInput p-3 rounded-xl text-black pr-12"
                     placeholder="Masukkan URL Pendukung"
-                    value={supportingUrl}
-                    onChange={(e) => setSupportingUrl(e.target.value)}
+                    value={documentUrl}
+                    onChange={(e) => setDocumentUrl(e.target.value)}
                     onBlur={() => {
                       if (
-                        supportingUrl &&
-                        !supportingUrl.startsWith("http://") &&
-                        !supportingUrl.startsWith("https://")
+                        documentUrl &&
+                        !documentUrl.startsWith("http://") &&
+                        !documentUrl.startsWith("https://")
                       ) {
-                        setSupportingUrl(`https://${supportingUrl}`);
+                        setDocumentUrl(`https://${documentUrl}`);
                       }
                     }}
                   />
@@ -182,10 +199,6 @@ export default function SubmitBookRevision() {
                     <Clipboard className="h-5 w-5 text-black" />
                   </button>
                 </div>
-                <label className="pt-1 block text-sm font-normal text-black pb-1">
-                  <CircleAlert className="inline pr-1" />
-                  Isi Bila Diperlukan (Opsional)
-                </label>
               </div>
               <div className="flex items-center gap-2 pt-4">
                 <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
@@ -200,55 +213,7 @@ export default function SubmitBookRevision() {
               </div>
             </form>
           </div>
-          {/* <div className="w-2/5 bg-white p-4 rounded-lg shadow-md">
-            <h3 className="text-black text-lg font-semibold border-b pb-2 mb-4 -mx-4 px-4">
-              Riwayat Catatan Revisi
-            </h3>
 
-            {loading ? (
-              <LoadingIndicator />
-            ) : activities.length > 0 ? (
-              activities.map((activity: Activity, index) => (
-                <div
-                  key={index}
-                  className={`p-3 border rounded-lg shadow max-w-xl ${
-                    index === 0 ? "bg-gray-50" : "bg-green-50"
-                  } mb-3`}
-                >
-                  <p className="text-md font-semibold text-black">
-                    {activity.user?.name}
-                  </p>
-                  <p className="text-sm font-thin text-gray-600">
-                    Status: {activity.status?.status_name}
-                  </p>
-                  <p className="text-xs text-gray-700">Catatan:</p>
-                  <p className="text-sm text-gray-700">
-                    {activity.publication_notes}
-                  </p>
-                  {activity.supporting_url && (
-                    <a
-                      href={
-                        activity.supporting_url.startsWith("http")
-                          ? activity.supporting_url
-                          : `https://${activity.supporting_url}`
-                      }
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 text-xs flex items-center gap-1"
-                    >
-                      <Eye className="w-4 h-4" />
-                      Lihat Url Lampiran
-                    </a>
-                  )}
-                  <p className="mt-2 text-xs text-gray-500">
-                    {formatDate(activity.createdAt)}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <p>Belum Ada Aktivitas</p>
-            )}
-          </div> */}
           <div className="w-2/5 bg-white p-4 rounded-lg shadow-md max-h-[500px] overflow-y-auto">
             <h3 className="text-black text-lg font-semibold border-b pb-2 mb-4 -mx-4 px-4">
               Riwayat Catatan Revisi

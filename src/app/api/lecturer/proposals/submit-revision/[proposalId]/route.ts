@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 
-// API Put Handler Untuk Dosen Melakukan Revisi AdminProposal
+// API Put Handler Untuk Dosen Melakukan Revisi Admin Proposal
 export async function PUT(
   req: Request,
   { params }: { params: { proposalId: string } }

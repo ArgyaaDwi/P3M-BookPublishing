@@ -2,13 +2,14 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 
+// API Put Handler Untuk Dosen Melakukan Revisi Penerbit Proposal
 export async function PUT(
   req: Request,
   { params }: { params: { proposalId: string } }
 ) {
   try {
     const proposalId = params.proposalId;
-    const { notes, supportingUrl } = await req.json();
+    const { notes, documentUrl } = await req.json();
     console.log("Submit revision for proposal ID:", proposalId);
     const session = await getSession();
     if (!session || !session.user_id) {
@@ -28,6 +29,7 @@ export async function PUT(
         where: { id: Number(proposalId) },
         data: {
           current_status_id: 9,
+          publication_document: documentUrl,
         },
       }),
       prisma.publicationActivity.create({
@@ -36,7 +38,7 @@ export async function PUT(
           user_id: Number(session.user_id),
           publication_status_id: 9,
           publication_notes: notes,
-          supporting_url: supportingUrl,
+          publication_document_url: documentUrl,
         },
       }),
     ]);

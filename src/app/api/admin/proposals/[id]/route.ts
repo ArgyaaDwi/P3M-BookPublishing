@@ -24,6 +24,10 @@ export async function GET(
         lecturer: { select: { name: true, nidn: true } },
         publisher: { select: { name: true } },
         status: { select: { status_name: true } },
+        current_status_id: true,
+        publication_document: true,
+        publication_authenticity_proof: true,
+        publication_book_cover: true,
         createdAt: true,
         items: {
           select: {
@@ -35,7 +39,7 @@ export async function GET(
                 status: {
                   select: { status_name: true },
                 },
-                updatedAt: true, 
+                updatedAt: true,
               },
             },
           },
@@ -49,6 +53,7 @@ export async function GET(
         { status: 404 }
       );
     }
+
     console.log("Successfully fetched proposal:", proposal);
     return NextResponse.json({ status: "success", data: proposal });
   } catch (error) {

@@ -1,8 +1,16 @@
+import prisma from "@/lib/prisma";
 import CardChart from "@/components/card/CardChart";
 import Card from "@/components/card/Card";
 import { Files, Users, UserRoundPen, File } from "lucide-react";
 import Breadcrumb from "@/components/BreadCrumb";
-export default function DashboardLecturerPage() {
+export default async function DashboardLecturerPage() {
+  const totalMyProposal = await prisma.publication.count({
+    where: {
+      lecturer: {
+        id: 8
+      }
+    }
+  });
   const breadcrumbItems = [
     {
       name: "Dashboard",
@@ -11,7 +19,10 @@ export default function DashboardLecturerPage() {
   ];
   return (
     <div>
-      <Breadcrumb title="Hai, Dosen Penulis" breadcrumbItems={breadcrumbItems} />
+      <Breadcrumb
+        title="Hai, Dosen Penulis"
+        breadcrumbItems={breadcrumbItems}
+      />
       <p className="text-gray-600">Ajukan Penerbitan Buku Sekarang!</p>
       <p className="text-black mt-4 font-semibold">Overview</p>
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
@@ -25,7 +36,7 @@ export default function DashboardLecturerPage() {
         <Card
           icon={<Files color="gray" />}
           text="Total Ajuan"
-          count={345}
+          count={totalMyProposal}
           color="#E2E557"
           url="/admin/proposal"
         />

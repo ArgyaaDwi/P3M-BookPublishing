@@ -2,7 +2,7 @@ import Sidebar from "@/components/sidebar/Sidebar";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import SidebarItem from "@/components/sidebar/SidebarItem";
-import { LayoutDashboard, Files, Receipt } from "lucide-react";
+import { LayoutDashboard, Files, Receipt, Truck } from "lucide-react";
 
 interface PublisherLayout {
   children: React.ReactNode;
@@ -28,6 +28,11 @@ export default function PublisherLayout({ children }: PublisherLayout) {
           icon={<Receipt size={20} />}
           text="Invoice"
           url="/publisher/invoice"
+        />
+        <SidebarItem
+          icon={<Truck size={20} />}
+          text="Pengiriman"
+          url="/publisher/shipment"
         />
       </Sidebar>
       <div className="flex-1 flex flex-col h-screen">

@@ -1,4 +1,5 @@
 "use client";
+import { Eye } from "lucide-react";
 import { useState, useEffect } from "react";
 import { formatDate } from "@/utils/dateFormatter";
 import LoadingIndicator from "@/components/Loading";
@@ -81,38 +82,54 @@ const InvoiceSection = ({ proposalId }: { proposalId: number }) => {
             <h1 className="text-xl font-semibold text-black">
               Invoice #{invoiceData.id}
             </h1>
-            <p className="text-sm text-gray-600">
-              Diajukan pada: {formatDate(invoiceData.createdAt)}
+            <p className="text-sm text-gray-600 mb-2">
+              Dibuat pada: {formatDate(invoiceData.createdAt)}
             </p>
+            <BadgeStatus
+              text={invoiceData.status?.status_name || "Status Tidak Diketahui"}
+              color={
+                invoiceData.current_status_id === 1
+                  ? "badgePendingText"
+                  : invoiceData.current_status_id === 3
+                  ? "badgeRevText"
+                  : "badgeSuccessText"
+              }
+              bgColor={
+                invoiceData.current_status_id === 1
+                  ? "badgePending"
+                  : invoiceData.current_status_id === 3
+                  ? "badgeRev"
+                  : "badgeSuccess"
+              }
+            />
             {invoiceData.transaction_notes && (
-              <p className="text-gray-800 mt-1">
+              <p className="text-gray-800 my-2">
                 Catatan Transaksi: {invoiceData.transaction_notes}
               </p>
             )}
+            {invoiceData.payment_proof && (
+              <a
+                href={
+                  invoiceData.payment_proof.startsWith("http")
+                    ? invoiceData.payment_proof
+                    : `https://${invoiceData.payment_proof}`
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 text-s flex items-center gap-1"
+              >
+                <Eye className="w-4 h-4" />
+                Bukti Pembayaran
+              </a>
+            )}
           </div>
-          <BadgeStatus
-            text={invoiceData.status?.status_name || "Status Tidak Diketahui"}
-            color={
-              invoiceData.current_status_id === 1
-                ? "badgePendingText"
-                : invoiceData.current_status_id === 3
-                ? "badgeRevText"
-                : "badgeSuccessText"
-            }
-            bgColor={
-              invoiceData.current_status_id === 1
-                ? "badgePending"
-                : invoiceData.current_status_id === 3
-                ? "badgeRev"
-                : "badgeSuccess"
-            }
-          />
+
           <div>
             <h2 className="text-lg font-medium text-black mt-4 mb-2">
               Item Transaksi
             </h2>
             <div className="space-y-2">
-              {invoiceData.items.map((item: any, index: number) => (
+              {invoiceData.items.map((item, index: number) => (
                 <div
                   key={index}
                   className="p-3 border rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center"
@@ -142,7 +159,7 @@ const InvoiceSection = ({ proposalId }: { proposalId: number }) => {
               <p className="text-lg font-semibold text-black text-right">
                 Total Keseluruhan: Rp
                 {invoiceData.items
-                  .reduce((acc: number, item: any) => acc + item.total_cost, 0)
+                  .reduce((acc: number, item) => acc + item.total_cost, 0)
                   .toLocaleString("id-ID")}
               </p>
             </div>
