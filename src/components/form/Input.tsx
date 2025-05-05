@@ -6,6 +6,7 @@ import { Eye, EyeOff } from "lucide-react";
 interface InputProps {
   label: string;
   type: string;
+  name?: string;
   placeholder: string;
   isPassword?: boolean;
   isDisabled?: boolean;
@@ -17,6 +18,7 @@ interface InputProps {
 const Input = ({
   label,
   type,
+  name,
   placeholder,
   isDisabled = false,
   isPassword = false,
@@ -36,9 +38,10 @@ const Input = ({
       <div className="flex items-center border bg-inputColor text-black border-borderInput rounded-xl focus-within:border-black transition duration-300">
         <input
           type={isPassword && showPassword ? "text" : type}
+          {...(name && { name })}
           placeholder={placeholder}
           className="p-3 flex-1 bg-transparent outline-none"
-          value={value}
+          value={value ?? ""}
           onChange={onChange}
           disabled={isDisabled}
         />

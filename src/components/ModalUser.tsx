@@ -1,3 +1,4 @@
+import Image from "next/image";
 interface ModalUserProps {
   isOpen: boolean;
   onClose: () => void;
@@ -17,7 +18,7 @@ const ModalUser = ({ isOpen, onClose, user }: ModalUserProps) => {
       });
 
       if (response.ok) {
-        window.location.href = "/login"; // Redirect ke halaman login
+        window.location.href = "/login"; 
       } else {
         console.error("Logout gagal");
       }
@@ -31,10 +32,12 @@ const ModalUser = ({ isOpen, onClose, user }: ModalUserProps) => {
     <>
       <div className="absolute top-16 right-4 bg-white shadow-lg rounded-lg  w-64 z-50">
         <div className="flex items-center gap-2 p-4">
-          <img
-            src="/assets/images/user_img.png"
+          <Image
+            src={user.avatarUrl || "/assets/images/user_img.png"}
             alt="User Avatar"
-            className="w-10 h-10 rounded-full"
+            width={40}
+            height={40}
+            className="rounded-full cursor-pointer"
           />
           <div>
             <p className="text-black font-semibold">{user.name}</p>

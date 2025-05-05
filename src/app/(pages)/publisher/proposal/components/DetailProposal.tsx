@@ -49,19 +49,25 @@ const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
         <div>
           <p className="text-gray-500">Dosen Pengusul</p>
           <p className="font-medium text-gray-800">
-            {proposal.lecturer?.name || "Tidak diketahui"} NIDN:{" "}
+            {proposal.lecturer?.name || "Tidak diketahui"} NIDN.{" "}
             {proposal.lecturer?.nidn || "-"}
           </p>
-          {proposal?.items?.map((item) => (
+          {/* {proposal?.items?.map((item) => (
             <div key={item.id}>
-              <p>
+              <p className="text-gray-700 mt-2 font-mono">
                 Status Transaksi:{" "}
                 {item.transaction?.status?.status_name ?? "Belum Ada Transaksi"}
               </p>
             </div>
-          ))}
+          ))} */}
+          {proposal.status_transaction && (
+            <p className="text-gray-700 mt-2 font-mono">
+              Status Transaksi:{" "}
+              {proposal.status_transaction?.status_name ??
+                "Belum Ada Transaksi"}
+            </p>
+          )}
         </div>
-
         <div className="space-y-1">
           <p className="text-sm text-gray-400">
             Ajuan Dibuat: {formatDate(proposal.createdAt)}

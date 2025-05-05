@@ -18,6 +18,13 @@ export async function PUT(
 
     const transaction = await prisma.transaction.findUnique({
       where: { id: Number(id) },
+      include: {
+        items: {
+          select: {
+            publication_id: true,
+          },
+        },
+      },
     });
     if (!transaction) {
       return NextResponse.json(
@@ -25,10 +32,19 @@ export async function PUT(
         { status: 404 }
       );
     }
+    const publicationIds = transaction.items.map((item) => item.publication_id);
     await Promise.all([
       prisma.transaction.update({
         where: { id: Number(id) },
         data: { current_status_id: 3, payment_proof: paymentProof },
+      }),
+      prisma.publication.updateMany({
+        where: {
+          id: {
+            in: publicationIds,
+          },
+        },
+        data: { current_transaction_status_id: 3 },
       }),
       prisma.transactionLog.create({
         data: {

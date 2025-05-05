@@ -6,7 +6,7 @@ export async function GET() {
     const approvedBooks = await prisma.publication.findMany({
       select: { status: true, id: true, publication_title: true },
       where: {
-        current_status_id: 7,
+        current_status_id: 8,
         is_invoice: false,
       },
     });

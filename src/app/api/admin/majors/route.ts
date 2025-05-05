@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 export async function GET() {
   try {
     const majors = await prisma.major.findMany({
-      select: { major_name: true },
+      select: { id: true, major_name: true },
     });
     console.log("Successfully fetched majors:", majors);
     return NextResponse.json(

@@ -43,35 +43,20 @@ const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
           }
         />
       </div>
-      {proposal.publication_document && (
-        <a
-          href={proposal.publication_document}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium transition"
-        >
-          <StickyNote className="w-4 h-4" />
-          Lihat Draf Buku
-        </a>
-      )}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
         <div>
-          {proposal?.items?.map((item) => (
-            <div key={item.id}>
-              <p>
-                Status Transaksi:{" "}
-                {item.transaction?.status?.status_name ?? "Belum Ada Transaksi"}
-              </p>
-            </div>
-          ))}
-
           <p className="text-gray-500">Dosen Pengusul</p>
           <p className="font-medium text-gray-800">
-            {proposal.lecturer?.name || "Tidak diketahui"}
+            {proposal.lecturer?.name || "Tidak diketahui"} NIDN.{" "}
+            {proposal.lecturer?.nidn || "-"}
           </p>
-          <p className="text-xs text-gray-500">
-            NIDN: {proposal.lecturer?.nidn || "-"}
-          </p>
+          {proposal.status_transaction && (
+            <p className="text-gray-700 mt-2 font-mono">
+              Status Transaksi:{" "}
+              {proposal.status_transaction?.status_name ??
+                "Belum Ada Transaksi"}
+            </p>
+          )}
         </div>
 
         <div className="space-y-2">
@@ -103,6 +88,17 @@ const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
           </div>
         </div>
       </div>
+      {proposal.publication_document && (
+        <a
+          href={proposal.publication_document}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium transition"
+        >
+          <StickyNote className="w-4 h-4  " />
+          Lihat Draf Buku
+        </a>
+      )}
       {proposal.current_status_id === 10 && (
         <div className="pt-1">
           <p className="text-sm mb-2 text-gray-500">

@@ -29,32 +29,6 @@ const AllInvoicePublisher = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  const handleVerifiyPayment = async (id: number) => {
-    if (!confirm("Apakah kamu yakin ingin verifikasi bukti pembayaran ini?")) {
-      return;
-    }
-    try {
-      const response = await fetch(
-        `/api/publisher/invoice/verify-payment/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ id }),
-        }
-      );
-      const result = await response.json();
-      if (result.status === "success") {
-        alert("Status berhasil diperbarui.");
-      } else {
-        alert("Gagal mengupdate status: " + result.message);
-      }
-    } catch (error) {
-      console.error("Error updating status:", error);
-      alert("Terjadi kesalahan saat mengupdate status.");
-    }
-  };
   if (loading) return <LoadingIndicator />;
   return (
     <table className="w-full text-left border border-gray-300 mt-2">

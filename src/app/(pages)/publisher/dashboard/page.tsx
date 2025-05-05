@@ -1,8 +1,9 @@
+import prisma from "@/lib/prisma";
 import CardChart from "@/components/card/CardChart";
 import Card from "@/components/card/Card";
-import { Files, Users, UserRoundPen, File } from "lucide-react";
+import { Files, Banknote, Truck, Users, CircleCheckBig, File, CircleAlert } from "lucide-react";
 import Breadcrumb from "@/components/BreadCrumb";
-export default function DashboardPublisherPage() {
+export default async function DashboardPublisherPage() {
   const breadcrumbItems = [
     {
       name: "Dashboard",
@@ -11,10 +12,7 @@ export default function DashboardPublisherPage() {
   ];
   return (
     <div>
-      <Breadcrumb
-        title="Hai, Penerbit"
-        breadcrumbItems={breadcrumbItems}
-      />
+      <Breadcrumb title="Hai, Penerbit" breadcrumbItems={breadcrumbItems} />
       <p className="text-gray-600">Kelola Ajuan Penerbitan Buku Sekarang!</p>
       <p className="text-black mt-4 font-semibold">Overview</p>
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
@@ -33,16 +31,32 @@ export default function DashboardPublisherPage() {
           url="/admin/proposal"
         />
         <Card
-          icon={<UserRoundPen color="gray" />}
-          text="Total Penerbit"
+          icon={<CircleAlert color="gray" />}
+          text="Ajuan Belum Diverifikasi"
           count={19}
           color="#81C3C7"
           url="/admin/publisher"
         />
         <Card
-          icon={<File color="gray" />}
-          text="Belum Diverifikasi"
+          icon={<CircleCheckBig color="gray" />}
+          text="Ajuan Disetujui"
           count={122}
+          color="#1448CD"
+          url="/admin/proposal"
+        />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2">
+        <Card
+          icon={<Banknote color="gray" />}
+          text="Total Tranaksi"
+          count={11}
+          color="#81C3C7"
+          url="/admin/publisher"
+        />
+        <Card
+          icon={<Truck color="gray" />}
+          text="Total Pengiriman"
+          count={2}
           color="#1448CD"
           url="/admin/proposal"
         />
@@ -66,19 +80,19 @@ export default function DashboardPublisherPage() {
       <p className="text-black font-semibold mt-4">Informasi Umum</p>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2">
         <CardChart
-          title="Dosen Terbaru"
+          title="Ajuan Terbaru"
           subtitle="Top 5 Dosen yang Baru Terdaftar"
         >
           <p className="text-gray-600 text-base font-normal">
-            Rencananya akan menampilkan tabel dosen terbaru
+            Rencananya akan menampilkan tabel ajuan terbaru
           </p>
         </CardChart>
         <CardChart
-          title="Penerbit Terbaru"
+          title="Transaksi Terbaru"
           subtitle="Top 5 Penerbit yang Baru Terdaftar"
         >
           <p className="text-gray-600 text-base font-normal">
-            Rencananya akan menampilkan tabel penerbit terbaru
+            Rencananya akan menampilkan tabel transaksi terbaru
           </p>
         </CardChart>
       </div>

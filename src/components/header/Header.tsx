@@ -1,83 +1,78 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ModalUser from "../ModalUser";
+import Image from "next/image";
+interface UserType {
+  id: string;
+  name: string;
+  email: string;
+  avatarUrl?: string;
+  role: string;
+}
 
-const Header = () => {
-  const [currentDate, setCurrentDate] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false); 
-  const [user, setUser] = useState<{
-    id: string;
-    name: string;
-    email: string;
-    avatarUrl: string;
-    role: string;
-  } | null>(null);
+interface HeaderProps {
+  user: UserType | null;
+}
 
-  useEffect(() => {
-    const fetchUserSession = async () => {
-      try {
-        const response = await fetch("/api/session");
-        if (!response.ok) {
-          throw new Error("Gagal mengambil data sesi");
-        }
-        const data = await response.json();
-        setUser({
-          id: data.user_id,
-          name: data.name,
-          email: data.email,
-          avatarUrl: data.avatarUrl || "/assets/images/user_img.png",
-          role: data.role || "Pengguna",
-        });
-      } catch (error) {
-        console.error("Error fetching session:", error);
-      }
-    };
+const Header = ({ user }: HeaderProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    fetchUserSession();
-
-    const now = new Date();
-    const options: Intl.DateTimeFormatOptions = {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-    setTimeout(() => {
-      setCurrentDate(now.toLocaleDateString("id-ID", options));
-      setIsLoading(false);
-    }, 500);
-  }, []);
-
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
+  const now = new Date();
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   };
+  const currentDate = now.toLocaleDateString("id-ID", options);
+
+  const handleAvatarClick = () => {
+    setIsModalOpen((prev) => !prev);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  if (!user) {
+    return (
+      <header className="flex justify-between items-center bg-white shadow-md p-4 relative">
+        <div className="text-gray-700 font-medium">{currentDate}</div>
+        <div className="text-gray-500">Tidak ada user</div>
+      </header>
+    );
+  }
 
   return (
     <header className="flex justify-between items-center bg-white shadow-md p-4 relative">
-      <div className="text-gray-700 font-medium">
-        {isLoading ? "Memuat....." : currentDate}
-      </div>
-      <div className="flex items-center gap-2">
-        {user ? (
-          <>
-            <span className="hidden md:block text-gray-800 font-normal">
-              {user.name} 
-            </span>
-            <img
-              src="/assets/images/user_img.png"
-              alt="User Avatar"
-              className="w-8 h-8 rounded-full cursor-pointer"
-              onClick={toggleModal}
+      <div className="text-gray-700 font-medium">{currentDate}</div>
+      <div className="flex items-center gap-2 relative">
+        <span className="hidden md:block text-gray-800 font-normal">
+          {user.name}
+        </span>
+        <div className="relative">
+          <Image
+            src={user.avatarUrl || "/assets/images/user_img.png"}
+            alt="User Avatar"
+            width={32}
+            height={32}
+            className="rounded-full cursor-pointer"
+            onClick={handleAvatarClick}
+          />
+          {isModalOpen && (
+            <ModalUser
+              isOpen={isModalOpen}
+              onClose={handleCloseModal}
+              user={{
+                name: user.name,
+                email: user.email,
+                avatarUrl: user.avatarUrl || "/assets/images/user_img.png",
+                role: user.role,
+              }}
             />
-          </>
-        ) : (
-          <span className="text-gray-500">Memuat...</span>
-        )}
+          )}
+        </div>
       </div>
-      {user && (
-        <ModalUser isOpen={isModalOpen} onClose={toggleModal} user={user} />
-      )}
     </header>
   );
 };

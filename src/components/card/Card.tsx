@@ -3,7 +3,7 @@ import Link from "next/link";
 interface CardProps {
   icon: React.ReactNode;
   text: string;
-  count: number;
+  count: number | string;
   color: string;
   url: string;
 }
@@ -16,7 +16,7 @@ const Card = ({ icon, text, count, color, url }: CardProps) => {
           {icon}
         </div>
         <h3 className="mt-2 text-sm font-normal text-gray-600">{text}</h3>
-        <p className="mt-2 text-3xl font-semibold text-black">{count}</p>
+        <p className="mt-2 text-2xl font-semibold text-black">{count}</p>
         <Link href={url}>
           <div className="flex items-center space-x-1 mt-2">
             <p className="text-sm font-normal text-blue-700 hover:underline">

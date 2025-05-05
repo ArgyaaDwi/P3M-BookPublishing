@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-// GET Handler untuk mengambil proposal berdasarkan ID
+// get Handler untuk mengambil proposal berdasarkan ID
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -27,7 +27,23 @@ export async function GET(
         lecturer: { select: { name: true, nidn: true } },
         publisher: { select: { name: true } },
         status: { select: { status_name: true } },
+        status_transaction: { select: { status_name: true } },
         createdAt: true,
+        items: {
+          select: {
+            id: true,
+            transaction: {
+              select: {
+                id: true,
+                current_status_id: true,
+                status: {
+                  select: { status_name: true },
+                },
+                updatedAt: true,
+              },
+            },
+          },
+        },
       },
     });
     if (!proposal) {

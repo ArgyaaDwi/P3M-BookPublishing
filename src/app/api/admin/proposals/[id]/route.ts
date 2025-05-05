@@ -28,6 +28,7 @@ export async function GET(
         publication_document: true,
         publication_authenticity_proof: true,
         publication_book_cover: true,
+        status_transaction: { select: { status_name: true } },
         createdAt: true,
         items: {
           select: {

@@ -54,7 +54,7 @@ const ProposalDetail = () => {
     return <p className="text-center text-gray-500">Ajuan tidak ditemukan.</p>;
   const tabItems = [
     {
-      title: "Informasi Ajuan Penerbitan",
+      title: "Overview",
       content: (
         <div>
           <DetailProposalSection proposal={proposal} />
@@ -62,7 +62,7 @@ const ProposalDetail = () => {
       ),
     },
     {
-      title: "Log Aktivitas Ajuan Penerbitan",
+      title: "Log Aktivitas",
       content: (
         <div>
           <h3 className="text-black font-bold">Riwayat Aktivitas</h3>

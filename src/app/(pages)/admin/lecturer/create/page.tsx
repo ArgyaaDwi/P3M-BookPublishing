@@ -4,8 +4,10 @@ import Breadcrumb from "@/components/BreadCrumb";
 import Input from "@/components/form/Input";
 import Select from "@/components/form/Select";
 import { useRouter } from "next/navigation";
+import ErrorValidation from "@/components/form/ErrorValidation";
 export default function AddLecturerPage() {
   const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
   const [nameInput, setNameInput] = useState("");
   const [nidnInput, setNIDNInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
@@ -59,9 +61,58 @@ export default function AddLecturerPage() {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    if (!nameInput) {
+      setError(null);
+      setTimeout(() => {
+        setError("Nama dosen wajib diisi");
+      }, 10);
+      return;
+    }
+    if (!emailInput) {
+      setError(null);
+      setTimeout(() => {
+        setError("Email dosen wajib diisi");
+      }, 10);
+      return;
+    }
+    if (!selectedOption) {
+      setError(null);
+      setTimeout(() => {
+        setError("Jurusan dosen wajib diisi");
+      }, 10);
+      return;
+    }
+    if (!nidnInput) {
+      setError(null);
+      setTimeout(() => {
+        setError("NIDN dosen wajib diisi");
+      }, 10);
+      return;
+    }
+
+    if (!passwordInput) {
+      setError(null);
+      setTimeout(() => {
+        setError("Password dosen wajib diisi");
+      }, 10);
+      return;
+    }
+
+    if (!confirmPassword) {
+      setError(null);
+      setTimeout(() => {
+        setError("Konfirmasi password wajib diisi");
+      }, 10);
+      return;
+    }
 
     if (passwordInput !== confirmPassword) {
-      alert("Password dan konfirmasi password tidak cocok.");
+      setError(null);
+      setTimeout(() => {
+        setError("Password dosen wajib diisi");
+      }, 10);
       return;
     }
     const data = {
@@ -115,12 +166,14 @@ export default function AddLecturerPage() {
         <hr className="mb-3" />
         <div className="px-4">
           <form onSubmit={handleFormSubmit}>
+            {error && <ErrorValidation message={error} duration={3000} />}
             <Input
               type="text"
               placeholder="Masukkan Nama Dosen"
               label="Nama Dosen"
               value={nameInput}
               onChange={handleNameChange}
+              isRequired
             />
             <Input
               type="text"
@@ -128,6 +181,7 @@ export default function AddLecturerPage() {
               label="Email"
               value={emailInput}
               onChange={handleEmailChange}
+              isRequired
             />
             <div className="flex gap-4">
               <Select
@@ -135,6 +189,7 @@ export default function AddLecturerPage() {
                 options={majors}
                 value={selectedOption}
                 onChange={handleSelectChange}
+                isRequired
               />
               <Input
                 type="number"
@@ -142,6 +197,7 @@ export default function AddLecturerPage() {
                 label="NIDN Dosen"
                 value={nidnInput}
                 onChange={handleNIDNChange}
+                isRequired
               />
             </div>
             <Input
@@ -151,6 +207,7 @@ export default function AddLecturerPage() {
               isPassword={true}
               value={passwordInput}
               onChange={handlePasswordChange}
+              isRequired
             />
             <Input
               type="password"
@@ -159,6 +216,7 @@ export default function AddLecturerPage() {
               isPassword={true}
               value={confirmPassword}
               onChange={handleConfirmPasswordChange}
+              isRequired
             />
             <div className="flex items-center gap-2">
               <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">

@@ -2,14 +2,16 @@
 
 export type user_role = "ADMIN" | "DOSEN" | "PENERBIT";
 
+export type ShipmentStatus = "SHIPPED" | "DELIVERED";
+
 export interface Major {
   id: number;
   major_name: string;
   major_description: string | null;
+  users?: User[];
   createdAt: Date;
   updatedAt: Date;
   deleted: boolean;
-  users?: User[];
 }
 
 export interface User {
@@ -22,7 +24,7 @@ export interface User {
   major?: Major | null;
   nidn: string | null;
   address: string | null;
-  phone_number: bigint | null;
+  phone_number: string | null;
   profile_pic: string | null;
   publications?: Publication[];
   publisherPublication?: Publication[];
@@ -49,19 +51,21 @@ export interface Publication {
   id: number;
   user_id: number;
   publisher_id: number | null;
-  lecturer?: User;
-  publisher?: User | null;
-  status?: PublicationStatus;
-  activities?: PublicationActivity[];
-  items?: TransactionItem[];
   publication_ticket: string;
   publication_title: string;
   publication_document: string;
   publication_book_cover: string | null;
   publication_authenticity_proof: string | null;
   current_status_id: number;
-  supporting_url: string | null;
+  current_transaction_status_id: number | null;
+  publication_final_book: string | null;
   is_invoice: boolean;
+  status_transaction?: TransactionStatus | null;
+  lecturer?: User;
+  publisher?: User | null;
+  status?: PublicationStatus;
+  activities?: PublicationActivity[];
+  items?: TransactionItem[];
   createdAt: Date;
   updatedAt: Date;
   deleted: boolean;
@@ -72,12 +76,12 @@ export interface PublicationActivity {
   publication_id: number;
   user_id: number;
   publication_status_id: number;
-  publication?: Publication;
-  user?: User;
-  status?: PublicationStatus;
   publication_notes: string | null;
   publication_document_url: string | null;
   supporting_url: string | null;
+  publication?: Publication;
+  user?: User;
+  status?: PublicationStatus;
   createdAt: Date;
   updatedAt: Date;
   deleted: boolean;
@@ -90,13 +94,13 @@ export interface Transaction {
   payment_proof: string | null;
   transaction_ticket: string | null;
   transaction_notes: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  deleted: boolean;
   user?: User;
   status?: TransactionStatus;
   items?: TransactionItem[];
   logs?: TransactionLog[];
+  createdAt: Date;
+  updatedAt: Date;
+  deleted: boolean;
 }
 
 export interface TransactionItem {
@@ -119,18 +123,19 @@ export interface TransactionLog {
   transaction_status_id: number;
   user_id: number | null;
   note: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  deleted: boolean;
   transaction?: Transaction;
   user?: User | null;
   status?: TransactionStatus;
+  createdAt: Date;
+  updatedAt: Date;
+  deleted: boolean;
 }
 
 export interface TransactionStatus {
   id: number;
   status_name: string;
   transaction?: Transaction[];
+  publications?: Publication[];
   logs?: TransactionLog[];
   createdAt: Date;
   updatedAt: Date;

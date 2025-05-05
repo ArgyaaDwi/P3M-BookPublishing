@@ -57,7 +57,7 @@ const ProposalDetailPublisher = () => {
     );
   const tabItems = [
     {
-      title: "Informasi Ajuan Buku",
+      title: "Overview",
       content: (
         <div>
           <DetailProposalSection proposal={proposal} />
@@ -65,10 +65,9 @@ const ProposalDetailPublisher = () => {
       ),
     },
     {
-      title: "Log Aktivitas Ajuan Buku",
+      title: "Log Aktivitas",
       content: (
         <div>
-          <h3 className="text-black font-bold">Riwayat Aktivitas</h3>
           <LogPublicationActivity publicationId={Number(id)} />
         </div>
       ),

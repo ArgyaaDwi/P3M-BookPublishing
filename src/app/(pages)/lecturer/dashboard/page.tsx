@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import CardChart from "@/components/card/CardChart";
 import Card from "@/components/card/Card";
-import { Files, Users, UserRoundPen, File } from "lucide-react";
+import { Files, CircleAlert, FilePenLine, CircleCheckBig } from "lucide-react";
 import Breadcrumb from "@/components/BreadCrumb";
 export default async function DashboardLecturerPage() {
   const totalMyProposal = await prisma.publication.count({
@@ -27,29 +27,29 @@ export default async function DashboardLecturerPage() {
       <p className="text-black mt-4 font-semibold">Overview</p>
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
         <Card
-          icon={<Users color="gray" />}
-          text="Total Dosen"
+          icon={<Files color="gray" />}
+          text="Total Ajuan"
           count={68}
           color="#63C2EB"
           url="/admin/lecturer"
         />
         <Card
-          icon={<Files color="gray" />}
-          text="Total Ajuan"
+          icon={<CircleAlert color="gray" />}
+          text="Ajuan Belum Diverifikasi"
           count={totalMyProposal}
           color="#E2E557"
           url="/admin/proposal"
         />
         <Card
-          icon={<UserRoundPen color="gray" />}
-          text="Total Penerbit"
+          icon={<CircleCheckBig color="gray" />}
+          text="Ajuan Disetujui"
           count={19}
           color="#81C3C7"
           url="/admin/publisher"
         />
         <Card
-          icon={<File color="gray" />}
-          text="Belum Diverifikasi"
+          icon={<FilePenLine color="gray" />}
+          text="Ajuan Revisi"
           count={122}
           color="#1448CD"
           url="/admin/proposal"

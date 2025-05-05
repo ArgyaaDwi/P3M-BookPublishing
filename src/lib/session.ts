@@ -24,6 +24,11 @@ export async function createSession(user: User) {
     name: user.name,
     email: user.email,
     role: user.role,
+    nidn: user.nidn,
+    address: user.address,
+    phone_number: user.phone_number,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
     expiresAt: expiresAt,
   });
 

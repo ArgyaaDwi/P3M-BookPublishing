@@ -22,18 +22,22 @@ enum user_role {
   DOSEN
   PENERBIT
 }
+enum ShipmentStatus {
+  SHIPPED     // Dikirim
+  DELIVERED   // Diterima
+}
 
 model Major {
   id Int @id @default(autoincrement())
   major_name String @unique
   major_description String?
+  
+  users User[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deleted Boolean @default(false)
-
   @@map("majors")
-  users User[]
 
 }
 model User {
@@ -46,7 +50,7 @@ model User {
   major Major? @relation(fields: [major_id], references: [id])
   nidn String?
   address String? 
-  phone_number BigInt?
+  phone_number String?
   profile_pic String?
 
   publications Publication[] @relation("LecturerPublication")
@@ -54,6 +58,7 @@ model User {
   activities PublicationActivity[] @relation("ActivityUser")
   transactions Transaction[] @relation("UserTransaction")
   transactionLogs TransactionLog[] @relation("UserTransactionLog")
+
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -80,22 +85,22 @@ model Publication{
   id Int @id @default(autoincrement())
   user_id Int
   publisher_id Int?
-
-  lecturer User @relation(fields: [user_id], references: [id], name: "LecturerPublication")
-  publisher User? @relation(fields: [publisher_id], references: [id], name: "PublisherPublication")
-  status PublicationStatus @relation(fields: [current_status_id], references: [id], name: "StatusPublication")
-  activities PublicationActivity[] @relation("PublicationActivities")
-  items TransactionItem[] @relation("Publications")
-
   publication_ticket String
   publication_title String
   publication_document String
   publication_book_cover String?
   publication_authenticity_proof String?
-
   current_status_id Int 
-  supporting_url String?
+  current_transaction_status_id Int?
+  publication_final_book String?
   is_invoice Boolean @default(false)
+
+  status_transaction TransactionStatus? @relation(fields: [current_transaction_status_id], references: [id], "CurrentStatus")
+  lecturer User @relation(fields: [user_id], references: [id], name: "LecturerPublication")
+  publisher User? @relation(fields: [publisher_id], references: [id], name: "PublisherPublication")
+  status PublicationStatus @relation(fields: [current_status_id], references: [id], name: "StatusPublication")
+  activities PublicationActivity[] @relation("PublicationActivities")
+  items TransactionItem[] @relation("Publications")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -105,18 +110,16 @@ model Publication{
 
 model PublicationActivity{
   id Int @id @default(autoincrement())
-
   publication_id Int
   user_id Int
   publication_status_id Int
+  publication_notes String?
+  publication_document_url String?
+  supporting_url String?
 
   publication Publication @relation(fields: [publication_id], references: [id], name: "PublicationActivities")
   user User @relation(fields: [user_id], references: [id], name: "ActivityUser")
   status PublicationStatus @relation(fields: [publication_status_id], references: [id], name: "StatusActivities")
-
-  publication_notes String?
-  publication_document_url String?
-  supporting_url String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -130,16 +133,19 @@ model Transaction {
   payment_proof String?          
   transaction_ticket String?
   transaction_notes String?
+
+  user  User @relation(fields: [user_id], references: [id], name: "UserTransaction")
+  status          TransactionStatus @relation(fields: [current_status_id], references: [id], name: "TransactionStatus")
+
+  items           TransactionItem[] @relation("TransactionItems")
+  logs            TransactionLog[] @relation("TransactionLogs")
+ 
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   deleted         Boolean           @default(false)
   @@map("transactions")
-
-  user  User @relation(fields: [user_id], references: [id], name: "UserTransaction")
-  status          TransactionStatus @relation(fields: [current_status_id], references: [id], name: "TransactionStatus")
-  items           TransactionItem[] @relation("TransactionItems")
-  logs            TransactionLog[] @relation("TransactionLogs")
 }
+
 model TransactionItem {
   id            Int         @id @default(autoincrement())
   transaction_id Int
@@ -148,12 +154,13 @@ model TransactionItem {
   quantity Int @default(1)
   total_cost    Int
 
-  @@map("transaction_items")
   transaction   Transaction @relation(fields: [transaction_id], references: [id], name: "TransactionItems")
   publication   Publication @relation(fields: [publication_id], references: [id], name: "Publications")
+  
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   deleted         Boolean           @default(false)
+  @@map("transaction_items")
 }
 model TransactionLog {
   id            Int         @id @default(autoincrement())
@@ -161,23 +168,26 @@ model TransactionLog {
   transaction_status_id      Int
   user_id        Int?       
   note          String?
+
+  transaction   Transaction @relation(fields: [transaction_id], references: [id], name: "TransactionLogs")
+  user          User?       @relation(fields: [user_id], references: [id], name: "UserTransactionLog")
+  status        TransactionStatus @relation(fields: [transaction_status_id], references: [id])
+
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   deleted         Boolean           @default(false)
   @@map("transaction_logs")
   
 
-  transaction   Transaction @relation(fields: [transaction_id], references: [id], name: "TransactionLogs")
-  user          User?       @relation(fields: [user_id], references: [id], name: "UserTransactionLog")
-  status        TransactionStatus @relation(fields: [transaction_status_id], references: [id])
 }
 model TransactionStatus {
   id    Int    @id @default(autoincrement())
   status_name  String
 
   transaction Transaction[] @relation("TransactionStatus")
-
+  publications Publication[] @relation(name: "CurrentStatus")
   logs         TransactionLog[]
+
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   deleted         Boolean           @default(false)

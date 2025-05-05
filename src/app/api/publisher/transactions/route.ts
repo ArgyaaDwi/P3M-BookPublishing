@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     if (!session || !session.user_id) {
       return NextResponse.json({ error: "Invalid session" }, { status: 401 });
     }
-    // Ambil raw body buat cek kalau kosong
+    
     const rawBody = await req.text();
     console.log("Raw Body:", rawBody);
 
@@ -72,13 +72,12 @@ export async function POST(req: NextRequest) {
       total_cost: item.cost * item.quantity,
     }));
 
-
     const publicationIds = items.map((item) => item.publication_id);
     await Promise.all([
       prisma.transactionItem.createMany({ data: itemData }),
       prisma.publication.updateMany({
         where: { id: { in: publicationIds } },
-        data: { is_invoice: true },
+        data: { is_invoice: true, current_transaction_status_id: 1 },
       }),
       prisma.transactionLog.create({
         data: {

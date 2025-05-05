@@ -1,5 +1,7 @@
 "use client";
 import Breadcrumb from "@/components/BreadCrumb";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { Lecturer } from "@/types/lecturerTypes";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -8,6 +10,7 @@ import Link from "next/link";
 import { formatDate } from "@/utils/dateFormatter";
 import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
+
 export default function LecturerPage() {
   const router = useRouter();
   const [lecturers, setLecturers] = useState<Lecturer[]>([]);
@@ -16,6 +19,32 @@ export default function LecturerPage() {
     { name: "Dashboard", url: "/admin/dashboard" },
     { name: "Dosen", url: "/admin/lecturer" },
   ];
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+
+    autoTable(doc, {
+      head: [
+        [
+          "No",
+          "Nama Dosen",
+          "Jurusan",
+          "Email",
+          "No. Telepon",
+          "Tanggal Terdaftar",
+        ],
+      ],
+      body: lecturers.map((lecturer, index) => [
+        index + 1,
+        lecturer.name,
+        lecturer.major?.major_name || "-",
+        lecturer.email,
+        lecturer.phone_number ? `0${lecturer.phone_number}` : "-",
+        formatDate(lecturer.createdAt),
+      ]),
+    });
+
+    doc.save("data-dosen.pdf");
+  };
 
   const getLecturers = async () => {
     try {
@@ -72,7 +101,10 @@ export default function LecturerPage() {
       <div className="bg-white rounded-lg mt-3 overflow-hidden px-4 pb-4">
         <div className="flex justify-between py-3">
           <div className="flex gap-2">
-            <button className="bg-white border border-gray-500 text-gray-500 px-3 py-2 font-semibold rounded-lg hover:bg-gray-500 hover:text-white transition-all duration-300 flex items-center gap-2">
+            <button
+              className="bg-white border border-gray-500 text-gray-500 px-3 py-2 font-semibold rounded-lg hover:bg-gray-500 hover:text-white transition-all duration-300 flex items-center gap-2"
+              onClick={handleExportPDF}
+            >
               <FileText className="w-5 h-5" /> Export PDF
             </button>
             <button className="bg-white border border-green-500 text-green-500 px-3 py-2 font-semibold rounded-lg hover:bg-green-500 hover:text-white transition-all duration-300 flex items-center gap-2">

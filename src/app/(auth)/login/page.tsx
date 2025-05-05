@@ -3,18 +3,18 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Input from "@/components/form/Input";
 import Image from "next/image";
+import ErrorValidation from "@/components/form/ErrorValidation";
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const handleSubmitLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
+    setLoading(true);
     try {
-      setLoading(true);
       const response = await fetch("/api/login", {
         method: "POST",
         headers: {
@@ -58,7 +58,7 @@ export default function LoginPage() {
         <p className="text-black text-xl mb-6 self-start font-normal text-center md:text-left">
           Buku untuk Berbagi, Akses untuk Berkembang.
         </p>
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+        {error && <ErrorValidation message={error} duration={3000} />}
         <form className="w-full md:w-4/4" onSubmit={handleSubmitLogin}>
           <Input
             type="text"
@@ -78,8 +78,9 @@ export default function LoginPage() {
           <button
             className="bg-yellow-500 text-white p-3 mt-3 font-semibold rounded-xl w-full hover:bg-primary"
             type="submit"
+            disabled={loading}
           >
-            {loading ? "Login" : "Loading..."}
+            {loading ? "Loading..." : "Login"}
           </button>
         </form>
         <p className="text-black text-center text-base mt-6 font-normal">

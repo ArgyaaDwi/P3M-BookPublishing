@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { CircleCheck } from "lucide-react";
 import StatusType from "@/types/statusTypes";
+import ErrorValidation from "@/components/form/ErrorValidation";
 type ModalStatusProps = {
   invoice: {
     id: number;
@@ -15,6 +16,7 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
   const [statusList, setStatusList] = useState<StatusType[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
   const [note, setNote] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     const getTransactionStatus = async () => {
       try {
@@ -34,7 +36,28 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!invoice || !selectedStatus) return;
+    setError(null);
+    if (!invoice) {
+      setError(null);
+      setTimeout(() => {
+        setError("Invoice tidak ditemukan");
+      }, 10);
+      return;
+    }
+    if (!selectedStatus) {
+      setError(null);
+      setTimeout(() => {
+        setError("Status verifikasi wajib dipilih");
+      }, 10);
+      return;
+    }
+    if (!note) {
+      setError(null);
+      setTimeout(() => {
+        setError("Catatan wajib diisi");
+      }, 10);
+      return;
+    }
     try {
       const res = await fetch(
         `/api/publisher/invoice/verify-payment/${invoice.id}`,
@@ -70,7 +93,6 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
         <CircleCheck className="w-5 h-5" />
         Verifikasi Pembayaran
       </button>
-
       {isOpen && invoice && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-8">
@@ -79,8 +101,9 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
             </h3>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
+                {error && <ErrorValidation message={error} duration={3000} />}
                 <label className="block font-medium text-black pb-1">
-                  Verifikasi:
+                  Verifikasi <span className="text-red-500">*</span>
                 </label>
                 <div className="flex flex-col gap-2">
                   {statusList.map((status) => (
@@ -110,7 +133,7 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
               </div>
               <div className="mb-1">
                 <label className="block font-medium text-black pb-1">
-                  Catatan:
+                  Catatan <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"

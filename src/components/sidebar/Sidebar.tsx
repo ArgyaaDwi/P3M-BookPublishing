@@ -1,7 +1,6 @@
 "use client";
-
 import { Menu, ChevronFirst, LogOut } from "lucide-react";
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState } from "react";
 import Image from "next/image";
 
 interface SidebarContextType {
@@ -11,16 +10,16 @@ const SidebarContext = createContext<SidebarContextType | null>(null);
 interface SidebarProps {
   title: string;
   children: React.ReactNode;
-}
-
-export default function Sidebar({ title, children }: SidebarProps) {
-  const [expanded, setExpanded] = useState(true);
-  const [user, setUser] = useState<{
+  user: {
     name: string;
     email: string;
-    avatarUrl: string;
+    avatarUrl?: string;
     role: string;
-  } | null>(null);
+  } | null;
+}
+
+export default function Sidebar({ title, children, user }: SidebarProps) {
+  const [expanded, setExpanded] = useState(true);
   const handleLogout = async () => {
     try {
       const response = await fetch("/api/logout", {
@@ -36,50 +35,42 @@ export default function Sidebar({ title, children }: SidebarProps) {
       console.error("Terjadi kesalahan saat logout:", error);
     }
   };
-  useEffect(() => {
-    const fetchUserSession = async () => {
-      try {
-        const response = await fetch("/api/session");
-        if (!response.ok) {
-          throw new Error("Gagal mengambil data sesi");
-        }
-        const data = await response.json();
-        setUser({
-          name: data.name,
-          email: data.email,
-          avatarUrl: data.avatarUrl || "/assets/images/user_img.png",
-          role: data.role || "Pengguna",
-        });
-      } catch (error) {
-        console.error("Error fetching session:", error);
-      }
-    };
+  //   const fetchUserSession = async () => {
+  //     try {
+  //       const response = await fetch("/api/session");
+  //       if (!response.ok) {
+  //         throw new Error("Gagal mengambil data sesi");
+  //       }
+  //       const data = await response.json();
+  //       setUser({
+  //         name: data.name,
+  //         email: data.email,
+  //         avatarUrl: data.avatarUrl || "/assets/images/user_img.png",
+  //         role: data.role || "Pengguna",
+  //       });
+  //     } catch (error) {
+  //       console.error("Error fetching session:", error);
+  //     }
+  //   };
 
-    fetchUserSession();
-  }, []);
+  //   fetchUserSession();
+  // }, []);
   return (
     <aside className={` h-screen transition-all ${expanded ? "w-64" : "w-16"}`}>
       {" "}
       <nav className=" h-full flex flex-col bg-white border-r shadow-sm">
         <div className="p-4 pb-2 flex justify-between items-center mb-5">
           <Image
-            src="/assets/images/p3m_logo.png"
+            src="/assets/images/pensHD.png"
             alt="Logo"
-            width={56} // sama dengan w-14 (14 * 4 = 56px)
-            height={56} // bisa diatur sesuai kebutuhan, atau biarkan proporsional
+            width={56}
+            height={56}
             className={`overflow-hidden transition-all ${
-              expanded ? "w-14 bg-secondary p- rounded-md" : "w-0"
+              expanded ? "w-14" : "w-0"
             }`}
           />
-          {/* <img
-            src="/assets/images/p3m_logo.png"
-            className={`overflow-hidden transition-all ${
-              expanded ? "w-14 bg-secondary p- rounded-md" : "w-0"
-            }`}
-            alt="Logo"
-          /> */}
           {expanded && (
-            <p className="ml-3 font-normal text-md text-black">{title}</p>
+            <p className="ml-3 font-medium text-md text-primary">{title}</p>
           )}
           <button
             onClick={() => setExpanded((curr) => !curr)}
@@ -92,11 +83,6 @@ export default function Sidebar({ title, children }: SidebarProps) {
           <ul className="flex-1 px-3 ">{children}</ul>
         </SidebarContext.Provider>
         <div className="border-t flex p-3">
-          {/* <img
-            src="/assets/images/user_img.png"
-            alt=""
-            className="w-10 h-10 rounded-md"
-          /> */}
           <Image
             src="/assets/images/user_img.png"
             alt="Logo"

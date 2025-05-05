@@ -8,6 +8,7 @@ export type InvoiceType = {
     id: number;
     status_name: string;
   };
+  is_shipped: boolean;
   user: {
     id: number;
     name: string;

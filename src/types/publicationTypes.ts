@@ -4,10 +4,15 @@ export type PublicationType = {
   publication_title: string;
   publication_document: string;
   current_status_id: number;
+  current_transaction_status_id: number;
   supporting_url?: string;
   createdAt: string;
   updatedAt: string;
   status: {
+    id: number;
+    status_name: string;
+  };
+  status_transaction: {
     id: number;
     status_name: string;
   };

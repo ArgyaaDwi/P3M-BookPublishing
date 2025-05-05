@@ -2,8 +2,8 @@ import { NextResponse, NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import { createSession } from "@/lib/session";
 import bcrypt from "bcryptjs";
-import prisma  from "@/lib/prisma";
-
+import prisma from "@/lib/prisma";
+import { SessionUser } from "@/types/sessionUser";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -32,7 +32,16 @@ export async function POST(req: NextRequest) {
     }
 
     // Buat session token
-    const session = await createSession(user);
+    const sessionUser: SessionUser = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      nidn: user.nidn,
+      address: user.address,
+      phone_number: user.phone_number ? user.phone_number.toString() : null,
+    };
+    const session = await createSession(sessionUser);
     const cookieStore = await cookies();
     cookieStore.set("session", session, {
       httpOnly: true,

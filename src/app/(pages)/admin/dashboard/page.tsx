@@ -1,8 +1,48 @@
+import prisma from "@/lib/prisma";
 import CardChart from "@/components/card/CardChart";
 import Card from "@/components/card/Card";
-import { Files, Users, UserRoundPen, File } from "lucide-react";
+import LatestLecturers from "../components/LatestLecturer";
+import LatestPublishers from "../components/LatestPublisher";
+import { formatCurrency } from "@/utils/formatCurrency";
+import {
+  Files,
+  Users,
+  UserRoundPen,
+  CircleAlert,
+  Banknote,
+  ArrowLeftRight,
+} from "lucide-react";
 import Breadcrumb from "@/components/BreadCrumb";
-export default function DashboardAdminPage() {
+import BarChart from "@/components/chart/BarChart";
+import DoughnutChart from "@/components/chart/DoughnutChart";
+
+export default async function DashboardAdminPage() {
+  const totalLecturer = await prisma.user.count({
+    where: {
+      role: "DOSEN",
+    },
+  });
+  const totalProposal = await prisma.publication.count();
+  const totalPublisher = await prisma.user.count({
+    where: {
+      role: "PENERBIT",
+    },
+  });
+  const totalUnVerifiyProposal = await prisma.publication.count({
+    where: {
+      current_status_id: 1,
+    },
+  });
+  const totalNominal = await prisma.transactionItem.aggregate({
+    _sum: {
+      total_cost: true,
+    },
+    where: {
+      deleted: false,
+    },
+  });
+  const nominal = totalNominal._sum.total_cost ?? 0;
+
   const breadcrumbItems = [
     {
       name: "Dashboard",
@@ -18,28 +58,44 @@ export default function DashboardAdminPage() {
         <Card
           icon={<Users color="gray" />}
           text="Total Dosen"
-          count={68}
+          count={totalLecturer}
           color="#63C2EB"
           url="/admin/lecturer"
         />
         <Card
-          icon={<Files color="gray" />}
-          text="Total Ajuan"
-          count={345}
-          color="#E2E557"
-          url="/admin/proposal"
-        />
-        <Card
           icon={<UserRoundPen color="gray" />}
           text="Total Penerbit"
-          count={19}
+          count={totalPublisher}
           color="#81C3C7"
           url="/admin/publisher"
         />
         <Card
-          icon={<File color="gray" />}
-          text="Belum Diverifikasi"
-          count={122}
+          icon={<Files color="gray" />}
+          text="Total Ajuan"
+          count={totalProposal}
+          color="#E2E557"
+          url="/admin/proposal"
+        />
+        <Card
+          icon={<CircleAlert color="gray" />}
+          text="Ajuan Belum Diverifikasi"
+          count={totalUnVerifiyProposal}
+          color="#1448CD"
+          url="/admin/proposal"
+        />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2">
+        <Card
+          icon={<ArrowLeftRight color="gray" />}
+          text="Total Transaksi"
+          count={totalPublisher}
+          color="#81C3C7"
+          url="/admin/publisher"
+        />
+        <Card
+          icon={<Banknote color="gray" />}
+          text="Total Nominal Transaksi"
+          count={`Rp. ${formatCurrency(nominal)}`}
           color="#1448CD"
           url="/admin/proposal"
         />
@@ -50,14 +106,16 @@ export default function DashboardAdminPage() {
           title="Statistik Ajuan"
           subtitle="Top 5 Jurusan dengan Jumlah Ajuan Tertinggi"
         >
-          <p className="text-gray-600 text-base font-normal">
-            Rencananya akan menampilkan grafik batang top 5 jurusan
-          </p>
+          <div>
+            <BarChart />
+            <BarChart />
+          </div>
         </CardChart>
+
         <CardChart title="Statistik Ajuan" subtitle="Persentase Status Ajuan">
-          <p className="text-gray-600 text-base font-normal">
-            Rencananya akan menampilkan grafik pie status ajuan
-          </p>
+          <div>
+            <DoughnutChart />
+          </div>
         </CardChart>
       </div>
       <p className="text-black font-semibold mt-4">Informasi Umum</p>
@@ -66,17 +124,13 @@ export default function DashboardAdminPage() {
           title="Dosen Terbaru"
           subtitle="Top 5 Dosen yang Baru Terdaftar"
         >
-          <p className="text-gray-600 text-base font-normal">
-            Rencananya akan menampilkan tabel dosen terbaru
-          </p>
+          <LatestLecturers />
         </CardChart>
         <CardChart
           title="Penerbit Terbaru"
           subtitle="Top 5 Penerbit yang Baru Terdaftar"
         >
-          <p className="text-gray-600 text-base font-normal">
-            Rencananya akan menampilkan tabel penerbit terbaru
-          </p>
+          <LatestPublishers />
         </CardChart>
       </div>
     </div>

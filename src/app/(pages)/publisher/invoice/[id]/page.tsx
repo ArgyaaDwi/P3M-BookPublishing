@@ -7,6 +7,7 @@ import Tabs from "@/components/Tabs";
 import LoadingIndicator from "@/components/Loading";
 import DetailInvoiceSection from "../components/DetailInvoice";
 import TransactionLogs from "@/components/invoice/LogTransaction";
+import ShipmentLogs from "@/components/shipment/LogShipment";
 const InvoiceDetailPublisher = () => {
   const { id } = useParams();
   const invoiceId = String(id);
@@ -55,7 +56,7 @@ const InvoiceDetailPublisher = () => {
     return <p className="text-center text-gray-500">Ajuan tidak ditemukan.</p>;
   const tabItems = [
     {
-      title: "Informasi Invoice",
+      title: "Overview",
       content: (
         <div className="p-4 bg-white rounded-xl shadow-md space-y-4">
           <DetailInvoiceSection invoice={invoice} />
@@ -63,11 +64,20 @@ const InvoiceDetailPublisher = () => {
       ),
     },
     {
-      title: "Log Aktivitas",
+      title: "Log Invoice",
       content: (
         <div>
           <h3 className="text-black font-bold">Log Invoice</h3>
           <TransactionLogs id={invoice.id} />
+        </div>
+      ),
+    },
+    {
+      title: "Pengiriman",
+      content: (
+        <div>
+          <h3 className="text-black font-bold">Log Invoice</h3>
+          <ShipmentLogs id={invoice.id} />
         </div>
       ),
     },

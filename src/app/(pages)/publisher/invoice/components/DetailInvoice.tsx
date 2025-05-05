@@ -3,6 +3,7 @@ import { InvoiceType } from "@/types/invoiceTypes";
 import { formatDate } from "@/utils/dateFormatter";
 import BadgeStatus from "@/components/BadgeStatus";
 import { Eye } from "lucide-react";
+import ModalShipment from "./ModalShipment";
 const DetailInvoiceSection = ({ invoice }: { invoice: InvoiceType }) => {
   return (
     <div>
@@ -38,7 +39,11 @@ const DetailInvoiceSection = ({ invoice }: { invoice: InvoiceType }) => {
           </p>
         )}
       </div>
-
+      {invoice.is_shipped && (
+        <div className="my-4">
+          <p className="text-sm mb-2 text-gray-500">Sudah dikirim</p>
+        </div>
+      )}
       {invoice.payment_proof && (
         <a
           href={
@@ -53,6 +58,14 @@ const DetailInvoiceSection = ({ invoice }: { invoice: InvoiceType }) => {
           <Eye className="w-4 h-4" />
           Bukti Pembayaran
         </a>
+      )}
+      {invoice.current_status_id === 2 && invoice.is_shipped !== true && (
+        <div className="space-pt-1 my-4">
+          <p className="text-sm mb-2 text-gray-500">
+            Pembayaran berhasil. Silahkan lakukan pengiriman.
+          </p>
+          <ModalShipment invoice={invoice} />
+        </div>
       )}
       <div>
         <h2 className="text-lg font-medium text-black mt-4 mb-2">

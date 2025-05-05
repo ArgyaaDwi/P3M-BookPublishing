@@ -12,7 +12,7 @@ import { PublicationType } from "@/types/publicationTypes";
 import LoadingIndicator from "@/components/Loading";
 import { Button } from "@mantine/core";
 
-const AllProposalAdmin = () => {
+const AllProposalAdmisn = () => {
   const [proposals, setProposals] = useState<PublicationType[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -113,8 +113,12 @@ const AllProposalAdmin = () => {
 
   const table = useMantineReactTable({
     columns,
+    enableGlobalFilter: true,
     data: proposals,
+    enableStickyHeader: true,
     enablePagination: true,
+    enableHiding: false,
+    enableColumnActions: false,
     enableSorting: true,
     initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   });
@@ -124,4 +128,4 @@ const AllProposalAdmin = () => {
   return <MantineReactTable table={table} />;
 };
 
-export default AllProposalAdmin;
+export default AllProposalAdmisn;

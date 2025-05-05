@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Clipboard } from "lucide-react";
 import { handlePasteText } from "@/utils/handlePaste";
-
+import ErrorValidation from "@/components/form/ErrorValidation";
 type PaymentModalProps = {
   invoice: {
     id: number;
@@ -15,13 +15,36 @@ const SubmitPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [note, setNote] = useState<string>("");
   const [paymentProof, setPaymentProof] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
   const handlePaste = async () => {
     const url = await handlePasteText();
     if (url) setPaymentProof(url);
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!invoice) return;
+    setError(null);
+    if (!paymentProof) {
+      setError(null);
+      setTimeout(() => {
+        setError("Bukti pembayaran wajib diisi");
+      }, 10);
+      return;
+    }
+    if (!note) {
+      setError(null);
+      setTimeout(() => {
+        setError("Catatan wajib diisi");
+      }, 10);
+      return;
+    }
+    if (!invoice) {
+      setError(null);
+      setTimeout(() => {
+        setError("Proposal tidak ditemukan");
+      }, 10);
+      return;
+    }
+
     try {
       const res = await fetch(
         `/api/admin/invoices/submit-payment/${invoice.id}`,
@@ -65,6 +88,7 @@ const SubmitPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
             </h3>
             <form onSubmit={handleSubmit}>
               <div className="mb-2">
+                {error && <ErrorValidation message={error} duration={3000} />}
                 <p className="block font-medium text-black pb-1">
                   Status Sekarang:{" "}
                   <span className="font-semibold">
@@ -77,7 +101,7 @@ const SubmitPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
                   htmlFor="paymentProof"
                   className="block font-medium text-black pb-1"
                 >
-                  Bukti Pembayaran:{" "}
+                  Bukti Pembayaran <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <input
@@ -108,7 +132,7 @@ const SubmitPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
               </div>
               <div className="mb-1">
                 <label className="block font-medium text-black pb-1">
-                  Catatan:
+                  Catatan <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"

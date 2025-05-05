@@ -1,5 +1,3 @@
-"use client";
-
 import Breadcrumb from "@/components/BreadCrumb";
 import Tabs from "@/components/Tabs";
 import AllProposalAdmin from "./components/AllProposal";
@@ -7,7 +5,7 @@ import ApprovedProposalAdmin from "./components/ApprovedProposal";
 import RevisedProposalAdmin from "./components/RevisedProposal";
 import VerifyProposalAdmin from "./components/VerifyProposal";
 import { ChartBar, FileText } from "lucide-react";
-//  
+// import AllProposalAdmisn from "@/components/tables/TestTable";
 export default function ProposalPage() {
   const tabItems = [
     {
@@ -23,7 +21,7 @@ export default function ProposalPage() {
               Export Excel
             </button>
           </div>{" "}
-          {/* <Example /> */}
+          {/* <AllProposalAdmisn /> */}
           <AllProposalAdmin />
         </div>
       ),
