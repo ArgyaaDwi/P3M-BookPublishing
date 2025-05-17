@@ -10,7 +10,7 @@ export default function LatestLecturers() {
   useEffect(() => {
     const fetchLatestLecturers = async () => {
       try {
-        const res = await fetch("/api/recent/lecturers");
+        const res = await fetch("/api/v1/recent/lecturers");
         if (res.ok) {
           const data = await res.json();
           setRecentLecturers(data);
@@ -33,7 +33,7 @@ export default function LatestLecturers() {
       <table className="min-w-full text-sm text-left text-gray-600">
         <thead className="bg-gray-100 text-gray-700 font-semibold">
           <tr>
-            <th>No.</th>
+            <th className="px-4 py-3">No.</th>
             <th className="px-4 py-3">Nama</th>
             <th className="px-4 py-3">Email</th>
             <th className="px-4 py-3">No. Telepon</th>

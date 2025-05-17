@@ -24,7 +24,7 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
   useEffect(() => {
     const getStatus = async () => {
       try {
-        const response = await fetch("/api/admin/status");
+        const response = await fetch("/api/v1/admin/status");
         const result = await response.json();
         if (result.status === "success" && Array.isArray(result.data)) {
           setStatusList(result.data);
@@ -60,15 +60,6 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
       }, 10);
       return;
     }
-
-    if (!note) {
-      setError(null);
-      setTimeout(() => {
-        setError("Catatan wajib diisi");
-      }, 10);
-      return;
-    }
-
     if (!proposal) {
       setError(null);
       setTimeout(() => {
@@ -79,7 +70,7 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
 
     try {
       const res = await fetch(
-        `/api/admin/proposals/verify-status/${proposal.id}`,
+        `/api/v1/admin/proposals/verify-status/${proposal.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -166,7 +157,7 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
               </div>
               <div className="mb-1">
                 <label className="block font-medium text-black pb-1">
-                  Catatan <span className="text-red-500">*</span>
+                  Catatan
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"
@@ -175,6 +166,10 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                 ></textarea>
+                <label className="block text-sm text-gray-600 pb-2">
+                  <CircleAlert className="inline pr-1" />
+                  Isi Bila Diperlukan (Opsional)
+                </label>
               </div>
               <div className="mb-5">
                 <label className="block font-medium text-black pb-1">
@@ -205,7 +200,7 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
                     <Clipboard className="h-5 w-5 text-black" />
                   </button>
                 </div>
-                <label className="pt-1 block text-sm font-normal text-black pb-1">
+                <label className="pt-1 block text-sm font-normal text-gray-600 pb-1">
                   <CircleAlert className="inline pr-1" />
                   Isi Bila Diperlukan (Opsional)
                 </label>

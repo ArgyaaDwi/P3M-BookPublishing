@@ -2,7 +2,7 @@ export type Publisher = {
     id: number;
     name: string;
     email: string;
-    phone_number: number;
+    phone_number: string;
     major: {
       major_name: string;
     };

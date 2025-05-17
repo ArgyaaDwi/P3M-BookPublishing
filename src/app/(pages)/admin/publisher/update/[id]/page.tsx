@@ -15,7 +15,7 @@ export default function UpdatePublisherPage() {
   useEffect(() => {
     const getPublisherById = async () => {
       try {
-        const response = await fetch(`/api/admin/publishers/${id}`);
+        const response = await fetch(`/api/v1/admin/publishers/${id}`);
         const result = await response.json();
         if (result.status === "success") {
           setNameInput(result.data.name ?? "");
@@ -48,7 +48,7 @@ export default function UpdatePublisherPage() {
       phone_number: phoneInput ? phoneInput.toString() : null,
     };
     try {
-      const response = await fetch(`/api/admin/publishers/${id}`, {
+      const response = await fetch(`/api/v1/admin/publishers/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

@@ -2,7 +2,7 @@ export type Lecturer = {
   id: number;
   name: string;
   email: string;
-  phone_number: number;
+  phone_number: string | null;
   major: {
     major_name: string;
   };

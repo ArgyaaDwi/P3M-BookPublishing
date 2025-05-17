@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Clipboard } from "lucide-react";
+import { Clipboard, CircleAlert } from "lucide-react";
 import { handlePasteText } from "@/utils/handlePaste";
 import ErrorValidation from "@/components/form/ErrorValidation";
 type PaymentModalProps = {
@@ -37,17 +37,9 @@ const RevisionPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
       }, 10);
       return;
     }
-    if (!note) {
-      setError(null);
-      setTimeout(() => {
-        setError("Catatan wajib diisi");
-      }, 10);
-      return;
-    }
-
     try {
       const res = await fetch(
-        `/api/admin/invoices/revision-payment/${invoice.id}`,
+        `/api/v1/admin/invoices/revision-payment/${invoice.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -132,7 +124,7 @@ const RevisionPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
               </div>
               <div className="mb-1">
                 <label className="block font-medium text-black pb-1">
-                  Catatan <span className="text-red-500">*</span>
+                  Catatan
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"
@@ -141,6 +133,10 @@ const RevisionPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                 ></textarea>
+                <label className="block text-sm font-normal text-gray-600 pb-1">
+                  <CircleAlert className="inline pr-1" />
+                  Isi Bila Diperlukan (Opsional)
+                </label>
               </div>
               <div className="flex items-center gap-2">
                 <button

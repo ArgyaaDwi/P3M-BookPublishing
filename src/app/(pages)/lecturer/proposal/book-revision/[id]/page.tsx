@@ -40,7 +40,7 @@ export default function SubmitBookRevision() {
   useEffect(() => {
     const fetchProposal = async () => {
       try {
-        const res = await fetch(`/api/lecturer/proposals/${proposalId}`);
+        const res = await fetch(`/api/v1/lecturer/proposals/${proposalId}`);
         const data = await res.json();
 
         if (data.status === "success") {
@@ -64,7 +64,7 @@ export default function SubmitBookRevision() {
 
     const fetchActivities = async () => {
       try {
-        const res = await fetch(`/api/proposals/log-revision/${proposalId}`);
+        const res = await fetch(`/api/v1/proposals/log-revision/${proposalId}`);
         const data = await res.json();
 
         if (data.status === "success") {
@@ -101,7 +101,7 @@ export default function SubmitBookRevision() {
     }
     try {
       const res = await fetch(
-        `/api/lecturer/proposals/book-revision/${proposalId}`,
+        `/api/v1/lecturer/proposals/book-revision/${proposalId}`,
         {
           method: "PUT",
           headers: {

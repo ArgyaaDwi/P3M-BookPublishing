@@ -21,7 +21,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const fetchActivities = async () => {
-      const res = await fetch("/api/proposals/log-activities/recent");
+      const res = await fetch("/api/v1/proposals/log-activities/recent");
       if (res.ok) {
         const data = await res.json();
         setActivities(data);

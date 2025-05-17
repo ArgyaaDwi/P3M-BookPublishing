@@ -22,7 +22,7 @@ const TransactionLogs = ({ id }: { id: number }) => {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const res = await fetch(`/api/publisher/invoice/invoice-logs/${id}`);
+        const res = await fetch(`/api/v1/publisher/invoice/invoice-logs/${id}`);
         if (!res.ok) {
           throw new Error(`HTTP error! Status: ${res.status}`);
         }

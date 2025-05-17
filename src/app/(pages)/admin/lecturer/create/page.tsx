@@ -31,7 +31,7 @@ export default function AddLecturerPage() {
 
   const getMajors = async () => {
     try {
-      const response = await fetch("/api/admin/majors");
+      const response = await fetch("/api/v1/admin/majors");
       const result = await response.json();
       if (result.status === "success" && Array.isArray(result.data)) {
         return result.data.map((major: { major_name: string }) => ({
@@ -111,7 +111,7 @@ export default function AddLecturerPage() {
     if (passwordInput !== confirmPassword) {
       setError(null);
       setTimeout(() => {
-        setError("Password dosen wajib diisi");
+        setError("Konfirmasi password tidak sesuai");
       }, 10);
       return;
     }
@@ -124,7 +124,7 @@ export default function AddLecturerPage() {
     };
 
     try {
-      const response = await fetch("/api/admin/lecturers", {
+      const response = await fetch("/api/v1/admin/lecturers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

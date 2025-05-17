@@ -29,7 +29,7 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await fetch("/api/admin/publishers");
+        const response = await fetch("/api/v1/admin/publishers");
         const result = await response.json();
         if (result.status === "success" && Array.isArray(result.data)) {
           setPublisherList(result.data);
@@ -54,16 +54,9 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
       }, 10);
       return;
     }
-    if (!note) {
-      setError(null);
-      setTimeout(() => {
-        setError("Catatan wajib diisi");
-      }, 10);
-      return;
-    }
 
     try {
-      const response = await fetch("/api/admin/proposals/assign-publisher", {
+      const response = await fetch("/api/v1/admin/proposals/assign-publisher", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -121,7 +114,7 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
               />
               <div className="mb-1">
                 <label className="block font-medium text-black pb-1">
-                  Catatan <span className="text-red-500">*</span>
+                  Catatan
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"
@@ -130,6 +123,10 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                 ></textarea>
+                <label className="block text-sm text-gray-600 pb-2">
+                  <CircleAlert className="inline pr-1" />
+                  Isi Bila Diperlukan (Opsional)
+                </label>
               </div>
               <div className="mb-5">
                 <label className="block font-medium text-black pb-1">
@@ -160,7 +157,7 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
                     <Clipboard className="h-5 w-5 text-black" />
                   </button>
                 </div>
-                <label className="pt-1 block text-sm font-normal text-black pb-1">
+                <label className="pt-1 block text-sm font-normal text-gray-600 pb-1">
                   <CircleAlert className="inline pr-1" />
                   Isi Bila Diperlukan (Opsional)
                 </label>

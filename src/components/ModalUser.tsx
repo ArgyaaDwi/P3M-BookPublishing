@@ -13,7 +13,7 @@ interface ModalUserProps {
 const ModalUser = ({ isOpen, onClose, user }: ModalUserProps) => {
   const handleLogout = async () => {
     try {
-      const response = await fetch("/api/logout", {
+      const response = await fetch("/api/v1/logout", {
         method: "POST",
       });
 

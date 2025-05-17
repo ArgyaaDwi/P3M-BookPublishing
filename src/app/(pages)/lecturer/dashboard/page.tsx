@@ -3,13 +3,15 @@ import CardChart from "@/components/card/CardChart";
 import Card from "@/components/card/Card";
 import { Files, CircleAlert, FilePenLine, CircleCheckBig } from "lucide-react";
 import Breadcrumb from "@/components/BreadCrumb";
+import DoughnutChart from "@/components/chart/DoughnutChart";
+import LatestProposals from "../components/LatestProposals";
 export default async function DashboardLecturerPage() {
   const totalMyProposal = await prisma.publication.count({
     where: {
       lecturer: {
-        id: 8
-      }
-    }
+        id: 8,
+      },
+    },
   });
   const breadcrumbItems = [
     {
@@ -28,8 +30,8 @@ export default async function DashboardLecturerPage() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
         <Card
           icon={<Files color="gray" />}
-          text="Total Ajuan"
-          count={68}
+          text="Ajuan Saya"
+          count={6}
           color="#63C2EB"
           url="/admin/lecturer"
         />
@@ -50,44 +52,24 @@ export default async function DashboardLecturerPage() {
         <Card
           icon={<FilePenLine color="gray" />}
           text="Ajuan Revisi"
-          count={122}
+          count={12}
           color="#1448CD"
           url="/admin/proposal"
         />
       </div>
       <p className="text-black font-semibold mt-4">Grafik Visualisasi</p>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2">
-        <CardChart
-          title="Statistik Ajuan"
-          subtitle="Top 5 Jurusan dengan Jumlah Ajuan Tertinggi"
-        >
-          <p className="text-gray-600 text-base font-normal">
-            Rencananya akan menampilkan grafik batang top 5 jurusan
-          </p>
-        </CardChart>
+      <div className="grid grid-cols-1 lg:grid-cols-1 gap-4 mt-2">
         <CardChart title="Statistik Ajuan" subtitle="Persentase Status Ajuan">
-          <p className="text-gray-600 text-base font-normal">
-            Rencananya akan menampilkan grafik pie status ajuan
-          </p>
+          <DoughnutChart />
         </CardChart>
       </div>
       <p className="text-black font-semibold mt-4">Informasi Umum</p>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-2">
+      <div className="grid grid-cols-1 lg:grid-cols-1 gap-4 mt-2">
         <CardChart
           title="Dosen Terbaru"
           subtitle="Top 5 Dosen yang Baru Terdaftar"
         >
-          <p className="text-gray-600 text-base font-normal">
-            Rencananya akan menampilkan tabel dosen terbaru
-          </p>
-        </CardChart>
-        <CardChart
-          title="Penerbit Terbaru"
-          subtitle="Top 5 Penerbit yang Baru Terdaftar"
-        >
-          <p className="text-gray-600 text-base font-normal">
-            Rencananya akan menampilkan tabel penerbit terbaru
-          </p>
+          <LatestProposals />
         </CardChart>
       </div>
     </div>

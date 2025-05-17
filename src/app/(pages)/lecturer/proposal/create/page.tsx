@@ -47,7 +47,7 @@ export default function AddProposalPage() {
     };
 
     try {
-      const response = await fetch("/api/lecturer/proposals", {
+      const response = await fetch("/api/v1/lecturer/proposals", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

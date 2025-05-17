@@ -21,7 +21,7 @@ const ProposalDetail = () => {
   useEffect(() => {
     const fetchProposal = async () => {
       try {
-        const res = await fetch(`/api/lecturer/proposals/${proposalId}`);
+        const res = await fetch(`/api/v1/lecturer/proposals/${proposalId}`);
         const data = await res.json();
         console.log("Detail Proposal:", data);
 

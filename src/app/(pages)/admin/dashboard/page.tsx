@@ -90,14 +90,14 @@ export default async function DashboardAdminPage() {
           text="Total Transaksi"
           count={totalPublisher}
           color="#81C3C7"
-          url="/admin/publisher"
+          url="/admin/invoice"
         />
         <Card
           icon={<Banknote color="gray" />}
           text="Total Nominal Transaksi"
           count={`Rp. ${formatCurrency(nominal)}`}
           color="#1448CD"
-          url="/admin/proposal"
+          url="/admin/invoice"
         />
       </div>
       <p className="text-black font-semibold mt-4">Grafik Visualisasi</p>
@@ -106,16 +106,11 @@ export default async function DashboardAdminPage() {
           title="Statistik Ajuan"
           subtitle="Top 5 Jurusan dengan Jumlah Ajuan Tertinggi"
         >
-          <div>
-            <BarChart />
-            <BarChart />
-          </div>
+          <BarChart />
         </CardChart>
 
         <CardChart title="Statistik Ajuan" subtitle="Persentase Status Ajuan">
-          <div>
-            <DoughnutChart />
-          </div>
+          <DoughnutChart />
         </CardChart>
       </div>
       <p className="text-black font-semibold mt-4">Informasi Umum</p>

@@ -23,7 +23,7 @@ const InvoiceDetailAdmin = () => {
   useEffect(() => {
     const fetchInvoice = async () => {
       try {
-        const res = await fetch(`/api/publisher/invoice/${invoiceId}`);
+        const res = await fetch(`/api/v1/publisher/invoice/${invoiceId}`);
         const data = await res.json();
         console.log("Detail Invoice:", data);
 

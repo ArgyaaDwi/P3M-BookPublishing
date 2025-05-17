@@ -10,7 +10,7 @@ export default function LatestPublishers() {
   useEffect(() => {
     const fetchLatestPublishers = async () => {
       try {
-        const res = await fetch("/api/recent/publishers");
+        const res = await fetch("/api/v1/recent/publishers");
         if (res.ok) {
           const data = await res.json();
           setRecentPublishers(data);
@@ -26,7 +26,7 @@ export default function LatestPublishers() {
   }, []);
 
   if (loading) return <LoadingIndicator />;
-  if (recentPublishers.length === 0) return <p>Tidak ada aktivitas terbaru.</p>;
+  if (recentPublishers.length === 0) return <p className="text-gray-600">Tidak ada aktivitas terbaru.</p>;
 
   return (
     <div className="overflow-x-auto border rounded-lg mt-1">

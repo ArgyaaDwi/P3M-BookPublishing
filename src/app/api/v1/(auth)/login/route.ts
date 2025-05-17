@@ -40,6 +40,8 @@ export async function POST(req: NextRequest) {
       nidn: user.nidn,
       address: user.address,
       phone_number: user.phone_number ? user.phone_number.toString() : null,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     };
     const session = await createSession(sessionUser);
     const cookieStore = await cookies();

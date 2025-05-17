@@ -15,7 +15,7 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      const response = await fetch("/api/login", {
+      const response = await fetch("/api/v1/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -30,8 +30,6 @@ export default function LoginPage() {
       }
 
       console.log("Login successful:", result.data);
-
-      // Cek role dan arahkan ke halaman sesuai dengan role
       const userRole = result.data.role;
 
       if (userRole === "ADMIN") {

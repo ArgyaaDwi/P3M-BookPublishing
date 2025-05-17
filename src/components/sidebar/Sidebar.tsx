@@ -22,7 +22,7 @@ export default function Sidebar({ title, children, user }: SidebarProps) {
   const [expanded, setExpanded] = useState(true);
   const handleLogout = async () => {
     try {
-      const response = await fetch("/api/logout", {
+      const response = await fetch("/api/v1/logout", {
         method: "POST",
       });
 
@@ -35,26 +35,6 @@ export default function Sidebar({ title, children, user }: SidebarProps) {
       console.error("Terjadi kesalahan saat logout:", error);
     }
   };
-  //   const fetchUserSession = async () => {
-  //     try {
-  //       const response = await fetch("/api/session");
-  //       if (!response.ok) {
-  //         throw new Error("Gagal mengambil data sesi");
-  //       }
-  //       const data = await response.json();
-  //       setUser({
-  //         name: data.name,
-  //         email: data.email,
-  //         avatarUrl: data.avatarUrl || "/assets/images/user_img.png",
-  //         role: data.role || "Pengguna",
-  //       });
-  //     } catch (error) {
-  //       console.error("Error fetching session:", error);
-  //     }
-  //   };
-
-  //   fetchUserSession();
-  // }, []);
   return (
     <aside className={` h-screen transition-all ${expanded ? "w-64" : "w-16"}`}>
       {" "}

@@ -1,8 +1,8 @@
 "use server";
 import { cookies } from "next/headers";
 import { createSessionToken, verifySessionToken } from "./encrypt";
-import { User } from "../../prisma/interfaces";
-
+// import { User } from "../../prisma/interfaces";
+import { SessionUser } from "@/types/sessionUser";
 // Get session cookie
 export async function getSession() {
   const cookieStore = await cookies();
@@ -17,7 +17,7 @@ export async function getSession() {
 }
 
 // Create session cookie
-export async function createSession(user: User) {
+export async function createSession(user: SessionUser) {
   const expiresAt = new Date(Date.now() + 1 * 60 * 60 * 1000 * 24);
   const session = await createSessionToken({
     user_id: user.id,
@@ -29,7 +29,7 @@ export async function createSession(user: User) {
     phone_number: user.phone_number,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
-    expiresAt: expiresAt,
+    expiresAt,
   });
 
   const cookieStore = await cookies();

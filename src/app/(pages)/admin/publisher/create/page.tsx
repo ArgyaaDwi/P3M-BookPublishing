@@ -3,8 +3,10 @@ import React, { useState } from "react";
 import Breadcrumb from "@/components/BreadCrumb";
 import Input from "@/components/form/Input";
 import { useRouter } from "next/navigation";
+import ErrorValidation from "@/components/form/ErrorValidation";
 export default function AddLecturerPage() {
   const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
   const [nameInput, setNameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
@@ -22,12 +24,43 @@ export default function AddLecturerPage() {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
 
-    if (passwordInput !== confirmPassword) {
-      alert("Password dan konfirmasi password tidak cocok.");
+    if (!nameInput) {
+      setError(null);
+      setTimeout(() => {
+        setError("Nama penerbit wajib diisi");
+      }, 10);
       return;
     }
-
+    if (!emailInput) {
+      setError(null);
+      setTimeout(() => {
+        setError("Email penerbit wajib diisi");
+      }, 10);
+      return;
+    }
+    if (!passwordInput) {
+      setError(null);
+      setTimeout(() => {
+        setError("Password penerbit wajib diisi");
+      }, 10);
+      return;
+    }
+    if (!confirmPassword) {
+      setError(null);
+      setTimeout(() => {
+        setError("Konfirmasi password wajib diisi");
+      }, 10);
+      return;
+    }
+    if (passwordInput !== confirmPassword) {
+      setError(null);
+      setTimeout(() => {
+        setError("Konfirmasi password tidak sesuai");
+      }, 10);
+      return;
+    }
     const data = {
       name: nameInput,
       email: emailInput,
@@ -35,7 +68,7 @@ export default function AddLecturerPage() {
     };
 
     try {
-      const response = await fetch("/api/admin/publishers", {
+      const response = await fetch("/api/v1/admin/publishers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,10 +110,12 @@ export default function AddLecturerPage() {
         <hr className="mb-3" />
         <div className="px-4">
           <form onSubmit={handleFormSubmit}>
+            {error && <ErrorValidation message={error} duration={3000} />}
             <Input
               type="text"
               placeholder="Masukkan Nama Penerbit"
               label="Nama Penerbit"
+              isRequired
               value={nameInput}
               onChange={handleNameChange}
             />
@@ -88,6 +123,7 @@ export default function AddLecturerPage() {
               type="text"
               placeholder="Masukkan Email Penerbit"
               label="Email"
+              isRequired
               value={emailInput}
               onChange={handleEmailChange}
             />
@@ -96,6 +132,7 @@ export default function AddLecturerPage() {
               placeholder="Masukkan Password"
               label="Password"
               isPassword={true}
+              isRequired
               value={passwordInput}
               onChange={handlePasswordChange}
             />
@@ -105,6 +142,7 @@ export default function AddLecturerPage() {
               label="Masukkan Kembali Password"
               isPassword={true}
               value={confirmPassword}
+              isRequired
               onChange={handleConfirmPasswordChange}
             />
             <div className="flex items-center gap-2">

@@ -62,12 +62,12 @@ export default function ProfilePage() {
       }, 10);
       return;
     }
-    const res = await fetch("/api/profile/update", {
+    const res = await fetch("/api/v1/profile/update", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
     });
-    await fetch("/api/profile/refresh-session", {
+    await fetch("/api/v1/profile/refresh-session", {
       method: "POST",
     });
     window.location.href = "/admin/profile";

@@ -47,7 +47,7 @@ const SubmitPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
 
     try {
       const res = await fetch(
-        `/api/admin/invoices/submit-payment/${invoice.id}`,
+        `/api/v1/admin/invoices/submit-payment/${invoice.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -136,7 +136,7 @@ const SubmitPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"
-                  placeholder="Masukkan Catatan Keterangan yang Diinginkan"
+                  placeholder="Masukkan Catatan ex: Transfer ke rekening xxxxx via xxxxx"
                   rows={4}
                   value={note}
                   onChange={(e) => setNote(e.target.value)}

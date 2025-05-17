@@ -17,7 +17,7 @@ export default function PublisherDetailPage() {
   useEffect(() => {
     const fetchPublisher = async () => {
       try {
-        const response = await fetch(`/api/admin/publishers/${id}`);
+        const response = await fetch(`/api/v1/admin/publishers/${id}`);
         const result = await response.json();
         if (result.status === "success") {
           setPublisher(result.data);

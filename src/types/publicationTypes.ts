@@ -3,7 +3,7 @@ export type PublicationType = {
   publication_ticket: string;
   publication_title: string;
   publication_document: string;
-  current_status_id: number;
+  current_status_id: number ;
   current_transaction_status_id: number;
   supporting_url?: string;
   createdAt: string;

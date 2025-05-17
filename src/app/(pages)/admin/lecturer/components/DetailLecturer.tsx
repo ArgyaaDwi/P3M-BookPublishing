@@ -1,11 +1,11 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import { Pencil, Lock } from "lucide-react";
 import { Lecturer } from "@/types/lecturerTypes";
 import { formatDate } from "@/utils/dateFormatter";
+import Image from "next/image";
 
 export default function DetailLecturer() {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function DetailLecturer() {
   useEffect(() => {
     const getLecturerById = async () => {
       try {
-        const response = await fetch(`/api/admin/lecturers/${id}`);
+        const response = await fetch(`/api/v1/admin/lecturers/${id}`);
         const result = await response.json();
         if (result.status === "success") {
           setLecturer(result.data);
@@ -36,10 +36,12 @@ export default function DetailLecturer() {
     <div>
       <div className="bg-white rounded-lg mt-3 overflow-hidden px-4 pb-4 flex flex-row items-start">
         <div className="flex flex-col items-center mr-6">
-          <img
+          <Image
             src="/assets/images/vader.jpeg"
             alt="User Avatar"
-            className="w-42 h-42 rounded-md object-cover mb-4"
+            width={168}
+            height={168}
+            className="rounded-md object-cover mb-4"
           />
           <button
             className="bg-white border border-blue-500 text-blue-500 px-4 py-2 rounded-md mb-2 hover:bg-blue-900 hover:text-white w-full flex items-center justify-center gap-2"

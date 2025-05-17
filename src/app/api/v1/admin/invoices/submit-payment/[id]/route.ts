@@ -29,7 +29,6 @@ export async function PUT(
     if (!transaction) {
       return NextResponse.json(
         { error: "Invoice tidak ditemukan" },
-        { status: 404 }
       );
     }
     const publicationIds = transaction.items.map((item) => item.publication_id);

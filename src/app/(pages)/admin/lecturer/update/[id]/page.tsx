@@ -18,7 +18,7 @@ export default function UpdateLecturerPage() {
   useEffect(() => {
     const getLecturerById = async () => {
       try {
-        const response = await fetch(`/api/admin/lecturers/${id}`);
+        const response = await fetch(`/api/v1/admin/lecturers/${id}`);
         const result = await response.json();
         if (result.status === "success") {
           setNameInput(result.data.name ?? "");
@@ -37,7 +37,7 @@ export default function UpdateLecturerPage() {
   useEffect(() => {
     const fetchMajors = async () => {
       try {
-        const response = await fetch("/api/admin/majors");
+        const response = await fetch("/api/v1/admin/majors");
         const result = await response.json();
         if (result.status === "success" && Array.isArray(result.data)) {
           setMajors(
@@ -74,7 +74,7 @@ export default function UpdateLecturerPage() {
       major: selectedOption,
     };
     try {
-      const response = await fetch(`/api/admin/lecturers/${id}`, {
+      const response = await fetch(`/api/v1/admin/lecturers/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

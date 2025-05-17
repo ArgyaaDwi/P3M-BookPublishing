@@ -1,27 +1,30 @@
 "use client";
 import Breadcrumb from "@/components/BreadCrumb";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 import { Lecturer } from "@/types/lecturerTypes";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, Pencil, Trash2, FileText, ChartBar } from "lucide-react";
-import Link from "next/link";
+import { Eye, Pencil, Trash2, Search } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
 import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import ExportButton from "@/components/button/ExportButton";
+import CreateButton from "@/components/button/CreateButton";
 
 export default function LecturerPage() {
   const router = useRouter();
   const [lecturers, setLecturers] = useState<Lecturer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [filteredLecturers, setFilteredLecturers] = useState<Lecturer[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
   const breadcrumbItems = [
     { name: "Dashboard", url: "/admin/dashboard" },
     { name: "Dosen", url: "/admin/lecturer" },
   ];
   const handleExportPDF = () => {
     const doc = new jsPDF();
-
     autoTable(doc, {
       head: [
         [
@@ -33,7 +36,7 @@ export default function LecturerPage() {
           "Tanggal Terdaftar",
         ],
       ],
-      body: lecturers.map((lecturer, index) => [
+      body: filteredLecturers.map((lecturer, index) => [
         index + 1,
         lecturer.name,
         lecturer.major?.major_name || "-",
@@ -46,9 +49,13 @@ export default function LecturerPage() {
     doc.save("data-dosen.pdf");
   };
 
+  const handleExportExcel = () => {
+    console.log("Export Excel");
+  };
+
   const getLecturers = async () => {
     try {
-      const response = await fetch("/api/admin/lecturers");
+      const response = await fetch("/api/v1/admin/lecturers");
       const result = await response.json();
       if (result.status === "success" && Array.isArray(result.data)) {
         return result.data;
@@ -68,15 +75,47 @@ export default function LecturerPage() {
   useEffect(() => {
     getLecturers().then((lecturers) => {
       setLecturers(lecturers);
+      setFilteredLecturers(lecturers);
       setIsLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setFilteredLecturers(lecturers);
+      return;
+    }
+    const searchTermLower = searchTerm.toLowerCase();
+    const filtered = lecturers.filter((lecturer) => {
+      const formattedDate = lecturer.createdAt.toString();
+      return (
+        (lecturer.name &&
+          lecturer.name.toLowerCase().includes(searchTermLower)) ||
+        (lecturer.email &&
+          lecturer.email.toLowerCase().includes(searchTermLower)) ||
+        (lecturer.phone_number &&
+          lecturer.phone_number.toLowerCase().includes(searchTermLower)) ||
+        (lecturer.createdAt &&
+          formatDate(lecturer.createdAt)
+            .toLowerCase()
+            .includes(searchTermLower)) ||
+        (lecturer.createdAt &&
+          formattedDate.toLowerCase().includes(searchTermLower)) ||
+        (lecturer.id && lecturer.id.toString().includes(searchTermLower))
+      );
+    });
+    setFilteredLecturers(filtered);
+  }, [searchTerm, lecturers]);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
   const handleDeleteLecturerById = async (id: number) => {
     if (!confirm("Apakah kamu yakin ingin menghapus dosen ini?")) {
       return;
     }
     try {
-      const response = await fetch(`/api/admin/lecturers/${id}`, {
+      const response = await fetch(`/api/v1/admin/lecturers/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -101,22 +140,32 @@ export default function LecturerPage() {
       <div className="bg-white rounded-lg mt-3 overflow-hidden px-4 pb-4">
         <div className="flex justify-between py-3">
           <div className="flex gap-2">
-            <button
-              className="bg-white border border-gray-500 text-gray-500 px-3 py-2 font-semibold rounded-lg hover:bg-gray-500 hover:text-white transition-all duration-300 flex items-center gap-2"
-              onClick={handleExportPDF}
-            >
-              <FileText className="w-5 h-5" /> Export PDF
-            </button>
-            <button className="bg-white border border-green-500 text-green-500 px-3 py-2 font-semibold rounded-lg hover:bg-green-500 hover:text-white transition-all duration-300 flex items-center gap-2">
-              <ChartBar className="w-5 h-5" />
-              Export Excel
-            </button>
+            <ExportButton type="pdf" onClick={handleExportPDF} />
+            <ExportButton type="excel" onClick={handleExportExcel} />
           </div>
-          <Link href="/admin/lecturer/create">
-            <button className="bg-secondary text-black px-3 py-2 font-semibold rounded-lg hover:text-white hover:bg-primary transition-all duration-300">
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Cari di semua kolom..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+                className="border text-primary  border-gray-300 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-primary w-64"
+              />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  ×
+                </button>
+              )}
+            </div>
+            <CreateButton href="/admin/lecturer/create">
               + Tambah Dosen
-            </button>
-          </Link>
+            </CreateButton>
+          </div>
         </div>
         <table className="w-full border-collapse border border-gray-300 rounded-lg">
           <thead>
@@ -139,15 +188,12 @@ export default function LecturerPage() {
                   <LoadingIndicator />
                 </td>
               </tr>
-            ) : lecturers.length > 0 ? (
-              lecturers.map((lecturer, index) => (
+            ) : filteredLecturers.length > 0 ? (
+              filteredLecturers.map((lecturer, index) => (
                 <tr key={lecturer.id}>
                   <td className="p-4 text-black border font-semibold">
                     {index + 1}
                   </td>
-                  {/* <td className="p-4 text-black border font-semibold">
-                    {lecturer.name}
-                  </td> */}
                   <td className="p-4 text-black border font-semibold">
                     <div className="flex flex-col">
                       <span>{lecturer.name}</span>
@@ -156,16 +202,16 @@ export default function LecturerPage() {
                       </span>
                     </div>
                   </td>
-                  <td className="p-4 text-black border font-semibold">
+                  <td className="p-4 text-black border">
                     {lecturer.major?.major_name || "-"}
                   </td>
-                  <td className="p-4 text-black border font-semibold">
+                  <td className="p-4 text-black border ">
                     {lecturer.email}
                   </td>
-                  <td className="p-4 text-black border font-semibold">
+                  <td className="p-4 text-black border">
                     {lecturer.phone_number ? `0${lecturer.phone_number}` : "-"}
                   </td>
-                  <td className="p-4 text-black border font-semibold">
+                  <td className="p-4 text-black border">
                     {formatDate(lecturer.createdAt)}
                   </td>
                   <td className="p-4 text-black border">
@@ -198,9 +244,11 @@ export default function LecturerPage() {
                 </tr>
               ))
             ) : (
-              <tr>
+              <tr key="empty">
                 <td colSpan={7} className="p-4 text-center text-gray-500">
-                  Tidak ada data dosen
+                  {searchTerm
+                    ? `Tidak ada dosen yang cocok dengan kata kunci "${searchTerm}"`
+                    : "Tidak ada data dosen."}
                 </td>
               </tr>
             )}

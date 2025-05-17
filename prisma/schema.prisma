@@ -17,14 +17,14 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+enum ShipmentStatus {
+  SHIPPED     // Dikirim
+  DELIVERED   // Diterima
+}
 enum user_role {
   ADMIN
   DOSEN
   PENERBIT
-}
-enum ShipmentStatus {
-  SHIPPED     // Dikirim
-  DELIVERED   // Diterima
 }
 
 model Major {
@@ -47,12 +47,12 @@ model User {
   password String
   role user_role
   major_id Int?
-  major Major? @relation(fields: [major_id], references: [id])
   nidn String?
   address String? 
   phone_number String?
   profile_pic String?
 
+  major Major? @relation(fields: [major_id], references: [id])
   publications Publication[] @relation("LecturerPublication")
   publisherPublication Publication[] @relation("PublisherPublication")
   activities PublicationActivity[] @relation("ActivityUser")

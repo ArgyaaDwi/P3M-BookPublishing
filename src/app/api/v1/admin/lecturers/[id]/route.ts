@@ -68,24 +68,24 @@ export async function PUT(
     );
   }
 
-  let phoneNumberBigInt: bigint | null = null;
-  if (phone_number) {
-    if (!isNaN(Number(phone_number))) {
-      try {
-        phoneNumberBigInt = BigInt(phone_number);
-      } catch {
-        return NextResponse.json(
-          { status: "error", message: "Invalid phone number format " },
-          { status: 400 }
-        );
-      }
-    } else {
-      return NextResponse.json(
-        { status: "error", message: "Phone number must be numeric" },
-        { status: 400 }
-      );
-    }
-  }
+  // let phoneNumberBigInt: bigint | null = null;
+  // if (phone_number) {
+  //   if (!isNaN(Number(phone_number))) {
+  //     try {
+  //       phoneNumberBigInt = BigInt(phone_number);
+  //     } catch {
+  //       return NextResponse.json(
+  //         { status: "error", message: "Invalid phone number format " },
+  //         { status: 400 }
+  //       );
+  //     }
+  //   } else {
+  //     return NextResponse.json(
+  //       { status: "error", message: "Phone number must be numeric" },
+  //       { status: 400 }
+  //     );
+  //   }
+  // }
 
   try {
     const updatedLecturer = await prisma.user.update({
@@ -95,7 +95,7 @@ export async function PUT(
         email,
         major: major ? { connect: { major_name: major } } : undefined,
         address,
-        phone_number: phoneNumberBigInt,
+        phone_number: phone_number,
       },
     });
     return NextResponse.json({

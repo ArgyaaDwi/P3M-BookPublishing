@@ -72,7 +72,7 @@ const ModalShipment: React.FC<ModalShipmentProps> = ({ invoice }) => {
       return;
     }
     try {
-      const res = await fetch(`/api/publisher/shipment`, {
+      const res = await fetch(`/api/v1/publisher/shipment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

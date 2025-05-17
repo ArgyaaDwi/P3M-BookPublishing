@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Files } from "lucide-react";
+import { Files, CircleAlert } from "lucide-react";
 import StatusType from "@/types/statusTypes";
 import ErrorValidation from "@/components/form/ErrorValidation";
 type ModalVerifyDocumentProps = {
@@ -24,7 +24,7 @@ const ModalVerifyDocument: React.FC<ModalVerifyDocumentProps> = ({
   useEffect(() => {
     const getStatus = async () => {
       try {
-        const response = await fetch("/api/lecturer/proposals/status-document");
+        const response = await fetch("/api/v1/lecturer/proposals/status-document");
         const result = await response.json();
         if (result.status === "success" && Array.isArray(result.data)) {
           setStatusList(result.data);
@@ -54,13 +54,6 @@ const ModalVerifyDocument: React.FC<ModalVerifyDocumentProps> = ({
       }, 10);
       return;
     }
-    if (!note) {
-      setError(null);
-      setTimeout(() => {
-        setError("Catatan wajib diisi");
-      }, 10);
-      return;
-    }
 
     if (!proposal) {
       setError(null);
@@ -71,7 +64,7 @@ const ModalVerifyDocument: React.FC<ModalVerifyDocumentProps> = ({
     }
     try {
       const res = await fetch(
-        `/api/lecturer/proposals/verify-document/${proposal.id}`,
+        `/api/v1/lecturer/proposals/verify-document/${proposal.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -145,7 +138,7 @@ const ModalVerifyDocument: React.FC<ModalVerifyDocumentProps> = ({
               </div>
               <div className="mb-1">
                 <label className="block text-sm font-medium text-black pb-1">
-                  Catatan <span className="text-red-500">*📘</span>
+                  Catatan 
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"
@@ -154,6 +147,10 @@ const ModalVerifyDocument: React.FC<ModalVerifyDocumentProps> = ({
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                 ></textarea>
+                <label className="block text-sm font-normal text-gray-600 pb-1">
+                  <CircleAlert className="inline pr-1" />
+                  Isi Bila Diperlukan (Opsional)
+                </label>
               </div>
               <div className="flex items-center gap-2">
                 <button

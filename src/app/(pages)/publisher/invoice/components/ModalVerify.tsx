@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { CircleCheck } from "lucide-react";
+import { CircleCheck, CircleAlert } from "lucide-react";
 import StatusType from "@/types/statusTypes";
 import ErrorValidation from "@/components/form/ErrorValidation";
 type ModalStatusProps = {
@@ -21,7 +21,7 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
     const getTransactionStatus = async () => {
       try {
         const response = await fetch(
-          "/api/publisher/invoice/transaction-status"
+          "/api/v1/publisher/invoice/transaction-status"
         );
         const result = await response.json();
         if (result.status === "success" && Array.isArray(result.data)) {
@@ -51,16 +51,10 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
       }, 10);
       return;
     }
-    if (!note) {
-      setError(null);
-      setTimeout(() => {
-        setError("Catatan wajib diisi");
-      }, 10);
-      return;
-    }
+
     try {
       const res = await fetch(
-        `/api/publisher/invoice/verify-payment/${invoice.id}`,
+        `/api/v1/publisher/invoice/verify-payment/${invoice.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -133,7 +127,7 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
               </div>
               <div className="mb-1">
                 <label className="block font-medium text-black pb-1">
-                  Catatan <span className="text-red-500">*</span>
+                  Catatan 
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"
@@ -142,6 +136,10 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                 ></textarea>
+                <label className="block text-sm font-normal text-gray-600 pb-4">
+                  <CircleAlert className="inline pr-1" />
+                  Isi Bila Diperlukan (Opsional)
+                </label>
               </div>
               <div className="flex items-center gap-2">
                 <button

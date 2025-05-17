@@ -19,7 +19,7 @@ const AllProposalAdmisn = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/admin/proposals?status=all");
+        const res = await fetch("/api/v1/admin/proposals?status=all");
         const data = await res.json();
         console.log("Proposals:", data);
         setProposals(data.data || []);
@@ -36,9 +36,9 @@ const AllProposalAdmisn = () => {
   const columns = useMemo<MRT_ColumnDef<PublicationType>[]>(
     () => [
       {
-        accessorFn: (_, index: number) => index + 1,
         header: "No",
         size: 50,
+        Cell: ({ row }) => row.index + 1,
       },
       {
         accessorKey: "publication_title",

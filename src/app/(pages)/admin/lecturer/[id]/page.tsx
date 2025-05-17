@@ -17,7 +17,7 @@ export default function LecturerDetailPage() {
   useEffect(() => {
     const fetchLecturer = async () => {
       try {
-        const response = await fetch(`/api/admin/lecturers/${id}`);
+        const response = await fetch(`/api/v1/admin/lecturers/${id}`);
         const result = await response.json();
         if (result.status === "success") {
           setLecturer(result.data);

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Files, Clipboard } from "lucide-react";
+import { Files, Clipboard, CircleAlert } from "lucide-react";
 import { handlePasteText } from "@/utils/handlePaste";
 import ErrorValidation from "@/components/form/ErrorValidation";
 type ModalInputDocumentProps = {
@@ -52,13 +52,6 @@ const ModalInputDocument: React.FC<ModalInputDocumentProps> = ({
       }, 10);
       return;
     }
-    if (!note) {
-      setError(null);
-      setTimeout(() => {
-        setError("Catatan wajib diisi");
-      }, 10);
-      return;
-    }
     if (!proposal) {
       setError(null);
       setTimeout(() => {
@@ -67,15 +60,18 @@ const ModalInputDocument: React.FC<ModalInputDocumentProps> = ({
       return;
     }
     try {
-      const res = await fetch(`/api/publisher/proposals/upload-files/${proposal.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          note,
-          coverBookUrl,
-          proofUrl,
-        }),
-      });
+      const res = await fetch(
+        `/api/publisher/proposals/upload-files/${proposal.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            note,
+            coverBookUrl,
+            proofUrl,
+          }),
+        }
+      );
 
       const result = await res.json();
       if (res.ok) {
@@ -178,6 +174,10 @@ const ModalInputDocument: React.FC<ModalInputDocumentProps> = ({
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                 ></textarea>
+                <label className="block text-sm font-normal text-gray-600 pb-1">
+                  <CircleAlert className="inline pr-1" />
+                  Isi Bila Diperlukan (Opsional)
+                </label>
               </div>
 
               <div className="flex items-center gap-2">
