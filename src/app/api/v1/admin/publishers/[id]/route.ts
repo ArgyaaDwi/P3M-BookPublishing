@@ -104,23 +104,11 @@ export async function PUT(
     );
   }
 
-  let phoneNumberBigInt: bigint | null = null;
-  if (phone_number) {
-    if (!isNaN(Number(phone_number))) {
-      try {
-        phoneNumberBigInt = BigInt(phone_number);
-      } catch {
-        return NextResponse.json(
-          { status: "error", message: "Invalid phone number format " },
-          { status: 400 }
-        );
-      }
-    } else {
-      return NextResponse.json(
-        { status: "error", message: "Phone number must be numeric" },
-        { status: 400 }
-      );
-    }
+  if (phone_number && isNaN(Number(phone_number))) {
+    return NextResponse.json(
+      { status: "error", message: "Phone number must be numeric" },
+      { status: 400 }
+    );
   }
 
   try {
@@ -130,7 +118,7 @@ export async function PUT(
         name,
         email,
         address,
-        phone_number: phoneNumberBigInt,
+        phone_number,
       },
     });
     return NextResponse.json({

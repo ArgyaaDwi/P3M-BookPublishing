@@ -1,18 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
 import { formatDate } from "@/utils/dateFormatter";
-import LoadingIndicator from "@/components/Loading";
 import { PublicationType } from "@/types/publicationTypes";
 import { useRouter } from "next/navigation";
-import BadgeStatus from "@/components/BadgeStatus";
 import { Eye, Search } from "lucide-react";
+import { getBadgeVariant } from "@/utils/statusPublicationHelper";
+import { exportToPDF } from "@/utils/exportToPDF";
+import { exportToExcel } from "@/utils/exportToExcel";
+import Pagination from "@/components/Pagination";
+import BadgeStatus from "@/components/BadgeStatus";
+import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
 import ExportButton from "@/components/button/ExportButton";
 import CreateButton from "@/components/button/CreateButton";
-import Image from "next/image";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-import { getBadgeVariant } from "@/utils/statusPublicationHelper";
+
 const ApprovedProposal = () => {
   const router = useRouter();
   const [proposals, setProposals] = useState<PublicationType[]>([]);
@@ -21,23 +22,42 @@ const ApprovedProposal = () => {
     []
   );
   const [searchTerm, setSearchTerm] = useState("");
+  // Variabel state untuk halaman dan jumlah item per halaman
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
+  const paginatedProposals = filteredProposals.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const handleExportPDF = () => {
-    const doc = new jsPDF();
-    autoTable(doc, {
-      head: [
-        ["No", "Judul Ajuan", "Kode Ajuan", "Status", "Tanggal Pengajuan"],
-      ],
-      body: filteredProposals.map((proposal, index) => [
-        index + 1,
-        proposal.publication_title,
-        proposal.publication_ticket || "-",
-        proposal.status?.status_name,
-        formatDate(proposal.createdAt),
-      ]),
-    });
+    const headers = [
+      ["No", "Judul Ajuan", "Kode Ajuan", "Status", "Tanggal Pengajuan"],
+    ];
+    const body = paginatedProposals.map((proposal, index) => [
+      (currentPage - 1) * itemsPerPage + index + 1,
+      proposal.publication_title,
+      proposal.publication_ticket || "-",
+      proposal.status?.status_name,
+      formatDate(proposal.createdAt),
+    ]);
 
-    doc.save("data-my-approvedproposal.pdf");
+    exportToPDF({
+      head: headers,
+      body: body,
+      filename: `my-proposal-approved-halaman-${currentPage}`,
+    });
+  };
+
+  const handleExportExcel = () => {
+    const data = proposals.map((proposal, index) => ({
+      No: index + 1,
+      "Judul Ajuan": proposal.publication_title,
+      "Kode Ajuan": proposal.publication_ticket,
+      Status: proposal.status?.status_name,
+      "Tanggal Pengajuan": formatDate(proposal.createdAt),
+    }));
+    exportToExcel(data, "my-proposal-approved");
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,6 +65,7 @@ const ApprovedProposal = () => {
     setSearchTerm(value);
     if (value.trim() === "") {
       setFilteredProposals(proposals);
+      setCurrentPage(1);
     } else {
       const filtered = proposals.filter((proposal) => {
         const searchString = value.toLowerCase();
@@ -55,13 +76,9 @@ const ApprovedProposal = () => {
           formatDate(proposal.createdAt)?.toLowerCase().includes(searchString)
         );
       });
-
       setFilteredProposals(filtered);
+      setCurrentPage(1);
     }
-  };
-
-  const handleExportExcel = () => {
-    console.log("Export Excel");
   };
 
   useEffect(() => {
@@ -86,7 +103,7 @@ const ApprovedProposal = () => {
 
   if (loading) return <LoadingIndicator />;
 
-  return filteredProposals.length > 0 || searchTerm ? (
+  return (
     <div>
       <div className="flex justify-between pb-2">
         <div className="flex gap-2">
@@ -120,23 +137,25 @@ const ApprovedProposal = () => {
           </CreateButton>
         </div>
       </div>
-      {filteredProposals.length > 0 ? (
-        <table className="w-full text-left border border-gray-300 mt-2">
-          <thead>
-            <TableHeader
-              columns={[
-                "No",
-                "Judul Ajuan",
-                "Status",
-                "Tanggal Pengajuan",
-                "Aksi",
-              ]}
-            />
-          </thead>
-          <tbody>
-            {filteredProposals.map((proposal, index) => (
+      <table className="w-full text-left border border-gray-300 mt-2">
+        <thead>
+          <TableHeader
+            columns={[
+              "No",
+              "Judul Ajuan",
+              "Status",
+              "Tanggal Pengajuan",
+              "Aksi",
+            ]}
+          />
+        </thead>
+        <tbody>
+          {paginatedProposals.length > 0 ? (
+            paginatedProposals.map((proposal, index) => (
               <tr key={proposal.id}>
-                <td className="p-4 text-black border">{index + 1}</td>
+                <td className="p-4 text-black border">
+                  {(currentPage - 1) * itemsPerPage + index + 1}
+                </td>
                 <td className="p-4 text-black border font-semibold">
                   <div className="flex flex-col">
                     <span>{proposal.publication_title}</span>
@@ -178,37 +197,28 @@ const ApprovedProposal = () => {
                   </div>
                 </td>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <div className="w-full flex flex-col items-center justify-center mt-8 border border-gray-300 rounded-lg p-8">
-          <Image
-            src="/assets/images/nodata.jpg"
-            alt="Data kosong"
-            width={240}
-            height={160}
-            className="opacity-70"
-          />
-          <p className="text-gray-500 mt-4 text-center">
-            Tidak ada data yang sesuai dengan pencarian &quot;{searchTerm}
-            &quot;.
-          </p>
-        </div>
-      )}
-    </div>
-  ) : (
-    <div className="w-full flex flex-col items-center justify-center mt-8">
-      <Image
-        src="/assets/images/nodata.jpg"
-        alt="Data kosong"
-        width={240}
-        height={160}
-        className="opacity-70"
+            ))
+          ) : (
+            <tr key="empty">
+              <td colSpan={5} className="p-4 text-center text-gray-500">
+                {searchTerm
+                  ? `Tidak ada proposal yang cocok dengan kata kunci "${searchTerm}"`
+                  : "Tidak ada data proposal."}
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+      <Pagination
+        currentPage={currentPage}
+        totalItems={filteredProposals.length}
+        itemsPerPage={itemsPerPage}
+        onPageChange={setCurrentPage}
+        onItemsPerPageChange={(limit) => {
+          setItemsPerPage(limit);
+          setCurrentPage(1);
+        }}
       />
-      <p className="text-gray-500 mt-4 text-center">
-        Belum ada proposal yang diajukan.
-      </p>
     </div>
   );
 };

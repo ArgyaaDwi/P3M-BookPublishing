@@ -5,6 +5,17 @@ import ApprovedProposal from "./components/ApprovedProposal";
 import RevisedProposal from "./components/RevisedProposal";
 import AllProposal from "./components/AllProposall";
 
+const breadcrumbItems = [
+  {
+    name: "Dashboard",
+    url: "/lecturer/dashboard",
+  },
+  {
+    name: "Ajuan",
+    url: "/lecturer/proposal",
+  },
+];
+
 export default function ProposalPage() {
   const tabItems = [
     {
@@ -30,17 +41,6 @@ export default function ProposalPage() {
           <ApprovedProposal />
         </div>
       ),
-    },
-  ];
-
-  const breadcrumbItems = [
-    {
-      name: "Dashboard",
-      url: "/lecturer/dashboard",
-    },
-    {
-      name: "Ajuan",
-      url: "/lecturer/proposal",
     },
   ];
 

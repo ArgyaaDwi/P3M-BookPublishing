@@ -77,7 +77,7 @@ const AllProposalPublisher = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/publisher/proposals?status=all");
+        const res = await fetch("/api/v1/publisher/proposals?status=all");
         const data = await res.json();
         console.log("Proposals:", data);
         setProposals(data.data || []);

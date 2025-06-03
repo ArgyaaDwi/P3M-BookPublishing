@@ -1,53 +1,74 @@
 "use client";
-import Breadcrumb from "@/components/BreadCrumb";
 import { Eye, Pencil, Trash2, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Publisher } from "@/types/publisherTypes";
-import LoadingIndicator from "@/components/Loading";
 import { formatDate } from "@/utils/dateFormatter";
+import { exportToExcel } from "@/utils/exportToExcel";
+import { exportToPDF } from "@/utils/exportToPDF";
+import Pagination from "@/components/Pagination";
+import LoadingIndicator from "@/components/Loading";
+import Breadcrumb from "@/components/BreadCrumb";
 import TableHeader from "@/components/TableHeader";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 import ExportButton from "@/components/button/ExportButton";
 import CreateButton from "@/components/button/CreateButton";
+
+const breadcrumbItems = [
+  {
+    name: "Dashboard",
+    url: "/admin/dashboard",
+  },
+  {
+    name: "Penerbit",
+    url: "/admin/publisher",
+  },
+];
+
 export default function PublisherPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [publishers, setPublishers] = useState<Publisher[]>([]);
   const [filteredPublishers, setFilteredPublishers] = useState<Publisher[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  // Variabel state untuk halaman dan jumlah item per halaman
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   
-  const breadcrumbItems = [
-    {
-      name: "Dashboard",
-      url: "/admin/dashboard",
-    },
-    {
-      name: "Penerbit",
-      url: "/admin/publisher",
-    },
-  ];
-  const handleExportPDF = () => {
-    const doc = new jsPDF();
-    autoTable(doc, {
-      head: [
-        ["No", "Nama Penerbit", "Email", "No. Telepon", "Tanggal Terdaftar"],
-      ],
-      body: filteredPublishers.map((publisher, index) => [
-        index + 1,
-        publisher.name,
-        publisher.email,
-        publisher.phone_number || "-",
-        formatDate(publisher.createdAt),
-      ]),
-    });
+  const paginatedPublishers = filteredPublishers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
-    doc.save("data-penerbit.pdf");
+  const handleExportPDF = () => {
+    const headers = [
+      ["No", "Nama Penerbit", "Email", "No. Telepon", "Tanggal Terdaftar"],
+    ];
+    const body = paginatedPublishers.map((publisher, index) => [
+      (currentPage - 1) * itemsPerPage + index + 1,
+      publisher.name,
+      publisher.email,
+      publisher.phone_number || "-",
+      formatDate(publisher.createdAt),
+    ]);
+
+    exportToPDF({
+      head: headers,
+      body: body,
+      filename: `penerbit-halaman-${currentPage}`,
+    });
   };
+
   const handleExportExcel = () => {
-    console.log("Export Excel");
+    const data = publishers.map((publisher, index) => ({
+      No: index + 1,
+      "Nama Penerbit": publisher.name,
+      Email: publisher.email,
+      "No. Telepon": publisher.phone_number || "-",
+      "Tanggal Terdaftar": formatDate(publisher.createdAt),
+    }));
+    exportToExcel(data, "semua-penerbit");
   };
+
   const getPublishers = async () => {
     try {
       const response = await fetch("/api/v1/admin/publishers");
@@ -74,10 +95,13 @@ export default function PublisherPage() {
       setIsLoading(false);
     });
   }, []);
-
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
   useEffect(() => {
     if (!searchTerm.trim()) {
       setFilteredPublishers(publishers);
+      setCurrentPage(1);
       return;
     }
     const searchTermLower = searchTerm.toLowerCase();
@@ -100,10 +124,9 @@ export default function PublisherPage() {
       );
     });
     setFilteredPublishers(filtered);
+    setCurrentPage(1);
   }, [searchTerm, publishers]);
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
+
   const handleDeletePublisherById = async (id: number) => {
     if (!confirm("Apakah kamu yakin ingin menghapus penerbit ini?")) {
       return;
@@ -183,11 +206,11 @@ export default function PublisherPage() {
                   <LoadingIndicator />
                 </td>
               </tr>
-            ) : filteredPublishers.length > 0 ? (
-              filteredPublishers.map((publisher, index) => (
+            ) : paginatedPublishers.length > 0 ? (
+              paginatedPublishers.map((publisher, index) => (
                 <tr key={publisher.id}>
                   <td className="p-4 text-black border font-semibold">
-                    {index + 1}
+                    {(currentPage - 1) * itemsPerPage + index + 1}
                   </td>
                   <td className="p-4 text-black border font-semibold">
                     {publisher.name}
@@ -238,6 +261,16 @@ export default function PublisherPage() {
             )}
           </tbody>
         </table>
+        <Pagination
+          currentPage={currentPage}
+          totalItems={filteredPublishers.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+          onItemsPerPageChange={(limit) => {
+            setItemsPerPage(limit);
+            setCurrentPage(1);
+          }}
+        />
       </div>
     </div>
   );

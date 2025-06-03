@@ -2,16 +2,17 @@
 import { useEffect, useState } from "react";
 import { formatDate } from "@/utils/dateFormatter";
 import { useRouter } from "next/navigation";
-import BadgeStatus from "@/components/BadgeStatus";
 import { Eye, Search } from "lucide-react";
 import { InvoiceType } from "@/types/invoiceTypes";
+import { exportToPDF } from "@/utils/exportToPDF";
+import { exportToExcel } from "@/utils/exportToExcel";
+import BadgeStatus from "@/components/BadgeStatus";
+import Pagination from "@/components/Pagination";
 import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
 import SubmitPaymentModal from "./ModalSubmitPayment";
 import RevisionPaymentModal from "./ModalRevisionPayment";
 import ExportButton from "@/components/button/ExportButton";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 
 const AllInvoiceAdmin = () => {
   const router = useRouter();
@@ -19,10 +20,43 @@ const AllInvoiceAdmin = () => {
   const [loading, setLoading] = useState(true);
   const [filteredInvoices, setFilteredInvoices] = useState<InvoiceType[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  // Variabel state untuk halaman dan jumlah item per halaman
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
+  const paginatedInvoices = filteredInvoices.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const handleExportPDF = () => {
+    const headers = [["No", "Kode Transaksi", "Tanggal Transaksi", "Status"]];
 
+    const body = paginatedInvoices.map((invoice, index) => [
+      (currentPage - 1) * itemsPerPage + index + 1,
+      invoice.transaction_ticket,
+      formatDate(invoice.createdAt),
+      invoice.status?.status_name,
+    ]);
+
+    exportToPDF({
+      head: headers,
+      body: body,
+      filename: `data-all-invoice-halaman-${currentPage}`,
+    });
+  };
+
+  const handleExportExcel = () => {
+    const data = invoices.map((invoice, index) => ({
+      No: index + 1,
+      "Kode Transaksi": invoice.transaction_ticket,
+      "Tanggal Transaksi": formatDate(invoice.createdAt),
+      Status: invoice.status?.status_name,
+    }));
+    exportToExcel(data, "semua-invoice-all");
+  };
   useEffect(() => {
     if (!searchTerm.trim()) {
       setFilteredInvoices(invoices);
+      setCurrentPage(1);
       return;
     }
     const searchTermLower = searchTerm.toLowerCase();
@@ -45,28 +79,12 @@ const AllInvoiceAdmin = () => {
       );
     });
     setFilteredInvoices(filtered);
+    setCurrentPage(1);
   }, [searchTerm, invoices]);
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
-  const handleExportPDF = () => {
-    const doc = new jsPDF();
 
-    autoTable(doc, {
-      head: [
-        ["No", "Kode Transaksi", "Tanggal Transaksi", "Status"],
-      ],
-      body: filteredInvoices.map((invoice, index) => [
-        index + 1,
-        invoice.transaction_ticket,
-        formatDate(invoice.createdAt),
-        invoice.status?.status_name,
-      ]),
-    });
-
-    doc.save("data-all-invoice.pdf");
-  };
-  const handleExportExcel = () => {};
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -126,8 +144,8 @@ const AllInvoiceAdmin = () => {
           />
         </thead>
         <tbody>
-          {filteredInvoices.length > 0 ? (
-            filteredInvoices.map((invoice, index) => (
+          {paginatedInvoices.length > 0 ? (
+            paginatedInvoices.map((invoice, index) => (
               <tr key={invoice.id}>
                 <td className="p-4 text-black border">{index + 1}</td>
                 <td className="p-4 text-black border font-semibold">
@@ -190,6 +208,16 @@ const AllInvoiceAdmin = () => {
           )}
         </tbody>
       </table>
+      <Pagination
+        currentPage={currentPage}
+        totalItems={filteredInvoices.length}
+        itemsPerPage={itemsPerPage}
+        onPageChange={setCurrentPage}
+        onItemsPerPageChange={(limit) => {
+          setItemsPerPage(limit);
+          setCurrentPage(1);
+        }}
+      />
     </div>
   );
 };

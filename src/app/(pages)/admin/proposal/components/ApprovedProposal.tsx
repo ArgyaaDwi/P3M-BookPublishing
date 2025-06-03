@@ -1,17 +1,18 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import BadgeStatus from "@/components/BadgeStatus";
 import { Eye, Search } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
-import LoadingIndicator from "@/components/Loading";
 import { PublicationType } from "@/types/publicationTypes";
+import { exportToPDF } from "@/utils/exportToPDF";
+import { exportToExcel } from "@/utils/exportToExcel";
+import { getBadgeVariant } from "@/utils/statusPublicationHelper";
+import BadgeStatus from "@/components/BadgeStatus";
+import LoadingIndicator from "@/components/Loading";
 import ModalPublisher from "./ModalAssignPublisher";
 import TableHeader from "@/components/TableHeader";
 import ExportButton from "@/components/button/ExportButton";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-import { getBadgeVariant } from "@/utils/statusPublicationHelper";
+import Pagination from "@/components/Pagination";
 
 const ApprovedProposalAdmin = () => {
   const router = useRouter();
@@ -21,31 +22,56 @@ const ApprovedProposalAdmin = () => {
   );
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
 
+  const paginatedProposals = filteredProposals.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
   const handleExportPDF = () => {
-    const doc = new jsPDF();
-
-    autoTable(doc, {
-      head: [
-        ["No", "Judul Ajuan", "Dosen Pemohon", "Tanggal Pengajuan", "Status"],
+    const headers = [
+      [
+        "No",
+        "Judul Ajuan",
+        "Dosen Pemohon",
+        "Tanggal Pengajuan",
+        "Penerbit",
+        "Status",
       ],
-      body: filteredProposals.map((proposal, index) => [
-        index + 1,
-        proposal.publication_title,
-        proposal.lecturer?.name,
-        formatDate(proposal.createdAt),
-        proposal.status?.status_name,
-      ]),
-    });
+    ];
 
-    doc.save("data-approved-proposal.pdf");
+    const body = paginatedProposals.map((proposal, index) => [
+      (currentPage - 1) * itemsPerPage + index + 1,
+      proposal.publication_title,
+      proposal.lecturer?.name,
+      formatDate(proposal.createdAt),
+      proposal.publisher?.name || "-",
+      proposal.status?.status_name,
+    ]);
+
+    exportToPDF({
+      head: headers,
+      body: body,
+      filename: `proposal-revised-halaman-${currentPage}`,
+    });
   };
+
   const handleExportExcel = () => {
-    console.log("Export Excel");
+    const data = proposals.map((proposal, index) => ({
+      No: index + 1,
+      "Judul Ajuan": proposal.publication_title,
+      "Dosen Pemohon": proposal.lecturer?.name,
+      "Tanggal Pengajuan": formatDate(proposal.createdAt),
+      Penerbit: proposal.publisher?.name || "-",
+      Status: proposal.status?.status_name,
+    }));
+    exportToExcel(data, "semua-proposal-revised");
   };
   useEffect(() => {
     if (!searchTerm.trim()) {
       setFilteredProposals(proposals);
+      setCurrentPage(1);
       return;
     }
     const searchTermLower = searchTerm.toLowerCase();
@@ -70,6 +96,7 @@ const ApprovedProposalAdmin = () => {
       );
     });
     setFilteredProposals(filtered);
+    setCurrentPage(1);
   }, [searchTerm, proposals]);
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -136,8 +163,8 @@ const ApprovedProposalAdmin = () => {
           />
         </thead>
         <tbody>
-          {filteredProposals.length > 0 ? (
-            filteredProposals.map((proposal, index) => (
+          {paginatedProposals.length > 0 ? (
+            paginatedProposals.map((proposal, index) => (
               <tr key={proposal.id}>
                 <td className="p-4 text-black border">{index + 1}</td>
                 <td className="p-4 text-black border font-semibold">
@@ -197,6 +224,16 @@ const ApprovedProposalAdmin = () => {
           )}
         </tbody>
       </table>
+      <Pagination
+        currentPage={currentPage}
+        totalItems={filteredProposals.length}
+        itemsPerPage={itemsPerPage}
+        onPageChange={setCurrentPage}
+        onItemsPerPageChange={(limit) => {
+          setItemsPerPage(limit);
+          setCurrentPage(1);
+        }}
+      />
     </div>
   );
 };

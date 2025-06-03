@@ -1,16 +1,22 @@
 "use client";
-import Breadcrumb from "@/components/BreadCrumb";
 import { Lecturer } from "@/types/lecturerTypes";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, Pencil, Trash2, Search } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
+import { exportToPDF } from "@/utils/exportToPDF";
+import { exportToExcel } from "@/utils/exportToExcel";
+import Breadcrumb from "@/components/BreadCrumb";
 import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 import ExportButton from "@/components/button/ExportButton";
 import CreateButton from "@/components/button/CreateButton";
+import Pagination from "@/components/Pagination";
+
+const breadcrumbItems = [
+  { name: "Dashboard", url: "/admin/dashboard" },
+  { name: "Dosen", url: "/admin/lecturer" },
+];
 
 export default function LecturerPage() {
   const router = useRouter();
@@ -18,39 +24,53 @@ export default function LecturerPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [filteredLecturers, setFilteredLecturers] = useState<Lecturer[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  // Variabel state untuk halaman dan jumlah item per halaman
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
 
-  const breadcrumbItems = [
-    { name: "Dashboard", url: "/admin/dashboard" },
-    { name: "Dosen", url: "/admin/lecturer" },
-  ];
+  const paginatedLecturers = filteredLecturers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   const handleExportPDF = () => {
-    const doc = new jsPDF();
-    autoTable(doc, {
-      head: [
-        [
-          "No",
-          "Nama Dosen",
-          "Jurusan",
-          "Email",
-          "No. Telepon",
-          "Tanggal Terdaftar",
-        ],
+    const headers = [
+      [
+        "No",
+        "Nama Dosen",
+        "Jurusan",
+        "Email",
+        "No. Telepon",
+        "Tanggal Terdaftar",
       ],
-      body: filteredLecturers.map((lecturer, index) => [
-        index + 1,
-        lecturer.name,
-        lecturer.major?.major_name || "-",
-        lecturer.email,
-        lecturer.phone_number ? `0${lecturer.phone_number}` : "-",
-        formatDate(lecturer.createdAt),
-      ]),
-    });
+    ];
 
-    doc.save("data-dosen.pdf");
+    const body = paginatedLecturers.map((lecturer, index) => [
+      (currentPage - 1) * itemsPerPage + index + 1,
+      lecturer.name,
+      lecturer.major?.major_name || "-",
+      lecturer.email,
+      lecturer.phone_number ? `0${lecturer.phone_number}` : "-",
+      formatDate(lecturer.createdAt),
+    ]);
+
+    exportToPDF({
+      head: headers,
+      body: body,
+      filename: `dosen-halaman-${currentPage}`,
+    });
   };
 
   const handleExportExcel = () => {
-    console.log("Export Excel");
+    const data = lecturers.map((lecturer, index) => ({
+      No: index + 1,
+      "Nama Dosen": lecturer.name,
+      Jurusan: lecturer.major?.major_name || "-",
+      Email: lecturer.email,
+      "No. Telepon": lecturer.phone_number ? `0${lecturer.phone_number}` : "-",
+      "Tanggal Terdaftar": formatDate(lecturer.createdAt),
+    }));
+    exportToExcel(data, "semua-dosen");
   };
 
   const getLecturers = async () => {
@@ -83,6 +103,7 @@ export default function LecturerPage() {
   useEffect(() => {
     if (!searchTerm.trim()) {
       setFilteredLecturers(lecturers);
+      setCurrentPage(1);
       return;
     }
     const searchTermLower = searchTerm.toLowerCase();
@@ -95,6 +116,8 @@ export default function LecturerPage() {
           lecturer.email.toLowerCase().includes(searchTermLower)) ||
         (lecturer.phone_number &&
           lecturer.phone_number.toLowerCase().includes(searchTermLower)) ||
+        (lecturer.nidn &&
+          lecturer.nidn.toLowerCase().includes(searchTermLower)) ||
         (lecturer.createdAt &&
           formatDate(lecturer.createdAt)
             .toLowerCase()
@@ -105,6 +128,7 @@ export default function LecturerPage() {
       );
     });
     setFilteredLecturers(filtered);
+    setCurrentPage(1);
   }, [searchTerm, lecturers]);
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -188,8 +212,8 @@ export default function LecturerPage() {
                   <LoadingIndicator />
                 </td>
               </tr>
-            ) : filteredLecturers.length > 0 ? (
-              filteredLecturers.map((lecturer, index) => (
+            ) : paginatedLecturers.length > 0 ? (
+              paginatedLecturers.map((lecturer, index) => (
                 <tr key={lecturer.id}>
                   <td className="p-4 text-black border font-semibold">
                     {index + 1}
@@ -205,9 +229,7 @@ export default function LecturerPage() {
                   <td className="p-4 text-black border">
                     {lecturer.major?.major_name || "-"}
                   </td>
-                  <td className="p-4 text-black border ">
-                    {lecturer.email}
-                  </td>
+                  <td className="p-4 text-black border ">{lecturer.email}</td>
                   <td className="p-4 text-black border">
                     {lecturer.phone_number ? `0${lecturer.phone_number}` : "-"}
                   </td>
@@ -254,6 +276,16 @@ export default function LecturerPage() {
             )}
           </tbody>
         </table>
+        <Pagination
+          currentPage={currentPage}
+          totalItems={filteredLecturers.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+          onItemsPerPageChange={(limit) => {
+            setItemsPerPage(limit);
+            setCurrentPage(1);
+          }}
+        />
       </div>
     </div>
   );

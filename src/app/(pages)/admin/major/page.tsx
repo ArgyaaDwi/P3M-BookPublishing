@@ -1,16 +1,22 @@
 "use client";
-import Breadcrumb from "@/components/BreadCrumb";
 import { Major } from "@/types/interfaces";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Pencil, Trash2, Search } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
+import Breadcrumb from "@/components/BreadCrumb";
+import { exportToExcel } from "@/utils/exportToExcel";
+import { exportToPDF } from "@/utils/exportToPDF";
 import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
 import ExportButton from "@/components/button/ExportButton";
 import CreateButton from "@/components/button/CreateButton";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import Pagination from "@/components/Pagination";
+
+const breadcrumbItems = [
+  { name: "Dashboard", url: "/admin/dashboard" },
+  { name: "Program Studi", url: "/admin/major" },
+];
 
 export default function MajorPage() {
   const router = useRouter();
@@ -18,29 +24,37 @@ export default function MajorPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [filteredMajors, setFilteredMajors] = useState<Major[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  // Variabel state untuk halaman dan jumlah item per halaman
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
 
-  const breadcrumbItems = [
-    { name: "Dashboard", url: "/admin/dashboard" },
-    { name: "Program Studi", url: "/admin/major" },
-  ];
+  const paginatedMajors = filteredMajors.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
   const handleExportPDF = () => {
-    const doc = new jsPDF();
+    const headers = [["No", "Nama Program Studi", "Created At"]];
+    const body = paginatedMajors.map((major, index) => [
+      (currentPage - 1) * itemsPerPage + index + 1,
+      major.major_name,
+      formatDate(major.createdAt),
+    ]);
 
-    autoTable(doc, {
-      head: [["No", "Nama Program Studi", "Created At"]],
-      body: majors.map((major, index) => [
-        index + 1,
-        major.major_name,
-        formatDate(major.createdAt),
-      ]),
+    exportToPDF({
+      head: headers,
+      body: body,
+      filename: `prodi-halaman-${currentPage}`,
     });
-
-    doc.save("data-prodi.pdf");
   };
+
   const handleExportExcel = () => {
-    console.log("Export Excel");
+    const data = majors.map((major, index) => ({
+      No: index + 1,
+      "Nama Program Studi": major.major_name,
+      "Tanggal Dibuat": formatDate(major.createdAt),
+    }));
+    exportToExcel(data, "semua-prodi");
   };
-
   const getMajors = async () => {
     try {
       const response = await fetch("/api/v1/admin/majors");
@@ -71,6 +85,7 @@ export default function MajorPage() {
   useEffect(() => {
     if (!searchTerm.trim()) {
       setFilteredMajors(majors);
+      setCurrentPage(1);
       return;
     }
     const searchTermLower = searchTerm.toLowerCase();
@@ -89,6 +104,7 @@ export default function MajorPage() {
       );
     });
     setFilteredMajors(filtered);
+    setCurrentPage(1);
   }, [searchTerm, majors]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -169,11 +185,11 @@ export default function MajorPage() {
                   <LoadingIndicator />
                 </td>
               </tr>
-            ) : filteredMajors.length > 0 ? (
-              filteredMajors.map((major, index) => (
+            ) : paginatedMajors.length > 0 ? (
+              paginatedMajors.map((major, index) => (
                 <tr key={major.id}>
                   <td className="p-4 text-black border font-semibold">
-                    {index + 1}
+                    {(currentPage - 1) * itemsPerPage + index + 1}
                   </td>
                   <td className="p-4 text-black border font-semibold">
                     {major.major_name}
@@ -212,6 +228,16 @@ export default function MajorPage() {
             )}
           </tbody>
         </table>
+        <Pagination
+          currentPage={currentPage}
+          totalItems={filteredMajors.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+          onItemsPerPageChange={(limit) => {
+            setItemsPerPage(limit);
+            setCurrentPage(1);
+          }}
+        />
       </div>
     </div>
   );

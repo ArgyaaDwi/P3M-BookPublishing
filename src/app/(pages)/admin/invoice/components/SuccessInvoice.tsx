@@ -2,9 +2,12 @@
 import { useEffect, useState } from "react";
 import { formatDate } from "@/utils/dateFormatter";
 import { useRouter } from "next/navigation";
-import BadgeStatus from "@/components/BadgeStatus";
 import { Eye, Search } from "lucide-react";
 import { InvoiceType } from "@/types/invoiceTypes";
+import { exportToPDF } from "@/utils/exportToPDF";
+import { exportToExcel } from "@/utils/exportToExcel";
+import Pagination from "@/components/Pagination";
+import BadgeStatus from "@/components/BadgeStatus";
 import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
 import ExportButton from "@/components/button/ExportButton";
@@ -12,14 +15,46 @@ const SuccessInvoiceAdmin = () => {
   const router = useRouter();
   const [invoices, setInvoices] = useState<InvoiceType[]>([]);
   const [loading, setLoading] = useState(true);
-
   const [filteredInvoices, setFilteredInvoices] = useState<InvoiceType[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const handleExportPDF = () => {};
-  const handleExportExcel = () => {};
+  // Variabel state untuk halaman dan jumlah item per halaman
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
+  const paginatedInvoices = filteredInvoices.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const handleExportPDF = () => {
+    const headers = [["No", "Kode Transaksi", "Tanggal Transaksi", "Status"]];
+
+    const body = paginatedInvoices.map((invoice, index) => [
+      (currentPage - 1) * itemsPerPage + index + 1,
+      invoice.transaction_ticket,
+      formatDate(invoice.createdAt),
+      invoice.status?.status_name,
+    ]);
+
+    exportToPDF({
+      head: headers,
+      body: body,
+      filename: `data-verify-invoice-halaman-${currentPage}`,
+    });
+  };
+
+  const handleExportExcel = () => {
+    const data = invoices.map((invoice, index) => ({
+      No: index + 1,
+      "Kode Transaksi": invoice.transaction_ticket,
+      "Tanggal Transaksi": formatDate(invoice.createdAt),
+      Status: invoice.status?.status_name,
+    }));
+    exportToExcel(data, "semua-invoice-verify");
+  };
+
   useEffect(() => {
     if (!searchTerm.trim()) {
       setFilteredInvoices(invoices);
+      setCurrentPage(1);
       return;
     }
     const searchTermLower = searchTerm.toLowerCase();
@@ -42,6 +77,7 @@ const SuccessInvoiceAdmin = () => {
       );
     });
     setFilteredInvoices(filtered);
+    setCurrentPage(1);
   }, [searchTerm, invoices]);
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -105,8 +141,8 @@ const SuccessInvoiceAdmin = () => {
           />
         </thead>
         <tbody>
-          {filteredInvoices.length > 0 ? (
-            filteredInvoices.map((invoice, index) => (
+          {paginatedInvoices.length > 0 ? (
+            paginatedInvoices.map((invoice, index) => (
               <tr key={invoice.id}>
                 <td className="p-4 text-black border">{index + 1}</td>
                 <td className="p-4 text-black border font-semibold">
@@ -161,6 +197,16 @@ const SuccessInvoiceAdmin = () => {
           )}
         </tbody>
       </table>
+      <Pagination
+        currentPage={currentPage}
+        totalItems={filteredInvoices.length}
+        itemsPerPage={itemsPerPage}
+        onPageChange={setCurrentPage}
+        onItemsPerPageChange={(limit) => {
+          setItemsPerPage(limit);
+          setCurrentPage(1);
+        }}
+      />
     </div>
   );
 };

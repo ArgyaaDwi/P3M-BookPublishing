@@ -6,6 +6,18 @@ import ApprovedProposalPublisher from "./components/ApprovedProposal";
 import RevisedProposalPublisher from "./components/RevisedProposal";
 import VerifyProposalPublisher from "./components/VerifyProposal";
 // import Example from "@/components/tables/TestTable";
+
+const breadcrumbItems = [
+  {
+    name: "Dashboard",
+    url: "/admin/dashboard",
+  },
+  {
+    name: "Ajuan",
+    url: "/admin/proposal",
+  },
+];
+
 export default function ProposalPage() {
   const tabItems = [
     {
@@ -40,17 +52,6 @@ export default function ProposalPage() {
           <ApprovedProposalPublisher />
         </div>
       ),
-    },
-  ];
-
-  const breadcrumbItems = [
-    {
-      name: "Dashboard",
-      url: "/admin/dashboard",
-    },
-    {
-      name: "Ajuan",
-      url: "/admin/proposal",
     },
   ];
 

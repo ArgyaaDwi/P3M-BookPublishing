@@ -49,12 +49,12 @@ const ModalUser = ({ isOpen, onClose, user }: ModalUserProps) => {
           {user.role}
         </p>
         <div className="flex flex-row gap-2 p-4">
-          <button
+          {/* <button
             className="w-full border border-blue-300 text-blue-300 px-3 py-1 rounded-md hover:text-white hover:bg-blue-600 transition-all duration-300"
             onClick={onClose}
           >
             Profil
-          </button>
+          </button> */}
           <button
             className="w-full bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700 transition-all duration-300"
             onClick={handleLogout}

@@ -5,6 +5,17 @@ import ApprovedProposalAdmin from "./components/ApprovedProposal";
 import RevisedProposalAdmin from "./components/RevisedProposal";
 import VerifyProposalAdmin from "./components/VerifyProposal";
 // import AllProposalAdmisn from "@/components/tables/TestTable";
+const breadcrumbItems = [
+  {
+    name: "Dashboard",
+    url: "/admin/dashboard",
+  },
+  {
+    name: "Ajuan",
+    url: "/admin/proposal",
+  },
+];
+
 export default function ProposalPage() {
   const tabItems = [
     {
@@ -38,17 +49,6 @@ export default function ProposalPage() {
           <ApprovedProposalAdmin />
         </div>
       ),
-    },
-  ];
-
-  const breadcrumbItems = [
-    {
-      name: "Dashboard",
-      url: "/admin/dashboard",
-    },
-    {
-      name: "Ajuan",
-      url: "/admin/proposal",
     },
   ];
 

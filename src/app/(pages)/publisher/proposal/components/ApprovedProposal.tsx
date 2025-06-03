@@ -77,7 +77,7 @@ const ApproveProposalPublisher = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/publisher/proposals?status=approved");
+        const res = await fetch("/api/v1/publisher/proposals?status=approved");
         const data = await res.json();
         console.log("Proposals:", data);
         setProposals(data.data || []);
