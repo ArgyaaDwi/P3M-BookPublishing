@@ -6,8 +6,8 @@ import { Eye, Search } from "lucide-react";
 import { InvoiceType } from "@/types/invoiceTypes";
 import { exportToPDF } from "@/utils/exportToPDF";
 import { exportToExcel } from "@/utils/exportToExcel";
-import BadgeStatus from "@/components/BadgeStatus";
 import Pagination from "@/components/Pagination";
+import BadgeStatus from "@/components/BadgeStatus";
 import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
 import SubmitPaymentModal from "./ModalSubmitPayment";
@@ -147,7 +147,9 @@ const AllInvoiceAdmin = () => {
           {paginatedInvoices.length > 0 ? (
             paginatedInvoices.map((invoice, index) => (
               <tr key={invoice.id}>
-                <td className="p-4 text-black border">{index + 1}</td>
+                <td className="p-4 text-black border">
+                  {(currentPage - 1) * itemsPerPage + index + 1}
+                </td>
                 <td className="p-4 text-black border font-semibold">
                   {invoice.transaction_ticket}
                 </td>

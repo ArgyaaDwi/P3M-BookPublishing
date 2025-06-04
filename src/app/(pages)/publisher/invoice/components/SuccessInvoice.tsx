@@ -2,26 +2,60 @@
 import { useEffect, useState } from "react";
 import { formatDate } from "@/utils/dateFormatter";
 import { useRouter } from "next/navigation";
-import BadgeStatus from "@/components/BadgeStatus";
 import { Eye, Search } from "lucide-react";
 import { InvoiceType } from "@/types/invoiceTypes";
+import { exportToPDF } from "@/utils/exportToPDF";
+import { exportToExcel } from "@/utils/exportToExcel";
+import Pagination from "@/components/Pagination";
+import BadgeStatus from "@/components/BadgeStatus";
 import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
 import ExportButton from "@/components/button/ExportButton";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 import CreateButton from "@/components/button/CreateButton";
 
 const SuccessInvoicePublisher = () => {
   const router = useRouter();
   const [invoices, setInvoices] = useState<InvoiceType[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [filteredInvoices, setFilteredInvoices] = useState<InvoiceType[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  // Variabel state untuk halaman dan jumlah item per halaman
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
+  const paginatedInvoices = filteredInvoices.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const handleExportPDF = () => {
+    const headers = [["No", "Kode Transaksi", "Tanggal Transaksi", "Status"]];
 
+    const body = paginatedInvoices.map((invoice, index) => [
+      (currentPage - 1) * itemsPerPage + index + 1,
+      invoice.transaction_ticket,
+      formatDate(invoice.createdAt),
+      invoice.status?.status_name,
+    ]);
+
+    exportToPDF({
+      head: headers,
+      body: body,
+      filename: `data-success-invoice-halaman-${currentPage}`,
+    });
+  };
+
+  const handleExportExcel = () => {
+    const data = invoices.map((invoice, index) => ({
+      No: index + 1,
+      "Kode Transaksi": invoice.transaction_ticket,
+      "Tanggal Transaksi": formatDate(invoice.createdAt),
+      Status: invoice.status?.status_name,
+    }));
+    exportToExcel(data, "semua-invoice-success");
+  };
   useEffect(() => {
     if (!searchTerm.trim()) {
       setFilteredInvoices(invoices);
+      setCurrentPage(1);
       return;
     }
     const searchTermLower = searchTerm.toLowerCase();
@@ -44,25 +78,11 @@ const SuccessInvoicePublisher = () => {
       );
     });
     setFilteredInvoices(filtered);
+    setCurrentPage(1);
   }, [searchTerm, invoices]);
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
-  const handleExportPDF = () => {
-    const doc = new jsPDF();
-    autoTable(doc, {
-      head: [["No", "Kode Transaksi", "Tanggal Transaksi", "Status"]],
-      body: filteredInvoices.map((invoice, index) => [
-        index + 1,
-        invoice.transaction_ticket,
-        formatDate(invoice.createdAt),
-        invoice.status?.status_name,
-      ]),
-    });
-
-    doc.save("data-success-invoice.pdf");
-  };
-  const handleExportExcel = () => {};
 
   useEffect(() => {
     const fetchData = async () => {
@@ -127,10 +147,13 @@ const SuccessInvoicePublisher = () => {
           />
         </thead>
         <tbody>
-          {filteredInvoices.length > 0 ? (
-            filteredInvoices.map((invoice, index) => (
+          {paginatedInvoices.length > 0 ? (
+            paginatedInvoices.map((invoice, index) => (
               <tr key={invoice.id}>
-                <td className="p-4 text-black border">{index + 1}</td>
+                <td className="p-4 text-black border">
+                  {" "}
+                  {(currentPage - 1) * itemsPerPage + index + 1}
+                </td>
                 <td className="p-4 text-black border font-semibold">
                   {invoice.transaction_ticket}
                 </td>
@@ -168,12 +191,27 @@ const SuccessInvoicePublisher = () => {
                       }
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-500 hover:underline flex"
+                      className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium"
                     >
-                      Cek Bukti Pembayaran
+                      <div className="w-6 h-6 bg-blue-100 rounded-md flex items-center justify-center">
+                        <svg
+                          className="w-3 h-3 text-blue-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          />
+                        </svg>
+                      </div>
+                      Lihat Bukti
                     </a>
                   ) : (
-                    "-"
+                    <span className="text-gray-400 italic">Belum upload</span>
                   )}
                 </td>
                 <td className="p-4 text-black border">
@@ -201,6 +239,16 @@ const SuccessInvoicePublisher = () => {
           )}
         </tbody>
       </table>
+      <Pagination
+        currentPage={currentPage}
+        totalItems={filteredInvoices.length}
+        itemsPerPage={itemsPerPage}
+        onPageChange={setCurrentPage}
+        onItemsPerPageChange={(limit) => {
+          setItemsPerPage(limit);
+          setCurrentPage(1);
+        }}
+      />
     </div>
   );
 };

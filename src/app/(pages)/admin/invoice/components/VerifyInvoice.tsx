@@ -144,7 +144,10 @@ const VerifyInvoiceAdmin = () => {
           {paginatedInvoices.length > 0 ? (
             paginatedInvoices.map((invoice, index) => (
               <tr key={invoice.id}>
-                <td className="p-4 text-black border">{index + 1}</td>
+                <td className="p-4 text-black border">
+                  {" "}
+                  {(currentPage - 1) * itemsPerPage + index + 1}
+                </td>
                 <td className="p-4 text-black border font-semibold">
                   {invoice.transaction_ticket}
                 </td>

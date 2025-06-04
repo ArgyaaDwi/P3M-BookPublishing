@@ -24,7 +24,7 @@ const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
   useEffect(() => {
     const getStatus = async () => {
       try {
-        const response = await fetch("/api/publisher/status");
+        const response = await fetch("/api/v1/publisher/status");
         const result = await response.json();
         if (result.status === "success" && Array.isArray(result.data)) {
           setStatusList(result.data);

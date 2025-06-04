@@ -5,6 +5,17 @@ import AllInvoicePublisher from "./components/AllInvoice";
 import VerifyInvoicePublisher from "./components/VerifyInvoice";
 import SuccessInvoicePublisher from "./components/SuccessInvoice";
 
+const breadcrumbItems = [
+  {
+    name: "Dashboard",
+    url: "/admin/dashboard",
+  },
+  {
+    name: "Invoice",
+    url: "/publisher/invoice",
+  },
+];
+
 export default function InvoicePage() {
   const tabItems = [
     {
@@ -30,17 +41,6 @@ export default function InvoicePage() {
           <SuccessInvoicePublisher />
         </div>
       ),
-    },
-  ];
-
-  const breadcrumbItems = [
-    {
-      name: "Dashboard",
-      url: "/admin/dashboard",
-    },
-    {
-      name: "Invoice",
-      url: "/publisher/invoice",
     },
   ];
 

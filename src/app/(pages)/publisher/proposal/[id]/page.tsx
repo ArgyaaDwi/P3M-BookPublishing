@@ -22,7 +22,7 @@ const ProposalDetailPublisher = () => {
   useEffect(() => {
     const fetchProposal = async () => {
       try {
-        const res = await fetch(`/api/admin/proposals/${proposalId}`);
+        const res = await fetch(`/api/v1/admin/proposals/${proposalId}`);
         const data = await res.json();
         console.log("Detail Proposal:", data);
 

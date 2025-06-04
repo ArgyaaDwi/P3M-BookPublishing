@@ -37,7 +37,7 @@ const SuccessInvoiceAdmin = () => {
     exportToPDF({
       head: headers,
       body: body,
-      filename: `data-verify-invoice-halaman-${currentPage}`,
+      filename: `data-success-invoice-halaman-${currentPage}`,
     });
   };
 
@@ -48,7 +48,7 @@ const SuccessInvoiceAdmin = () => {
       "Tanggal Transaksi": formatDate(invoice.createdAt),
       Status: invoice.status?.status_name,
     }));
-    exportToExcel(data, "semua-invoice-verify");
+    exportToExcel(data, "semua-invoice-success");
   };
 
   useEffect(() => {
@@ -144,7 +144,10 @@ const SuccessInvoiceAdmin = () => {
           {paginatedInvoices.length > 0 ? (
             paginatedInvoices.map((invoice, index) => (
               <tr key={invoice.id}>
-                <td className="p-4 text-black border">{index + 1}</td>
+                <td className="p-4 text-black border">
+                  {" "}
+                  {(currentPage - 1) * itemsPerPage + index + 1}
+                </td>
                 <td className="p-4 text-black border font-semibold">
                   {invoice.transaction_ticket}
                 </td>

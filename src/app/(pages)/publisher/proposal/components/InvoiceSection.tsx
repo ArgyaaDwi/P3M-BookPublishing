@@ -19,13 +19,13 @@ const InvoiceSection = ({ proposalId }: { proposalId: number }) => {
     const fetchInvoice = async () => {
       try {
         const res = await fetch(
-          `/api/publisher/invoice/by-publication/${proposalId}`
+          `/api/v1/publisher/invoice/by-publication/${proposalId}`
         );
         const data = await res.json();
         if (data.status === "success" && data.data) {
           // setInvoiceData(data.data);
           const transactionId = data.data.transaction_id;
-          const trxRes = await fetch(`/api/publisher/invoice/${transactionId}`);
+          const trxRes = await fetch(`/api/v1/publisher/invoice/${transactionId}`);
           const trxData = await trxRes.json();
           if (trxData.status === "success") {
             setInvoiceData(trxData.data);
@@ -47,7 +47,7 @@ const InvoiceSection = ({ proposalId }: { proposalId: number }) => {
     }
     try {
       setLoading(true);
-      const res = await fetch("/api/publisher/invoice/single", {
+      const res = await fetch("/api/v1/publisher/invoice/single", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
