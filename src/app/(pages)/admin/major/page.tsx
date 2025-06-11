@@ -12,7 +12,7 @@ import TableHeader from "@/components/TableHeader";
 import ExportButton from "@/components/button/ExportButton";
 import CreateButton from "@/components/button/CreateButton";
 import Pagination from "@/components/Pagination";
-
+import Swal from "sweetalert2";
 const breadcrumbItems = [
   { name: "Dashboard", url: "/admin/dashboard" },
   { name: "Program Studi", url: "/admin/major" },
@@ -111,10 +111,49 @@ export default function MajorPage() {
     setSearchTerm(e.target.value);
   };
 
+  // const handleDeleteMajorById = async (id: number) => {
+  //   if (!confirm("Apakah kamu yakin ingin menghapus program studi ini?")) {
+  //     return;
+  //   }
+  //   try {
+  //     const response = await fetch(`/api/v1/admin/majors/${id}`, {
+  //       method: "DELETE",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ id }),
+  //     });
+
+  //     const result = await response.json();
+  //     if (result.status === "success") {
+  //       alert("Program studi berhasil dihapus.");
+  //       const updatedMajors = await getMajors();
+  //       setMajors(updatedMajors);
+  //       setFilteredMajors(updatedMajors);
+  //     } else {
+  //       alert("Gagal menghapus program studi: " + result.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting major:", error);
+  //     alert("Terjadi kesalahan saat menghapus program studi.");
+  //   }
+  // };
   const handleDeleteMajorById = async (id: number) => {
-    if (!confirm("Apakah kamu yakin ingin menghapus program studi ini?")) {
+    const resultConfirm = await Swal.fire({
+      title: "Apakah kamu yakin?",
+      text: "Program studi akan dihapus secara permanen.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#aaa",
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+    });
+
+    if (!resultConfirm.isConfirmed) {
       return;
     }
+
     try {
       const response = await fetch(`/api/v1/admin/majors/${id}`, {
         method: "DELETE",
@@ -125,20 +164,35 @@ export default function MajorPage() {
       });
 
       const result = await response.json();
+
       if (result.status === "success") {
-        alert("Program studi berhasil dihapus.");
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Program studi berhasil dihapus.",
+          confirmButtonColor: "#3085d6",
+        });
         const updatedMajors = await getMajors();
         setMajors(updatedMajors);
         setFilteredMajors(updatedMajors);
       } else {
-        alert("Gagal menghapus program studi: " + result.message);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal menghapus program studi: " + result.message,
+          confirmButtonColor: "#d33",
+        });
       }
     } catch (error) {
       console.error("Error deleting major:", error);
-      alert("Terjadi kesalahan saat menghapus program studi.");
+      await Swal.fire({
+        icon: "error",
+        title: "Terjadi Kesalahan!",
+        text: "Terjadi kesalahan saat menghapus program studi.",
+        confirmButtonColor: "#d33",
+      });
     }
   };
-
   return (
     <div>
       <Breadcrumb title="Program Studi" breadcrumbItems={breadcrumbItems} />

@@ -17,6 +17,7 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
   const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
   const [note, setNote] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   useEffect(() => {
     const getTransactionStatus = async () => {
       try {
@@ -52,6 +53,8 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
       return;
     }
 
+    setIsSubmitting(true);
+
     try {
       const res = await fetch(
         `/api/v1/publisher/invoice/verify-payment/${invoice.id}`,
@@ -75,13 +78,15 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
       }
     } catch (error) {
       console.error("Error updating status:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div>
       <button
-        className="bg-yellow-100 p-2 rounded-lg text-yellow-500 hover:text-yellow-800 flex items-center gap-2"
+        className="bg-yellow-100 p-2 rounded-lg text-yellow-600 hover:text-yellow-800 flex items-center gap-2"
         onClick={() => setIsOpen(true)}
       >
         <CircleCheck className="w-5 h-5" />
@@ -127,7 +132,7 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
               </div>
               <div className="mb-1">
                 <label className="block font-medium text-black pb-1">
-                  Catatan 
+                  Catatan
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"
@@ -142,11 +147,18 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
                 </label>
               </div>
               <div className="flex items-center gap-2">
-                <button
+                {/* <button
                   type="submit"
                   className="bg-primary font-semibold px-3 py-2 rounded-lg text-white"
                 >
                   Simpan
+                </button> */}
+                <button
+                  type="submit"
+                  className="bg-primary font-semibold px-3 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Menyimpan..." : "Simpan"}
                 </button>
                 <button
                   type="button"

@@ -20,7 +20,6 @@ const AllInvoicePublisher = () => {
   const [loading, setLoading] = useState(true);
   const [filteredInvoices, setFilteredInvoices] = useState<InvoiceType[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  // Variabel state untuk halaman dan jumlah item per halaman
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
   const paginatedInvoices = filteredInvoices.slice(

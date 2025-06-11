@@ -6,11 +6,12 @@ import { Pencil, Lock } from "lucide-react";
 import { Lecturer } from "@/types/lecturerTypes";
 import { formatDate } from "@/utils/dateFormatter";
 import Image from "next/image";
-
+import Swal from "sweetalert2";
 export default function DetailLecturer() {
   const router = useRouter();
   const { id } = useParams();
   const [lecturer, setLecturer] = useState<Lecturer | null>(null);
+
   useEffect(() => {
     const getLecturerById = async () => {
       try {
@@ -33,7 +34,6 @@ export default function DetailLecturer() {
   }
 
   return (
-
     <div className="mt-6">
       <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl overflow-hidden border border-gray-100">
         <div className="p-8 flex flex-col lg:flex-row items-start gap-8">
@@ -60,7 +60,57 @@ export default function DetailLecturer() {
                 Edit Data
               </button>
 
-              <button className="group w-full bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-700 px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:shadow-md flex items-center justify-center gap-3">
+              {/* <button className="group w-full bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-700 px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:shadow-md flex items-center justify-center gap-3">
+                <Lock className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                Ganti Password
+              </button> */}
+              <button
+                onClick={async () => {
+                  const result = await Swal.fire({
+                    title: "Yakin ganti password?",
+                    text: "Password dosen akan diganti menjadi '123456'",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Ya",
+                    cancelButtonText: "Batal",
+                  });
+
+                  if (result.isConfirmed) {
+                    try {
+                      const res = await fetch(
+                        `/api/v1/admin/lecturers/${lecturer.id}/reset-password`,
+                        {
+                          method: "POST",
+                        }
+                      );
+                      const data = await res.json();
+                      if (data.status === "success") {
+                        Swal.fire(
+                          "Berhasil!",
+                          "Password telah direset",
+                          "success"
+                        );
+                      } else {
+                        Swal.fire(
+                          "Gagal",
+                          data.message || "Terjadi kesalahan.",
+                          "error"
+                        );
+                      }
+                    } catch (error) {
+                      console.error(error);
+                      Swal.fire(
+                        "Error",
+                        "Tidak dapat terhubung ke server",
+                        "error"
+                      );
+                    }
+                  }
+                }}
+                className="group w-full bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-700 px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:shadow-md flex items-center justify-center gap-3"
+              >
                 <Lock className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                 Ganti Password
               </button>

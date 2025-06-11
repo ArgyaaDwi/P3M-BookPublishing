@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Breadcrumb from "@/components/BreadCrumb";
 import Input from "@/components/form/Input";
 import ErrorValidation from "@/components/form/ErrorValidation";
+import Swal from "sweetalert2";
 export default function AddMajorPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -16,7 +17,7 @@ export default function AddMajorPage() {
     major_name: "",
     major_description: "",
   });
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -33,6 +34,7 @@ export default function AddMajorPage() {
       }, 10);
       return;
     }
+    setIsSubmitting(true);
     try {
       const response = await fetch("/api/v1/admin/majors", {
         method: "POST",
@@ -42,20 +44,50 @@ export default function AddMajorPage() {
         body: JSON.stringify(form),
       });
       const result = await response.json();
+      //   if (response.ok) {
+      //     console.log("Major added successfully:", result.data);
+      //     alert("Program Studi berhasil ditambahkan!");
+      //     router.push("/admin/major");
+      //   } else {
+      //     console.error("Major failed to add :", result.message);
+      //     alert("Gagal menambahkan program studi: " + result.error);
+      //   }
+      // } catch (error) {
+      //   console.error("Error submitting form:", error);
+      //   alert("Terjadi kesalahan saat mengirim data.");
+      // } finally {
+      //   setIsSubmitting(false);
+      // }
       if (response.ok) {
         console.log("Major added successfully:", result.data);
-        alert("Program Studi berhasil ditambahkan!");
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Program Studi berhasil ditambahkan!",
+          confirmButtonColor: "#3085d6",
+        });
         router.push("/admin/major");
       } else {
-        console.error("Major failed to add :", result.message);
-        alert("Gagal menambahkan program studi: " + result.error);
+        console.error("Major failed to add:", result.message);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal menambahkan program studi: " + result.error,
+          confirmButtonColor: "#d33",
+        });
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Terjadi kesalahan saat mengirim data.");
+      await Swal.fire({
+        icon: "error",
+        title: "Terjadi Kesalahan!",
+        text: "Terjadi kesalahan saat mengirim data.",
+        confirmButtonColor: "#d33",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
-
   return (
     <div>
       <Breadcrumb
@@ -69,7 +101,7 @@ export default function AddMajorPage() {
         <hr className="mb-3" />
         <div className="px-4">
           {error && <ErrorValidation message={error} duration={3000} />}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-2">
             <Input
               type="text"
               placeholder="Masukkan Nama Program Studi"
@@ -91,8 +123,12 @@ export default function AddMajorPage() {
               className="bg-inputColor border text-black border-borderInput w-full rounded-xl p-3"
             />
             <div className="flex items-center gap-2">
-              <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
-                Simpan
+              <button
+                type="submit"
+                className="bg-primary font-semibold px-3 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Menyimpan..." : "Simpan"}
               </button>
               <button
                 type="button"

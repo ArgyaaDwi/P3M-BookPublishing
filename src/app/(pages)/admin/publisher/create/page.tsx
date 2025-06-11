@@ -4,6 +4,7 @@ import Breadcrumb from "@/components/BreadCrumb";
 import Input from "@/components/form/Input";
 import { useRouter } from "next/navigation";
 import ErrorValidation from "@/components/form/ErrorValidation";
+import Swal from "sweetalert2";
 export default function AddLecturerPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -11,6 +12,7 @@ export default function AddLecturerPage() {
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setNameInput(e.target.value);
@@ -66,7 +68,7 @@ export default function AddLecturerPage() {
       email: emailInput,
       password: passwordInput,
     };
-
+    setIsSubmitting(true);
     try {
       const response = await fetch("/api/v1/admin/publishers", {
         method: "POST",
@@ -79,15 +81,32 @@ export default function AddLecturerPage() {
       const result = await response.json();
       if (response.ok) {
         console.log("Publisher added successfully:", result.data);
-        alert("Penerbit berhasil ditambahkan!");
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Penerbit berhasil ditambahkan!",
+          confirmButtonColor: "#3085d6",
+        });
         router.push("/admin/publisher");
       } else {
         console.error("Publisher failed to add lecturer:", result.message);
-        alert("Gagal menambahkan penerbit: " + result.error);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal menambahkan penerbit: " + result.message,
+          confirmButtonColor: "#3085d6",
+        });
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Terjadi kesalahan saat mengirim data.");
+      await Swal.fire({
+        icon: "error",
+        title: "Terjadi Kesalahan!",
+        text: "Terjadi kesalahan saat mengirim data.",
+        confirmButtonColor: "#d33",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -146,8 +165,12 @@ export default function AddLecturerPage() {
               onChange={handleConfirmPasswordChange}
             />
             <div className="flex items-center gap-2">
-              <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
-                Simpan
+              <button
+                type="submit"
+                className="bg-primary font-semibold px-3 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Menyimpan..." : "Simpan"}
               </button>
               <button
                 type="button"

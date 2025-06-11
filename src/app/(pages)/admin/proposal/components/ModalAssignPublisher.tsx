@@ -5,6 +5,7 @@ import { Publisher } from "@/types/publisherTypes";
 import { handlePasteText } from "@/utils/handlePaste";
 import Select from "@/components/form/Select";
 import ErrorValidation from "@/components/form/ErrorValidation";
+import Swal from "sweetalert2";
 type ProposalType = {
   id: number;
   current_status_id: number;
@@ -71,12 +72,23 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
 
       const result = await response.json();
       if (response.ok && result.status === "success") {
-        alert("Proposal berhasil di-assign!");
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Proposal berhasil di-assign!",
+          confirmButtonColor: "#3085d6",
+        });
+        // alert("Proposal berhasil di-assign!");
         setIsOpen(false);
         window.location.reload();
       } else {
         console.error("Gagal mengassign proposal:", result.message);
-        alert("Gagal mengassign proposal. Coba lagi!");
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal assign: " + result.message,
+          confirmButtonColor: "#d33",
+        });
       }
     } catch (error) {
       console.error("Error assigning publisher:", error);

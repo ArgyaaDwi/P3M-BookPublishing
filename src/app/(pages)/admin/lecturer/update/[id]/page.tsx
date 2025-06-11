@@ -5,16 +5,18 @@ import Input from "@/components/form/Input";
 import Select from "@/components/form/Select";
 import { useParams, useRouter } from "next/navigation";
 import TextArea from "@/components/form/TextArea";
-
+import Swal from "sweetalert2";
 export default function UpdateLecturerPage() {
   const { id } = useParams();
   const router = useRouter();
   const [nameInput, setNameInput] = useState("");
+  const [nidnInput, setNIDNInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
-  const [phoneInput, setPhoneInput] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
   const [majors, setMajors] = useState([]);
+  const [phoneInput, setPhoneInput] = useState("");
   const [addressInput, setAddressInput] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   useEffect(() => {
     const getLecturerById = async () => {
       try {
@@ -22,6 +24,7 @@ export default function UpdateLecturerPage() {
         const result = await response.json();
         if (result.status === "success") {
           setNameInput(result.data.name ?? "");
+          setNIDNInput(result.data.nidn ?? "");
           setEmailInput(result.data.email ?? "");
           setAddressInput(result.data.address ?? "");
           setSelectedOption(result.data.major?.major_name || "");
@@ -59,9 +62,11 @@ export default function UpdateLecturerPage() {
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setEmailInput(e.target.value);
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setPhoneInput(e.target.value)
+    setPhoneInput(e.target.value);
   const handleAddressChange = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
     setAddressInput(e.target.value);
+  const handleNIDNChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setNIDNInput(e.target.value);
   const handleSelectChange = (value: string) => setSelectedOption(value);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -69,10 +74,12 @@ export default function UpdateLecturerPage() {
     const data = {
       name: nameInput,
       email: emailInput,
-      address: addressInput,
-      phone_number: phoneInput,
+      address: addressInput || "",
+      phone_number: phoneInput || "",
       major: selectedOption,
+      nidn: nidnInput,
     };
+    setIsSubmitting(true);
     try {
       const response = await fetch(`/api/v1/admin/lecturers/${id}`, {
         method: "PUT",
@@ -83,14 +90,31 @@ export default function UpdateLecturerPage() {
       });
       const result = await response.json();
       if (result.status === "success") {
-        alert("Dosen berhasil diperbarui!");
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Dosen berhasil diperbarui!",
+          confirmButtonColor: "#3085d6",
+        });
         router.push("/admin/lecturer");
       } else {
-        alert("Gagal memperbarui dosen: " + result.message);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal memperbarui dosen: " + result.message,
+          confirmButtonColor: "#3085d6",
+        });
       }
     } catch (error) {
       console.error("Error updating lecturer:", error);
-      alert("Terjadi kesalahan saat memperbarui data.");
+      await Swal.fire({
+        icon: "error",
+        title: "Terjadi Kesalahan!",
+        text: "Terjadi kesalahan saat mengirim data.",
+        confirmButtonColor: "#d33",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -127,23 +151,43 @@ export default function UpdateLecturerPage() {
               value={emailInput}
               onChange={handleEmailChange}
             />
-            <Select
-              label="Pilih Jurusan"
-              options={majors}
-              value={selectedOption}
-              onChange={handleSelectChange}
-            />
-             <Input
+            <div className="flex gap-4">
+              <Select
+                label="Jurusan"
+                options={majors}
+                value={selectedOption}
+                onChange={handleSelectChange}
+                isRequired
+              />
+              <Input
+                type="number"
+                placeholder="Masukkan NIDN Dosen"
+                label="NIDN Dosen"
+                value={nidnInput}
+                onChange={handleNIDNChange}
+                isRequired
+              />
+            </div>
+            <Input
               type="number"
               placeholder="Masukkan No. Telepon"
               label="No. Telepon"
               value={phoneInput}
               onChange={handlePhoneChange}
             />
-            <TextArea label="Alamat" placeholder="Masukkan Alamat" value={addressInput} onChange={handleAddressChange} />
+            <TextArea
+              label="Alamat"
+              placeholder="Masukkan Alamat"
+              value={addressInput}
+              onChange={handleAddressChange}
+            />
             <div className="flex items-center gap-2">
-              <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
-                Simpan
+              <button
+                type="submit"
+                className="bg-primary font-semibold px-3 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Menyimpan..." : "Simpan"}
               </button>
               <button
                 type="button"

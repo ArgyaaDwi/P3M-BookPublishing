@@ -60,6 +60,7 @@ export async function PUT(
 ) {
   const { id } = params;
   const { name, email, major, address, phone_number } = await req.json();
+  console.log("Body payload:", { name, email, major, address, phone_number });
   const lecturerId = parseInt(id);
   if (isNaN(lecturerId)) {
     return NextResponse.json(
@@ -67,26 +68,6 @@ export async function PUT(
       { status: 400 }
     );
   }
-
-  // let phoneNumberBigInt: bigint | null = null;
-  // if (phone_number) {
-  //   if (!isNaN(Number(phone_number))) {
-  //     try {
-  //       phoneNumberBigInt = BigInt(phone_number);
-  //     } catch {
-  //       return NextResponse.json(
-  //         { status: "error", message: "Invalid phone number format " },
-  //         { status: 400 }
-  //       );
-  //     }
-  //   } else {
-  //     return NextResponse.json(
-  //       { status: "error", message: "Phone number must be numeric" },
-  //       { status: 400 }
-  //     );
-  //   }
-  // }
-
   try {
     const updatedLecturer = await prisma.user.update({
       where: { id: lecturerId },
@@ -94,8 +75,8 @@ export async function PUT(
         name,
         email,
         major: major ? { connect: { major_name: major } } : undefined,
-        address,
-        phone_number: phone_number,
+        address: address !== undefined ? address : null,
+        phone_number: phone_number !== undefined ? phone_number : null,
       },
     });
     return NextResponse.json({

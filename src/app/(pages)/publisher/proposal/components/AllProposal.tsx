@@ -13,6 +13,8 @@ import BadgeStatus from "@/components/BadgeStatus";
 import TableHeader from "@/components/TableHeader";
 import ModalVerifyStatus from "./ModalVerify";
 import ExportButton from "@/components/button/ExportButton";
+import ModalInputDocument from "./ModalInputDocument";
+import ModalRevisionDocument from "./ModalRevisionDocument";
 
 const AllProposalPublisher = () => {
   const router = useRouter();
@@ -56,7 +58,6 @@ const AllProposalPublisher = () => {
       "Judul Ajuan": proposal.publication_title,
       "Dosen Pemohon": proposal.lecturer?.name,
       "Tanggal Pengajuan": formatDate(proposal.createdAt),
-      Penerbit: proposal.publisher?.name || "-",
       Status: proposal.status?.status_name,
     }));
     exportToExcel(data, "semua-proposal");
@@ -205,6 +206,12 @@ const AllProposalPublisher = () => {
                     {(proposal.current_status_id === 5 ||
                       proposal.current_status_id === 9) && (
                       <ModalVerifyStatus proposal={proposal} />
+                    )}
+                    {proposal.current_status_id === 7 && (
+                      <ModalInputDocument proposal={proposal} />
+                    )}
+                    {proposal.current_status_id === 11 && (
+                      <ModalRevisionDocument proposal={proposal} />
                     )}
                   </div>
                 </td>

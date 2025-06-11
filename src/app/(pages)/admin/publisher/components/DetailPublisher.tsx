@@ -6,6 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { Pencil, Lock } from "lucide-react";
 import { Publisher } from "@/types/publisherTypes";
 import { formatDate } from "@/utils/dateFormatter";
+import Swal from "sweetalert2";
 
 export default function DetailPublisher() {
   const router = useRouter();
@@ -61,50 +62,6 @@ export default function DetailPublisher() {
   }
 
   return (
-    // <div>
-    //   <div className="bg-white rounded-lg mt-3 overflow-hidden px-4 pb-4 flex flex-row items-start">
-    //     <div className="flex flex-col items-center mr-6">
-    //       <Image
-    //         src="/assets/images/vader.jpeg"
-    //         alt="User Avatar"
-    //         width={168}
-    //         height={168}
-    //         className="rounded-md object-cover mb-4"
-    //       />
-    //       <button
-    //         className="bg-white border border-blue-500 text-blue-500 px-4 py-2 rounded-md mb-2 hover:bg-blue-900 hover:text-white w-full flex items-center justify-center gap-2"
-    //         onClick={() =>
-    //           router.push(`/admin/publisher/update/${publisher.id}`)
-    //         }
-    //       >
-    //         <Pencil className="w-5 h-5" />
-    //         Edit Data
-    //       </button>
-    //       <button className="bg-white border border-gray-500 text-gray-500 px-4 py-2 rounded-md hover:bg-gray-600 hover:text-white w-full flex items-center justify-center gap-2">
-    //         <Lock className="w-5 h-5" />
-    //         Ganti Password
-    //       </button>
-    //     </div>
-    //     <div className="bg-white rounded-lg shadow-md p-4 flex-1">
-    //       <p className="text-gray-600 text-xl font-semibold mb-4">Penerbit</p>
-    //       <p className="text-black mb-2 ">Nama: {publisher.name}</p>
-    //       <p className="text-black mb-2 ">Email: {publisher.email}</p>
-    //       <p className="text-black mb-2 ">
-    //         No. Telephone:{" "}
-    //         {publisher.phone_number ? `0${publisher.phone_number}` : "-"}
-    //       </p>
-    //       <p className="text-black mb-2 ">
-    //         Alamat: {publisher.address ? publisher.address : "-"}
-    //       </p>
-    //       <br />
-    //       <br />
-    //       <br />
-    //       <p className="text-black ">
-    //         Tanggal Bergabung: {formatDate(publisher.createdAt)}
-    //       </p>
-    //     </div>
-    //   </div>
-    // </div>
     <div className="mt-6">
       <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl overflow-hidden border border-gray-100">
         <div className="p-8 flex flex-col lg:flex-row items-start gap-8">
@@ -131,7 +88,57 @@ export default function DetailPublisher() {
                 Edit Data
               </button>
 
-              <button className="group w-full bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-700 px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:shadow-md flex items-center justify-center gap-3">
+              {/* <button className="group w-full bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-700 px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:shadow-md flex items-center justify-center gap-3">
+                <Lock className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
+                Ganti Password
+              </button> */}
+              <button
+                onClick={async () => {
+                  const result = await Swal.fire({
+                    title: "Yakin ganti password?",
+                    text: "Password penerbit akan diganti menjadi '123456'",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Ya",
+                    cancelButtonText: "Batal",
+                  });
+
+                  if (result.isConfirmed) {
+                    try {
+                      const res = await fetch(
+                        `/api/v1/admin/publishers/${publisher.id}/reset-password`,
+                        {
+                          method: "POST",
+                        }
+                      );
+                      const data = await res.json();
+                      if (data.status === "success") {
+                        Swal.fire(
+                          "Berhasil!",
+                          "Password telah direset",
+                          "success"
+                        );
+                      } else {
+                        Swal.fire(
+                          "Gagal",
+                          data.message || "Terjadi kesalahan.",
+                          "error"
+                        );
+                      }
+                    } catch (error) {
+                      console.error(error);
+                      Swal.fire(
+                        "Error",
+                        "Tidak dapat terhubung ke server",
+                        "error"
+                      );
+                    }
+                  }
+                }}
+                className="group w-full bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-700 px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:shadow-md flex items-center justify-center gap-3"
+              >
                 <Lock className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                 Ganti Password
               </button>

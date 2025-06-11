@@ -20,11 +20,13 @@ const ModalVerifyDocument: React.FC<ModalVerifyDocumentProps> = ({
   const [note, setNote] = useState<string>("");
   const [supportingUrl, setSupportingUrl] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   useEffect(() => {
     const getStatus = async () => {
       try {
-        const response = await fetch("/api/v1/lecturer/proposals/status-document");
+        const response = await fetch(
+          "/api/v1/lecturer/proposals/status-document"
+        );
         const result = await response.json();
         if (result.status === "success" && Array.isArray(result.data)) {
           setStatusList(result.data);
@@ -62,6 +64,8 @@ const ModalVerifyDocument: React.FC<ModalVerifyDocumentProps> = ({
       }, 10);
       return;
     }
+
+    setIsSubmitting(true);
     try {
       const res = await fetch(
         `/api/v1/lecturer/proposals/verify-document/${proposal.id}`,
@@ -85,6 +89,8 @@ const ModalVerifyDocument: React.FC<ModalVerifyDocumentProps> = ({
       }
     } catch (error) {
       console.error("Error updating status:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -138,7 +144,7 @@ const ModalVerifyDocument: React.FC<ModalVerifyDocumentProps> = ({
               </div>
               <div className="mb-1">
                 <label className="block text-sm font-medium text-black pb-1">
-                  Catatan 
+                  Catatan
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"
@@ -155,9 +161,10 @@ const ModalVerifyDocument: React.FC<ModalVerifyDocumentProps> = ({
               <div className="flex items-center gap-2">
                 <button
                   type="submit"
-                  className="bg-primary font-semibold px-3 py-2 rounded-lg text-white"
+                  className="bg-primary font-semibold px-3 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
                 >
-                  Simpan
+                  {isSubmitting ? "Menyimpan..." : "Simpan"}
                 </button>
                 <button
                   type="button"

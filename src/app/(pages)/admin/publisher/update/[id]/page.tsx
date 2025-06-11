@@ -4,7 +4,7 @@ import Breadcrumb from "@/components/BreadCrumb";
 import Input from "@/components/form/Input";
 import { useParams, useRouter } from "next/navigation";
 import TextArea from "@/components/form/TextArea";
-
+import Swal from "sweetalert2";
 export default function UpdatePublisherPage() {
   const { id } = useParams();
   const router = useRouter();
@@ -12,6 +12,7 @@ export default function UpdatePublisherPage() {
   const [emailInput, setEmailInput] = useState("");
   const [phoneInput, setPhoneInput] = useState("");
   const [addressInput, setAddressInput] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   useEffect(() => {
     const getPublisherById = async () => {
       try {
@@ -44,9 +45,10 @@ export default function UpdatePublisherPage() {
     const data = {
       name: nameInput,
       email: emailInput,
-      address: addressInput,
-      phone_number: phoneInput ? phoneInput.toString() : null,
+      address: addressInput || "",
+      phone_number: phoneInput || "",
     };
+    setIsSubmitting(true);
     try {
       const response = await fetch(`/api/v1/admin/publishers/${id}`, {
         method: "PUT",
@@ -59,14 +61,31 @@ export default function UpdatePublisherPage() {
 
       const result = await response.json();
       if (result.status === "success") {
-        alert("Penerbit berhasil diperbarui!");
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Penerbit berhasil diperbarui!",
+          confirmButtonColor: "#3085d6",
+        });
         router.push("/admin/publisher");
       } else {
-        alert("Gagal memperbarui penerbit: " + result.message);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal memperbarui penerbit: " + result.message,
+          confirmButtonColor: "#3085d6",
+        });
       }
     } catch (error) {
       console.error("Error updating publisher:", error);
-      alert("Terjadi kesalahan saat memperbarui data.");
+      await Swal.fire({
+        icon: "error",
+        title: "Terjadi Kesalahan!",
+        text: "Terjadi kesalahan saat mengirim data.",
+        confirmButtonColor: "#d33",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -117,8 +136,12 @@ export default function UpdatePublisherPage() {
               onChange={handleAddressChange}
             />
             <div className="flex items-center gap-2">
-              <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
-                Simpan
+              <button
+                type="submit"
+                className="bg-primary font-semibold px-3 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Menyimpan..." : "Simpan"}
               </button>
               <button
                 type="button"

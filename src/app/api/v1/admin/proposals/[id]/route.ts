@@ -21,7 +21,9 @@ export async function GET(
         id: true,
         publication_ticket: true,
         publication_title: true,
-        lecturer: { select: { name: true, nidn: true } },
+        lecturer: {
+          select: { name: true, nidn: true, email: true, phone_number: true },
+        },
         publisher: { select: { name: true } },
         status: { select: { status_name: true } },
         current_status_id: true,

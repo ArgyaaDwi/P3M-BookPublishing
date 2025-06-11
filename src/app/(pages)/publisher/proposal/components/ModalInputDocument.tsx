@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Files, Clipboard, CircleAlert } from "lucide-react";
 import { handlePasteText } from "@/utils/handlePaste";
 import ErrorValidation from "@/components/form/ErrorValidation";
+
 type ModalInputDocumentProps = {
   proposal: {
     id: number;
@@ -60,9 +61,10 @@ const ModalInputDocument: React.FC<ModalInputDocumentProps> = ({
       }, 10);
       return;
     }
+    setIsSubmitting(true);
     try {
       const res = await fetch(
-        `/api/publisher/proposals/upload-files/${proposal.id}`,
+        `/api/v1/publisher/proposals/upload-files/${proposal.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -84,6 +86,8 @@ const ModalInputDocument: React.FC<ModalInputDocumentProps> = ({
       }
     } catch (error) {
       console.error("Error updating status:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
@@ -166,7 +170,7 @@ const ModalInputDocument: React.FC<ModalInputDocumentProps> = ({
               </div>
               <div className="mb-5">
                 <label className="block font-medium text-black pb-1">
-                  Catatan <span className="text-red-500">*</span>
+                  Catatan
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"
@@ -182,11 +186,18 @@ const ModalInputDocument: React.FC<ModalInputDocumentProps> = ({
               </div>
 
               <div className="flex items-center gap-2">
-                <button
+                {/* <button
                   type="submit"
                   className="bg-primary font-semibold px-3 py-2 rounded-lg text-white"
                 >
                   Simpan
+                </button> */}
+                <button
+                  type="submit"
+                  className="bg-primary font-semibold px-3 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Menyimpan..." : "Simpan"}
                 </button>
                 <button
                   type="button"

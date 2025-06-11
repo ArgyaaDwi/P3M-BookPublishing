@@ -1,5 +1,41 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const majorId = parseInt(params.id);
+  if (isNaN(majorId)) {
+    return NextResponse.json(
+      { status: "error", message: "Invalid major ID" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const major = await prisma.major.findUnique({
+      where: { id: majorId },
+    });
+
+    if (!major) {
+      return NextResponse.json(
+        { status: "error", message: "Major not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      status: "success",
+      data: major,
+    });
+  } catch (error) {
+    console.error("Error fetching major:", error);
+    return NextResponse.json(
+      { status: "error", message: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
 export async function PUT(
   req: Request,
   { params }: { params: { id: string } }

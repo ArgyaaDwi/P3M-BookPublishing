@@ -7,11 +7,13 @@ import { useRouter } from "next/navigation";
 import { handlePasteText } from "@/utils/handlePaste";
 import ErrorValidation from "@/components/form/ErrorValidation";
 import HeaderForm from "@/components/form/HeaderForm";
+import Swal from "sweetalert2";
 export default function AddProposalPage() {
   const [titleInput, setTitleInput] = useState("");
   const [documentUrl, setDocumentUrl] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setTitleInput(e.target.value);
   const breadcrumbItems = [
@@ -45,7 +47,7 @@ export default function AddProposalPage() {
       publication_title: titleInput,
       publication_document: documentUrl,
     };
-
+    setIsSubmitting(true);
     try {
       const response = await fetch("/api/v1/lecturer/proposals", {
         method: "POST",
@@ -67,6 +69,8 @@ export default function AddProposalPage() {
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Terjadi kesalahan saat mengirim data.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
@@ -121,8 +125,15 @@ export default function AddProposalPage() {
               </div>
             </div>
             <div className="flex items-center gap-2 pt-4">
-              <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
+              {/* <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
                 Simpan
+              </button> */}
+              <button
+                type="submit"
+                className="bg-primary font-semibold px-3 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Menyimpan..." : "Simpan"}
               </button>
               <button
                 type="button"

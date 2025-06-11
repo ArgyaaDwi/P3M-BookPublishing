@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Files, Clipboard } from "lucide-react";
+import { Files, Clipboard, CircleAlert } from "lucide-react";
 import { handlePasteText } from "@/utils/handlePaste";
 import ErrorValidation from "@/components/form/ErrorValidation";
 type ModalRevisionDocumentProps = {
@@ -21,7 +21,7 @@ const ModalRevisionDocument: React.FC<ModalRevisionDocumentProps> = ({
   const [coverBookUrl, setCoverBookUrl] = useState<string>("");
   const [proofUrl, setProofUrl] = useState<string>("");
   const [note, setNote] = useState<string>("");
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   useEffect(() => {
     if (proposal) {
       setCoverBookUrl(proposal.publication_book_cover || "");
@@ -54,13 +54,6 @@ const ModalRevisionDocument: React.FC<ModalRevisionDocumentProps> = ({
       }, 10);
       return;
     }
-    if (!note) {
-      setError(null);
-      setTimeout(() => {
-        setError("Catatan wajib diisi");
-      }, 10);
-      return;
-    }
     if (!proposal) {
       setError(null);
       setTimeout(() => {
@@ -68,9 +61,10 @@ const ModalRevisionDocument: React.FC<ModalRevisionDocumentProps> = ({
       }, 10);
       return;
     }
+    setIsSubmitting(true);
     try {
       const res = await fetch(
-        `/api/publisher/proposals/upload-files/${proposal.id}`,
+        `/api/v1/publisher/proposals/upload-files/${proposal.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -92,6 +86,8 @@ const ModalRevisionDocument: React.FC<ModalRevisionDocumentProps> = ({
       }
     } catch (error) {
       console.error("Error updating status:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
@@ -174,7 +170,7 @@ const ModalRevisionDocument: React.FC<ModalRevisionDocumentProps> = ({
               </div>
               <div className="mb-5">
                 <label className="block font-medium text-black pb-1">
-                  Catatan <span className="text-red-500">*</span>
+                  Catatan
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"
@@ -183,15 +179,21 @@ const ModalRevisionDocument: React.FC<ModalRevisionDocumentProps> = ({
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                 ></textarea>
+                <label className="block text-sm font-normal text-gray-600 pb-1">
+                  <CircleAlert className="inline pr-1" />
+                  Isi Bila Diperlukan (Opsional)
+                </label>
               </div>
 
               <div className="flex items-center gap-2">
                 <button
                   type="submit"
-                  className="bg-primary font-semibold px-3 py-2 rounded-lg text-white"
+                  className="bg-primary font-semibold px-3 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
                 >
-                  Simpan
+                  {isSubmitting ? "Menyimpan..." : "Simpan"}
                 </button>
+
                 <button
                   type="button"
                   className="bg-white border font-semibold border-red-600 px-3 py-2 rounded-lg text-red-600"

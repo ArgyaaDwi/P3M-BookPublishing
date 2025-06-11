@@ -4,6 +4,7 @@ import { Pencil, Clipboard, CircleAlert } from "lucide-react";
 import StatusType from "@/types/statusTypes";
 import { handlePasteText } from "@/utils/handlePaste";
 import ErrorValidation from "@/components/form/ErrorValidation";
+import Swal from "sweetalert2";
 type ModalStatusProps = {
   proposal: {
     id: number;
@@ -68,7 +69,7 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
       }, 10);
       return;
     }
-    setIsSubmitting(true); 
+    setIsSubmitting(true);
 
     try {
       const res = await fetch(
@@ -86,16 +87,28 @@ const ModalStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
 
       const result = await res.json();
       if (res.ok) {
-        alert("Status berhasil diperbarui!");
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Status ajuan penerbitan berhasil diperbarui.",
+          confirmButtonColor: "#3085d6",
+        });
+        // alert("Status berhasil diperbarui!");
         setIsOpen(false);
         window.location.reload();
       } else {
-        alert(`Gagal update: ${result.error || "Terjadi kesalahan"}`);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal memperbarui: " + result.message,
+          confirmButtonColor: "#d33",
+        });
+        // alert(`Gagal update: ${result.error || "Terjadi kesalahan"}`);
       }
     } catch (error) {
       console.error("Error updating status:", error);
     } finally {
-      setIsSubmitting(false); // Selesai loading
+      setIsSubmitting(false);
     }
   };
 

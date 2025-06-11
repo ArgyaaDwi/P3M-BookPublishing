@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Breadcrumb from "@/components/BreadCrumb";
 import Select from "@/components/form/Select";
+import { CircleAlert } from "lucide-react";
+import { se } from "date-fns/locale";
 interface ApprovedBooks {
   id: number;
   publication_title: string;
@@ -13,6 +15,7 @@ export default function AddInvoicePage() {
   const [books, setBooks] = useState([{ bookId: "", cost: "" }]);
   const [notes, setNotes] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const addBook = () => {
     setBooks([...books, { bookId: "", cost: "" }]);
   };
@@ -54,6 +57,7 @@ export default function AddInvoicePage() {
       items,
       transaction_notes: notes,
     };
+    setIsSubmitting(true);
     try {
       const response = await fetch("/api/v1/publisher/transactions", {
         method: "POST",
@@ -86,6 +90,8 @@ export default function AddInvoicePage() {
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Terjadi kesalahan saat mengirim data.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -187,10 +193,21 @@ export default function AddInvoicePage() {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
               ></textarea>
+              <label className="block text-sm font-normal text-gray-600 pb-1">
+                <CircleAlert className="inline pr-1" />
+                Isi Bila Diperlukan (Opsional)
+              </label>
             </div>
             <div className="flex items-center gap-2">
-              <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
+              {/* <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
                 {loading ? "Simpan" : "Menyimpan..."}
+              </button> */}
+              <button
+                type="submit"
+                className="bg-primary font-semibold px-3 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Menyimpan..." : "Simpan"}
               </button>
               <button
                 type="button"
@@ -210,6 +227,7 @@ export default function AddInvoicePage() {
 // import Breadcrumb from "@/components/BreadCrumb";
 // import { useRouter } from "next/navigation";
 // import Select from "@/components/form/Select";
+// import { CircleAlert } from "lucide-react";
 
 // interface ApprovedBooks {
 //   id: number;
@@ -219,21 +237,18 @@ export default function AddInvoicePage() {
 // interface BookItem {
 //   bookId: string;
 //   cost: string;
-//   quantity: string;
 // }
 
 // export default function AddInvoicePage() {
 //   const router = useRouter();
 //   const [bookOptions, setBookOptions] = useState<ApprovedBooks[]>([]);
-//   const [books, setBooks] = useState<BookItem[]>([
-//     { bookId: "", cost: "", quantity: "1" },
-//   ]);
+//   const [books, setBooks] = useState<BookItem[]>([{ bookId: "", cost: "" }]);
 //   const [notes, setNotes] = useState<string>("");
 //   const [loading, setLoading] = useState(false);
 //   const [isSubmitting, setIsSubmitting] = useState(false);
 
 //   const addBook = () => {
-//     setBooks([...books, { bookId: "", cost: "", quantity: "1" }]);
+//     setBooks([...books, { bookId: "", cost: "" }]);
 //   };
 
 //   useEffect(() => {
@@ -267,7 +282,7 @@ export default function AddInvoicePage() {
 //       .map((book) => ({
 //         publication_id: parseInt(book.bookId),
 //         cost: parseInt(book.cost),
-//         quantity: parseInt(book.quantity) || 1,
+//         quantity: 1,
 //       }));
 
 //     if (items.length === 0) {
@@ -318,8 +333,8 @@ export default function AddInvoicePage() {
 //     }
 //   };
 
-//   const calculateItemTotal = (cost: string, quantity: string) => {
-//     return (parseInt(cost) || 0) * (parseInt(quantity) || 0);
+//   const calculateItemTotal = (cost: string) => {
+//     return parseInt(cost) || 0;
 //   };
 
 //   const getSelectedBookTitle = (bookId: string) => {
@@ -337,7 +352,7 @@ export default function AddInvoicePage() {
 
 //   const calculateTotal = () => {
 //     return books.reduce((total, book) => {
-//       return total + calculateItemTotal(book.cost, book.quantity);
+//       return total + calculateItemTotal(book.cost);
 //     }, 0);
 //   };
 
@@ -412,21 +427,23 @@ export default function AddInvoicePage() {
 //                         <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
 //                           {index + 1}
 //                         </td>
-//                         <td className="px-4 py-3">
-//                           <Select
-//                             label="List Buku"
-//                             placeholder=".:: Pilih Buku ::."
-//                             value={book.bookId}
-//                             onChange={(value) => {
-//                               const updated = [...books];
-//                               updated[index].bookId = value;
-//                               setBooks(updated);
-//                             }}
-//                             options={bookOptions.map((b: ApprovedBooks) => ({
-//                               value: b.id.toString(),
-//                               label: b.publication_title,
-//                             }))}
-//                           />
+//                         <td className="px-4 py-3 relative z-10">
+
+//                             <Select
+//                               label="List Buku"
+//                               placeholder=".:: Pilih Buku ::."
+//                               value={book.bookId}
+//                               onChange={(value) => {
+//                                 const updated = [...books];
+//                                 updated[index].bookId = value;
+//                                 setBooks(updated);
+//                               }}
+//                               options={bookOptions.map((b: ApprovedBooks) => ({
+//                                 value: b.id.toString(),
+//                                 label: b.publication_title,
+//                               }))}
+//                             />
+
 //                           {book.bookId && (
 //                             <p className="text-xs text-gray-500 mt-1 truncate max-w-xs">
 //                               {getSelectedBookTitle(book.bookId)}
@@ -451,13 +468,12 @@ export default function AddInvoicePage() {
 //                           </div>
 //                         </td>
 //                         <td className="px-4 py-3 whitespace-nowrap text-sm font-medium">
-//                           {calculateItemTotal(book.cost, book.quantity) > 0 ? (
+//                           {calculateItemTotal(book.cost) > 0 ? (
 //                             <span className="font-semibold text-black">
 //                               Rp{" "}
-//                               {calculateItemTotal(
-//                                 book.cost,
-//                                 book.quantity
-//                               ).toLocaleString("id-ID")}
+//                               {calculateItemTotal(book.cost).toLocaleString(
+//                                 "id-ID"
+//                               )}
 //                             </span>
 //                           ) : (
 //                             <span className="text-gray-400">-</span>
@@ -520,7 +536,6 @@ export default function AddInvoicePage() {
 //             </div>
 //           )}
 //         </div>
-
 //         <div className="px-4 mt-6">
 //           <form onSubmit={handleFormSubmit}>
 //             <div className="mb-4">
@@ -534,6 +549,10 @@ export default function AddInvoicePage() {
 //                 value={notes}
 //                 onChange={(e) => setNotes(e.target.value)}
 //               ></textarea>
+//               <label className="block text-sm font-normal text-gray-600 pb-1">
+//                 <CircleAlert className="inline pr-1" />
+//                 Isi Bila Diperlukan (Opsional)
+//               </label>
 //             </div>
 
 //             <div className="flex items-center gap-3 mt-6 mb-4">

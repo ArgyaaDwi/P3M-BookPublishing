@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Clipboard } from "lucide-react";
+import { Clipboard, CircleAlert } from "lucide-react";
 import { handlePasteText } from "@/utils/handlePaste";
 import ErrorValidation from "@/components/form/ErrorValidation";
 type PaymentModalProps = {
@@ -16,6 +16,7 @@ const SubmitPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
   const [note, setNote] = useState<string>("");
   const [paymentProof, setPaymentProof] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handlePaste = async () => {
     const url = await handlePasteText();
     if (url) setPaymentProof(url);
@@ -23,20 +24,6 @@ const SubmitPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (!paymentProof) {
-      setError(null);
-      setTimeout(() => {
-        setError("Bukti pembayaran wajib diisi");
-      }, 10);
-      return;
-    }
-    if (!note) {
-      setError(null);
-      setTimeout(() => {
-        setError("Catatan wajib diisi");
-      }, 10);
-      return;
-    }
     if (!invoice) {
       setError(null);
       setTimeout(() => {
@@ -44,7 +31,14 @@ const SubmitPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
       }, 10);
       return;
     }
-
+    if (!paymentProof) {
+      setError(null);
+      setTimeout(() => {
+        setError("Bukti pembayaran wajib diisi");
+      }, 10);
+      return;
+    }
+    setIsSubmitting(true);
     try {
       const res = await fetch(
         `/api/v1/admin/invoices/submit-payment/${invoice.id}`,
@@ -68,6 +62,8 @@ const SubmitPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
       }
     } catch (error) {
       console.error("Error updating status:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -132,7 +128,7 @@ const SubmitPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
               </div>
               <div className="mb-1">
                 <label className="block font-medium text-black pb-1">
-                  Catatan <span className="text-red-500">*</span>
+                  Catatan
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"
@@ -141,13 +137,24 @@ const SubmitPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                 ></textarea>
+                <label className="block text-sm font-normal text-gray-600 pb-1">
+                  <CircleAlert className="inline pr-1" />
+                  Isi Bila Diperlukan (Opsional)
+                </label>
               </div>
               <div className="flex items-center gap-2">
-                <button
+                {/* <button
                   type="submit"
                   className="bg-primary font-semibold px-3 py-2 rounded-lg text-white"
                 >
                   Simpan
+                </button> */}
+                <button
+                  type="submit"
+                  className="bg-primary font-semibold px-3 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Menyimpan..." : "Simpan"}
                 </button>
                 <button
                   type="button"

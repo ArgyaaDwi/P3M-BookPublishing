@@ -51,6 +51,12 @@ const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
             {proposal.lecturer?.name || "Tidak diketahui"} NIDN.{" "}
             {proposal.lecturer?.nidn || "-"}
           </p>
+          <p className="text-gray-800 mt-2">
+            Email Pengusul: {proposal.lecturer.email}
+          </p>
+          <p className="text-gray-800">
+            No. Telefon: {proposal.lecturer.phone_number || "-"}
+          </p>
           {proposal.status_transaction && (
             <p className="text-gray-700 mt-2 font-mono">
               Status Transaksi:{" "}

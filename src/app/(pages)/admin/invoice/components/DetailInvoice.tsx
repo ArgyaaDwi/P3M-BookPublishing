@@ -3,8 +3,8 @@ import { InvoiceType } from "@/types/invoiceTypes";
 import { formatDate } from "@/utils/dateFormatter";
 import BadgeStatus from "@/components/BadgeStatus";
 import { Eye } from "lucide-react";
-import ModalVerifyInvoice from "./ModalVerify";
-
+import SubmitPaymentModal from "./ModalSubmitPayment";
+import RevisionPaymentModal from "./ModalRevisionPayment";
 const DetailInvoiceSection = ({ invoice }: { invoice: InvoiceType }) => {
   return (
     <div>
@@ -76,8 +76,11 @@ const DetailInvoiceSection = ({ invoice }: { invoice: InvoiceType }) => {
         </div>
       )}
       <div className="mt-2">
-        {invoice.current_status_id === 3 && (
-          <ModalVerifyInvoice invoice={invoice} />
+        {invoice.current_status_id === 1 && (
+          <SubmitPaymentModal invoice={invoice} />
+        )}
+        {invoice.current_status_id === 4 && (
+          <RevisionPaymentModal invoice={invoice} />
         )}
       </div>
       <div>

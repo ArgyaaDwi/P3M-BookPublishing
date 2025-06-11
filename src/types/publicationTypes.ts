@@ -18,6 +18,8 @@ export type PublicationType = {
   };
   lecturer: {
     id: number;
+    email: string;
+    phone_number: string | null;
     name: string;
     nidn: string | null;
   };

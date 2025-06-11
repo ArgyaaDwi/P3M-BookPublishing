@@ -13,6 +13,7 @@ import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
 import ExportButton from "@/components/button/ExportButton";
 import CreateButton from "@/components/button/CreateButton";
+import ModalVerifyDocument from "./ModalVerifyDocument";
 
 const LecturerProposals = () => {
   const [proposals, setProposals] = useState<PublicationType[]>([]);
@@ -266,6 +267,9 @@ const LecturerProposals = () => {
                         <SquarePen />
                         Revisi
                       </button>
+                    )}
+                    {proposal.current_status_id === 10 && (
+                        <ModalVerifyDocument proposal={proposal} />
                     )}
                   </div>
                 </td>

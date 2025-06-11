@@ -60,7 +60,7 @@ const Select = ({
         </div>
       </div>
       {isOpen && (
-        <div className="absolute z-10 bg-white border border-borderInput rounded-xl w-full mt-1 shadow-lg">
+        <div className="absolute z-[100] bg-white border border-borderInput rounded-xl w-full mt-1 shadow-lg">
           <div className="p-2">
             <input
               type="text"

@@ -74,7 +74,7 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
           />
           <button
-            className="bg-yellow-500 text-white p-3 mt-3 font-semibold rounded-xl w-full hover:bg-primary"
+            className="bg-yellow-500 text-white p-3 mt-3 font-semibold rounded-xl w-full hover:bg-primary disabled:opacity-50 disabled:cursor-not-allowed"
             type="submit"
             disabled={loading}
           >

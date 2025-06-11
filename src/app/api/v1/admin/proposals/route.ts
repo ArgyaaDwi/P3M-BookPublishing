@@ -29,7 +29,12 @@ export async function GET(req: NextRequest) {
       });
     } else {
       proposals = await prisma.publication.findMany({
-        include: { lecturer: true, status: true, publisher: true },
+        include: {
+          lecturer: true,
+          status: true,
+          publisher: true,
+          status_transaction: true,
+        },
         orderBy: { createdAt: "desc" },
       });
       console.log("Fetched proposals:", proposals);

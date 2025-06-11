@@ -12,7 +12,7 @@ import Breadcrumb from "@/components/BreadCrumb";
 import TableHeader from "@/components/TableHeader";
 import ExportButton from "@/components/button/ExportButton";
 import CreateButton from "@/components/button/CreateButton";
-
+import Swal from "sweetalert2";
 const breadcrumbItems = [
   {
     name: "Dashboard",
@@ -33,7 +33,7 @@ export default function PublisherPage() {
   // Variabel state untuk halaman dan jumlah item per halaman
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
-  
+
   const paginatedPublishers = filteredPublishers.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -126,11 +126,22 @@ export default function PublisherPage() {
     setFilteredPublishers(filtered);
     setCurrentPage(1);
   }, [searchTerm, publishers]);
-
   const handleDeletePublisherById = async (id: number) => {
-    if (!confirm("Apakah kamu yakin ingin menghapus penerbit ini?")) {
+    const resultConfirm = await Swal.fire({
+      title: "Apakah kamu yakin?",
+      text: "Penerbit akan dihapus secara permanen.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#aaa",
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+    });
+
+    if (!resultConfirm.isConfirmed) {
       return;
     }
+
     try {
       const response = await fetch(`/api/v1/admin/publishers/${id}`, {
         method: "DELETE",
@@ -142,17 +153,59 @@ export default function PublisherPage() {
 
       const result = await response.json();
       if (result.status === "success") {
-        alert("Penerbit berhasil dihapus.");
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Penerbit berhasil dihapus.",
+          confirmButtonColor: "#3085d6",
+        });
         const updatedPublishers = await getPublishers();
         setPublishers(updatedPublishers);
+        setFilteredPublishers(updatedPublishers);
       } else {
-        alert("Gagal menghapus penerbit: " + result.message);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal menghapus penerbit: " + result.message,
+          confirmButtonColor: "#d33",
+        });
       }
     } catch (error) {
       console.error("Error deleting publisher:", error);
-      alert("Terjadi kesalahan saat menghapus penerbit.");
+      await Swal.fire({
+        icon: "error",
+        title: "Terjadi Kesalahan!",
+        text: "Terjadi kesalahan saat menghapus program studi.",
+        confirmButtonColor: "#d33",
+      });
     }
   };
+  // const handleDeletePublisherById = async (id: number) => {
+  //   if (!confirm("Apakah kamu yakin ingin menghapus penerbit ini?")) {
+  //     return;
+  //   }
+  //   try {
+  //     const response = await fetch(`/api/v1/admin/publishers/${id}`, {
+  //       method: "DELETE",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ id }),
+  //     });
+
+  //     const result = await response.json();
+  //     if (result.status === "success") {
+  //       alert("Penerbit berhasil dihapus.");
+  //       const updatedPublishers = await getPublishers();
+  //       setPublishers(updatedPublishers);
+  //     } else {
+  //       alert("Gagal menghapus penerbit: " + result.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting publisher:", error);
+  //     alert("Terjadi kesalahan saat menghapus penerbit.");
+  //   }
+  // };
   return (
     <div>
       <Breadcrumb title="Halaman Penerbit" breadcrumbItems={breadcrumbItems} />

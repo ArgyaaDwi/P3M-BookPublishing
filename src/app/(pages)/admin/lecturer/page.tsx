@@ -12,7 +12,7 @@ import TableHeader from "@/components/TableHeader";
 import ExportButton from "@/components/button/ExportButton";
 import CreateButton from "@/components/button/CreateButton";
 import Pagination from "@/components/Pagination";
-
+import Swal from "sweetalert2";
 const breadcrumbItems = [
   { name: "Dashboard", url: "/admin/dashboard" },
   { name: "Dosen", url: "/admin/lecturer" },
@@ -133,11 +133,22 @@ export default function LecturerPage() {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
-
   const handleDeleteLecturerById = async (id: number) => {
-    if (!confirm("Apakah kamu yakin ingin menghapus dosen ini?")) {
+    const resultConfirm = await Swal.fire({
+      title: "Apakah kamu yakin?",
+      text: "Dosen akan dihapus secara permanen.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#aaa",
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+    });
+
+    if (!resultConfirm.isConfirmed) {
       return;
     }
+
     try {
       const response = await fetch(`/api/v1/admin/lecturers/${id}`, {
         method: "DELETE",
@@ -149,15 +160,57 @@ export default function LecturerPage() {
 
       const result = await response.json();
       if (result.status === "success") {
-        alert("Dosen berhasil dihapus.");
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Dosen berhasil dihapus.",
+          confirmButtonColor: "#3085d6",
+        });
+        const updatedLecturers = await getLecturers();
+        setLecturers(updatedLecturers);
+        setFilteredLecturers(updatedLecturers);
       } else {
-        alert("Gagal menghapus dosen: " + result.message);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal menghapus dosen: " + result.message,
+          confirmButtonColor: "#d33",
+        });
       }
     } catch (error) {
       console.error("Error deleting lecturer:", error);
-      alert("Terjadi kesalahan saat menghapus dosen.");
+      await Swal.fire({
+        icon: "error",
+        title: "Terjadi Kesalahan!",
+        text: "Terjadi kesalahan saat menghapus program studi.",
+        confirmButtonColor: "#d33",
+      });
     }
   };
+  // const handleDeleteLecturerById = async (id: number) => {
+  //   if (!confirm("Apakah kamu yakin ingin menghapus dosen ini?")) {
+  //     return;
+  //   }
+  //   try {
+  //     const response = await fetch(`/api/v1/admin/lecturers/${id}`, {
+  //       method: "DELETE",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ id }),
+  //     });
+
+  //     const result = await response.json();
+  //     if (result.status === "success") {
+  //       alert("Dosen berhasil dihapus.");
+  //     } else {
+  //       alert("Gagal menghapus dosen: " + result.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting lecturer:", error);
+  //     alert("Terjadi kesalahan saat menghapus dosen.");
+  //   }
+  // };
   return (
     <div>
       <Breadcrumb title="Halaman Dosen" breadcrumbItems={breadcrumbItems} />

@@ -117,8 +117,8 @@ export async function PUT(
       data: {
         name,
         email,
-        address,
-        phone_number,
+        address: address !== undefined ? address : null,
+        phone_number: phone_number !== undefined ? phone_number : null,
       },
     });
     return NextResponse.json({
