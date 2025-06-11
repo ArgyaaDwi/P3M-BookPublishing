@@ -27,6 +27,7 @@ export async function GET(req: NextRequest) {
           lecturer: true,
           status: true,
           publisher: true,
+          status_transaction: true,
         },
         orderBy: {
           createdAt: "desc",
@@ -43,6 +44,7 @@ export async function GET(req: NextRequest) {
           lecturer: true,
           status: true,
           publisher: true,
+          status_transaction: true,
         },
         orderBy: {
           createdAt: "desc",
@@ -61,6 +63,7 @@ export async function GET(req: NextRequest) {
           lecturer: true,
           status: true,
           publisher: true,
+          status_transaction: true,
         },
         orderBy: {
           createdAt: "desc",
@@ -76,6 +79,7 @@ export async function GET(req: NextRequest) {
           lecturer: true,
           status: true,
           publisher: true,
+          status_transaction: true,
         },
         orderBy: {
           createdAt: "desc",

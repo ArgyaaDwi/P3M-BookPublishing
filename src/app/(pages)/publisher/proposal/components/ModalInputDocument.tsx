@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Files, Clipboard, CircleAlert } from "lucide-react";
 import { handlePasteText } from "@/utils/handlePaste";
 import ErrorValidation from "@/components/form/ErrorValidation";
-
+import Swal from "sweetalert2";
 type ModalInputDocumentProps = {
   proposal: {
     id: number;
@@ -78,11 +78,21 @@ const ModalInputDocument: React.FC<ModalInputDocumentProps> = ({
 
       const result = await res.json();
       if (res.ok) {
-        alert("Status berhasil diperbarui!");
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Berhasil mengupload berkas!",
+          confirmButtonColor: "#3085d6",
+        });
         setIsOpen(false);
         window.location.reload();
       } else {
-        alert(`Gagal update: ${result.error || "Terjadi kesalahan"}`);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal mengupload berkas: " + result.message,
+          confirmButtonColor: "#d33",
+        });
       }
     } catch (error) {
       console.error("Error updating status:", error);

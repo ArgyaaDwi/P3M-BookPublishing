@@ -38,6 +38,7 @@ const ApprovedProposalAdmin = () => {
         "Tanggal Pengajuan",
         "Penerbit",
         "Status",
+        "Status Transaksi",
       ],
     ];
 
@@ -48,12 +49,13 @@ const ApprovedProposalAdmin = () => {
       formatDate(proposal.createdAt),
       proposal.publisher?.name || "-",
       proposal.status?.status_name,
+      proposal.status_transaction?.status_name || "Belum Ada Transaksi",
     ]);
 
     exportToPDF({
       head: headers,
       body: body,
-      filename: `proposal-revised-halaman-${currentPage}`,
+      filename: `approved-proposal-halaman-${currentPage}`,
     });
   };
 
@@ -65,8 +67,10 @@ const ApprovedProposalAdmin = () => {
       "Tanggal Pengajuan": formatDate(proposal.createdAt),
       Penerbit: proposal.publisher?.name || "-",
       Status: proposal.status?.status_name,
+      "Status Transaksi":
+        proposal.status_transaction?.status_name || "Belum Ada Transaksi",
     }));
-    exportToExcel(data, "semua-proposal-revised");
+    exportToExcel(data, "approved-proposal");
   };
   useEffect(() => {
     if (!searchTerm.trim()) {
@@ -156,8 +160,10 @@ const ApprovedProposalAdmin = () => {
               "No",
               "Judul Ajuan",
               "Dosen Pemohon",
+              "Penerbit",
               "Tanggal Pengajuan",
               "Status",
+              "Status Transaksi",
               "Aksi",
             ]}
           />
@@ -181,6 +187,9 @@ const ApprovedProposalAdmin = () => {
                 <td className="p-4 text-black border">
                   {formatDate(proposal.createdAt)}
                 </td>
+                <td className="p-4 text-black border">
+                  {proposal.publisher?.name ?? "-"}
+                </td>
                 <td className="p-4 text-black border font-semibold">
                   {(() => {
                     const [bg, color] = getBadgeVariant(
@@ -197,6 +206,36 @@ const ApprovedProposalAdmin = () => {
                       />
                     );
                   })()}
+                </td>
+                <td className="p-4 text-gray-800 border">
+                  {proposal.status_transaction?.status_name ? (
+                    <BadgeStatus
+                      text={proposal.status_transaction.status_name}
+                      color={
+                        proposal.current_transaction_status_id === 1
+                          ? "badgePendingText"
+                          : proposal.current_transaction_status_id === 3 ||
+                            proposal.current_transaction_status_id === 4
+                          ? "badgeRevText"
+                          : "badgeSuccessText"
+                      }
+                      bgColor={
+                        proposal.current_transaction_status_id === 1
+                          ? "badgePending"
+                          : proposal.current_transaction_status_id === 3 ||
+                            proposal.current_transaction_status_id === 4
+                          ? "badgeRev"
+                          : "badgeSuccess"
+                      }
+                    />
+                  ) : (
+                    <span className="italic text-gray-500">
+                      Belum Ada Transaksi
+                    </span>
+                  )}
+
+                  {/* {proposal.status_transaction?.status_name ||
+                    "Belum Ada Transaksi"} */}
                 </td>
                 <td className="p-4 text-black border">
                   <div className="flex items-center gap-2">

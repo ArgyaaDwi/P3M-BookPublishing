@@ -14,7 +14,7 @@ import TableHeader from "@/components/TableHeader";
 import ExportButton from "@/components/button/ExportButton";
 import CreateButton from "@/components/button/CreateButton";
 import ModalVerifyDocument from "./ModalVerifyDocument";
-
+import Swal from "sweetalert2";
 const LecturerProposals = () => {
   const [proposals, setProposals] = useState<PublicationType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -81,17 +81,22 @@ const LecturerProposals = () => {
       setCurrentPage(1);
     }
   };
-
   const handleDeleteProposalById = async (id: number) => {
-    if (
-      !confirm(
-        `Apakah kamu yakin ingin menghapus proposal dengan judul "${
-          proposals.find((proposal) => proposal.id === id)?.publication_title
-        }" ini?`
-      )
-    ) {
+    const resultConfirm = await Swal.fire({
+      title: "Apakah kamu yakin?",
+      text: "Ajuan akan dihapus secara permanen.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#aaa",
+      confirmButtonText: "Ya",
+      cancelButtonText: "Batal",
+    });
+
+    if (!resultConfirm.isConfirmed) {
       return;
     }
+
     try {
       const response = await fetch(`/api/v1/lecturer/proposals/${id}`, {
         method: "DELETE",
@@ -102,42 +107,113 @@ const LecturerProposals = () => {
       });
 
       const result = await response.json();
+
       if (result.status === "success") {
-        alert("Proposal berhasil dihapus.");
-        setProposals(proposals.filter((proposal) => proposal.id !== id));
-        setFilteredProposals(
-          filteredProposals.filter((proposal) => proposal.id !== id)
-        );
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Ajuan berhasil dihapus.",
+          confirmButtonColor: "#3085d6",
+        });
+        await fetchProposals();
       } else {
-        alert("Gagal menghapus proposal: " + result.message);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal menghapus program studi: " + result.message,
+          confirmButtonColor: "#d33",
+        });
       }
     } catch (error) {
-      console.error("Error deleting proposal:", error);
-      alert("Terjadi kesalahan saat menghapus proposal.");
+      console.error("Error deleting major:", error);
+      await Swal.fire({
+        icon: "error",
+        title: "Terjadi Kesalahan!",
+        text: "Terjadi kesalahan saat menghapus program studi.",
+        confirmButtonColor: "#d33",
+      });
+    }
+  };
+  // const handleDeleteProposalById = async (id: number) => {
+  //   if (
+  //     !confirm(
+  //       `Apakah kamu yakin ingin menghapus proposal dengan judul "${
+  //         proposals.find((proposal) => proposal.id === id)?.publication_title
+  //       }" ini?`
+  //     )
+  //   ) {
+  //     return;
+  //   }
+  //   try {
+  //     const response = await fetch(`/api/v1/lecturer/proposals/${id}`, {
+  //       method: "DELETE",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ id }),
+  //     });
+
+  //     const result = await response.json();
+  //     if (result.status === "success") {
+  //       alert("Proposal berhasil dihapus.");
+  //       setProposals(proposals.filter((proposal) => proposal.id !== id));
+  //       setFilteredProposals(
+  //         filteredProposals.filter((proposal) => proposal.id !== id)
+  //       );
+  //     } else {
+  //       alert("Gagal menghapus proposal: " + result.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting proposal:", error);
+  //     alert("Terjadi kesalahan saat menghapus proposal.");
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   const fetchProposals = async () => {
+  //     try {
+  //       const res = await fetch("/api/v1/lecturer/proposals?status=all");
+  //       const data = await res.json();
+  //       if (data.status === "success") {
+  //         const proposalsData = data.data || [];
+  //         setProposals(proposalsData);
+  //         setFilteredProposals(proposalsData);
+  //       } else {
+  //         console.error("Failed to fetch proposals:", data.message);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching proposals:", error);
+  //       setProposals([]);
+  //       setFilteredProposals([]);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchProposals();
+  // }, []);
+  const fetchProposals = async () => {
+    try {
+      const res = await fetch("/api/v1/lecturer/proposals?status=all");
+      const data = await res.json();
+      if (data.status === "success") {
+        const proposalsData = data.data || [];
+        setProposals(proposalsData);
+        setFilteredProposals(proposalsData);
+      } else {
+        console.error("Failed to fetch proposals:", data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching proposals:", error);
+      setProposals([]);
+      setFilteredProposals([]);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // useEffect tetap bisa pakai fungsi tersebut:
   useEffect(() => {
-    const fetchProposals = async () => {
-      try {
-        const res = await fetch("/api/v1/lecturer/proposals?status=all");
-        const data = await res.json();
-        if (data.status === "success") {
-          const proposalsData = data.data || [];
-          setProposals(proposalsData);
-          setFilteredProposals(proposalsData);
-        } else {
-          console.error("Failed to fetch proposals:", data.message);
-        }
-      } catch (error) {
-        console.error("Error fetching proposals:", error);
-        setProposals([]);
-        setFilteredProposals([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchProposals();
   }, []);
 
@@ -269,7 +345,7 @@ const LecturerProposals = () => {
                       </button>
                     )}
                     {proposal.current_status_id === 10 && (
-                        <ModalVerifyDocument proposal={proposal} />
+                      <ModalVerifyDocument proposal={proposal} />
                     )}
                   </div>
                 </td>

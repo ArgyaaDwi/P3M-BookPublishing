@@ -10,12 +10,22 @@ export async function GET(req: NextRequest) {
     if (status === "revision") {
       proposals = await prisma.publication.findMany({
         where: { current_status_id: 2 },
-        include: { lecturer: true, status: true, publisher: true },
+        include: {
+          lecturer: true,
+          status: true,
+          publisher: true,
+          status_transaction: true,
+        },
       });
     } else if (status === "approved") {
       proposals = await prisma.publication.findMany({
         where: { current_status_id: 3 },
-        include: { lecturer: true, status: true, publisher: true },
+        include: {
+          lecturer: true,
+          status: true,
+          publisher: true,
+          status_transaction: true,
+        },
       });
     } else if (status === "verify") {
       proposals = await prisma.publication.findMany({
@@ -24,7 +34,12 @@ export async function GET(req: NextRequest) {
             in: [1, 4, 5],
           },
         },
-        include: { lecturer: true, status: true, publisher: true },
+        include: {
+          lecturer: true,
+          status: true,
+          publisher: true,
+          status_transaction: true,
+        },
         orderBy: { createdAt: "asc" },
       });
     } else {

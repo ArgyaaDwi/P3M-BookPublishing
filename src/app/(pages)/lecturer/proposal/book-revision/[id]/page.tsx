@@ -9,6 +9,7 @@ import { formatDate } from "@/utils/dateFormatter";
 import { handlePasteText } from "@/utils/handlePaste";
 import HeaderForm from "@/components/form/HeaderForm";
 import ErrorValidation from "@/components/form/ErrorValidation";
+import Swal from "sweetalert2";
 interface Activity {
   id: number;
   user?: {
@@ -113,16 +114,31 @@ export default function SubmitBookRevision() {
         }
       );
       if (!res.ok) {
-        alert(`Revisi Gagal: ${res.statusText}`);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal revisi: ",
+          confirmButtonColor: "#d33",
+        });
         return;
       }
       const data = await res.json();
       console.log(data);
       if (data.status === "success") {
-        alert("Revisi Berhasil");
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Revisi berhasil!",
+          confirmButtonColor: "#3085d6",
+        });
         router.push("/lecturer/proposal");
       } else {
-        alert("Revisi Gagal");
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal revisi: ",
+          confirmButtonColor: "#d33",
+        });
       }
     } catch (error) {
       console.error("Error submitting form:", error);

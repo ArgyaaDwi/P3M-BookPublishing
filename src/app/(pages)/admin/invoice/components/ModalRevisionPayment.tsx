@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Clipboard, CircleAlert } from "lucide-react";
 import { handlePasteText } from "@/utils/handlePaste";
 import ErrorValidation from "@/components/form/ErrorValidation";
+import Swal from "sweetalert2";
 type PaymentModalProps = {
   invoice: {
     id: number;
@@ -16,6 +17,8 @@ const RevisionPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
   const [note, setNote] = useState<string>("");
   const [paymentProof, setPaymentProof] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handlePaste = async () => {
     const url = await handlePasteText();
     if (url) setPaymentProof(url);
@@ -37,6 +40,7 @@ const RevisionPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
       }, 10);
       return;
     }
+    setIsSubmitting(true);
     try {
       const res = await fetch(
         `/api/v1/admin/invoices/revision-payment/${invoice.id}`,
@@ -52,14 +56,26 @@ const RevisionPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
       );
       const result = await res.json();
       if (res.ok) {
-        alert("Status berhasil diperbarui!");
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Berhasil revisi bukti pembayaran!",
+          confirmButtonColor: "#3085d6",
+        });
         setIsOpen(false);
         window.location.reload();
       } else {
-        alert(`Gagal update: ${result.error || "Terjadi kesalahan"}`);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal revisi bukti pembayaran: " + result.message,
+          confirmButtonColor: "#d33",
+        });
       }
     } catch (error) {
       console.error("Error updating status:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -141,9 +157,10 @@ const RevisionPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
               <div className="flex items-center gap-2">
                 <button
                   type="submit"
-                  className="bg-primary font-semibold px-3 py-2 rounded-lg text-white"
+                  className="bg-primary font-semibold px-3 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
                 >
-                  Simpan
+                  {isSubmitting ? "Menyimpan..." : "Simpan"}
                 </button>
                 <button
                   type="button"

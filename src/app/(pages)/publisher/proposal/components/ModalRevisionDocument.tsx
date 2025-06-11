@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Files, Clipboard, CircleAlert } from "lucide-react";
 import { handlePasteText } from "@/utils/handlePaste";
 import ErrorValidation from "@/components/form/ErrorValidation";
+import Swal from "sweetalert2";
 type ModalRevisionDocumentProps = {
   proposal: {
     id: number;
@@ -78,11 +79,21 @@ const ModalRevisionDocument: React.FC<ModalRevisionDocumentProps> = ({
 
       const result = await res.json();
       if (res.ok) {
-        alert("Status berhasil diperbarui!");
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Berhasil revisi berkas!",
+          confirmButtonColor: "#3085d6",
+        });
         setIsOpen(false);
         window.location.reload();
       } else {
-        alert(`Gagal update: ${result.error || "Terjadi kesalahan"}`);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal revisi berkas: " + result.message,
+          confirmButtonColor: "#d33",
+        });
       }
     } catch (error) {
       console.error("Error updating status:", error);
@@ -184,7 +195,6 @@ const ModalRevisionDocument: React.FC<ModalRevisionDocumentProps> = ({
                   Isi Bila Diperlukan (Opsional)
                 </label>
               </div>
-
               <div className="flex items-center gap-2">
                 <button
                   type="submit"

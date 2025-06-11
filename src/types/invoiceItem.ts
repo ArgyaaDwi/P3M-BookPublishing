@@ -1,6 +1,7 @@
 export type InvoiceItem = {
   id: number;
   publication: {
+    id: number;
     publication_title: string;
     lecturer: {
       name: string;

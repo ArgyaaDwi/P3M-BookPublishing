@@ -31,7 +31,14 @@ const ApproveProposalPublisher = () => {
 
   const handleExportPDF = () => {
     const headers = [
-      ["No", "Judul Ajuan", "Dosen Pemohon", "Tanggal Pengajuan", "Status"],
+      [
+        "No",
+        "Judul Ajuan",
+        "Dosen Pemohon",
+        "Tanggal Pengajuan",
+        "Status",
+        "Status Transaksi",
+      ],
     ];
 
     const body = paginatedProposals.map((proposal, index) => [
@@ -40,6 +47,7 @@ const ApproveProposalPublisher = () => {
       proposal.lecturer?.name,
       formatDate(proposal.createdAt),
       proposal.status?.status_name,
+      proposal.status_transaction?.status_name || "Belum Ada Transaksi",
     ]);
 
     exportToPDF({
@@ -57,8 +65,10 @@ const ApproveProposalPublisher = () => {
       "Tanggal Pengajuan": formatDate(proposal.createdAt),
       Penerbit: proposal.publisher?.name || "-",
       Status: proposal.status?.status_name,
+      "Status Transaksi":
+        proposal.status_transaction?.status_name || "Belum Ada Transaksi",
     }));
-    exportToExcel(data, "semua-proposal-approved");
+    exportToExcel(data, "approved-proposal");
   };
 
   useEffect(() => {
@@ -152,6 +162,7 @@ const ApproveProposalPublisher = () => {
               "Dosen Pemohon",
               "Tanggal Pengajuan",
               "Status",
+              "Status Transaksi",
               "Aksi",
             ]}
           />
@@ -195,6 +206,36 @@ const ApproveProposalPublisher = () => {
                       />
                     );
                   })()}
+                </td>
+                <td className="p-4 text-gray-800 border">
+                  {proposal.status_transaction?.status_name ? (
+                    <BadgeStatus
+                      text={proposal.status_transaction.status_name}
+                      color={
+                        proposal.current_transaction_status_id === 1
+                          ? "badgePendingText"
+                          : proposal.current_transaction_status_id === 3 ||
+                            proposal.current_transaction_status_id === 4
+                          ? "badgeRevText"
+                          : "badgeSuccessText"
+                      }
+                      bgColor={
+                        proposal.current_transaction_status_id === 1
+                          ? "badgePending"
+                          : proposal.current_transaction_status_id === 3 ||
+                            proposal.current_transaction_status_id === 4
+                          ? "badgeRev"
+                          : "badgeSuccess"
+                      }
+                    />
+                  ) : (
+                    <span className="italic text-gray-500">
+                      Belum Ada Transaksi
+                    </span>
+                  )}
+
+                  {/* {proposal.status_transaction?.status_name ||
+                    "Belum Ada Transaksi"} */}
                 </td>
                 <td className="p-4 text-black border">
                   <div className="flex items-center gap-2">

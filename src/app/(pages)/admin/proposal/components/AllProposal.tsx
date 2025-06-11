@@ -274,7 +274,7 @@ const AllProposalAdmin = () => {
       formatDate(proposal.createdAt),
       proposal.publisher?.name || "-",
       proposal.status?.status_name,
-      proposal.status_transaction?.status_name,
+      proposal.status_transaction?.status_name || "Belum Ada Transaksi",
     ]);
 
     exportToPDF({
@@ -292,7 +292,7 @@ const AllProposalAdmin = () => {
       "Tanggal Pengajuan": formatDate(proposal.createdAt),
       Penerbit: proposal.publisher?.name || "-",
       Status: proposal.status?.status_name,
-      "Status Transaksi": proposal.status_transaction?.status_name,
+      "Status Transaksi": proposal.status_transaction?.status_name || "Belum Ada Transaksi",
     }));
     exportToExcel(data, "semua-proposal");
   };
@@ -483,7 +483,7 @@ const AllProposalAdmin = () => {
             ))
           ) : (
             <tr key="empty">
-              <td colSpan={7} className="p-4 text-center text-gray-500">
+              <td colSpan={8} className="p-4 text-center text-gray-500">
                 {searchTerm
                   ? `Tidak ada proposal yang cocok dengan kata kunci "${searchTerm}"`
                   : "Tidak ada data proposal."}

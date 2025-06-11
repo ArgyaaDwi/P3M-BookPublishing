@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { CircleCheck, CircleAlert } from "lucide-react";
 import StatusType from "@/types/statusTypes";
 import ErrorValidation from "@/components/form/ErrorValidation";
+import Swal from "sweetalert2";
 type ModalStatusProps = {
   invoice: {
     id: number;
@@ -70,11 +71,21 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
 
       const result = await res.json();
       if (res.ok) {
-        alert("Status berhasil diperbarui!");
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Berhasil verifikasi bukti pembayaran!",
+          confirmButtonColor: "#3085d6",
+        });
         setIsOpen(false);
         window.location.reload();
       } else {
-        alert(`Gagal update: ${result.error || "Terjadi kesalahan"}`);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal verifikasi bukti pembayaran: " + result.message,
+          confirmButtonColor: "#d33",
+        });
       }
     } catch (error) {
       console.error("Error updating status:", error);

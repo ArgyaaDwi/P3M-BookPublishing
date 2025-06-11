@@ -60,11 +60,21 @@ export default function AddProposalPage() {
       const result = await response.json();
       if (response.ok) {
         console.log("Proposal added successfully:", result.data);
-        alert("Proposal berhasil ditambahkan!");
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Proposal berhasil dibuat!",
+          confirmButtonColor: "#3085d6",
+        });
         router.push("/lecturer/proposal");
       } else {
         console.error("Proposal failed to add:", result.message);
-        alert("Gagal menambahkan proposal: " + result.error);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal membuat proposal: " + result.error,
+          confirmButtonColor: "#d33",
+        });
       }
     } catch (error) {
       console.error("Error submitting form:", error);

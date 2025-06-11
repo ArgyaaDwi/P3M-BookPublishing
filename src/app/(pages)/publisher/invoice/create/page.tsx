@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Breadcrumb from "@/components/BreadCrumb";
 import Select from "@/components/form/Select";
 import { CircleAlert } from "lucide-react";
-import { se } from "date-fns/locale";
+import Swal from "sweetalert2";
 interface ApprovedBooks {
   id: number;
   publication_title: string;
@@ -79,13 +79,21 @@ export default function AddInvoicePage() {
       if (response.ok) {
         console.log("Transaksi berhasil:", result.data);
         console.log("DATA YANG DIKIRIM:", JSON.stringify(data, null, 2));
-        alert("Transaksi berhasil dibuat!");
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Transaksi berhasil dibuat!",
+          confirmButtonColor: "#3085d6",
+        });
         router.push("/publisher/invoice");
       } else {
         console.error("Gagal:", result?.message);
-        alert(
-          "Gagal membuat transaksi: " + (result?.message ?? "Unknown error")
-        );
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal buat transaksi: " + result.message,
+          confirmButtonColor: "#d33",
+        });
       }
     } catch (error) {
       console.error("Error submitting form:", error);

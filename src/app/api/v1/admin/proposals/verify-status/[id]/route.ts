@@ -102,18 +102,18 @@ export async function PUT(
         <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Pemberitahuan Status Penerbitan Buku</p>
       </div>
       
-      <p style="margin-bottom: 20px;">Halo <strong>${
+      <p style="margin-bottom: 20px; color:#000">Halo <strong>${
         lecturer.name
       }</strong>,</p>
       
       <div style="background-color: #f8fafc; border-left: 4px solid #2563eb; padding: 15px; margin: 20px 0;">
-        <p style="margin: 0 0 10px 0;">Proposal Anda dengan judul:</p>
-        <p style="font-weight: bold; margin: 0 0 15px 0;">${
+        <p style="margin: 0 0 10px 0; color:#000">Proposal Anda dengan judul:</p>
+        <p style="font-weight: bold; margin: 0 0 15px 0; color:#000">${
           updatedProposal.publication_title
         }</p>
-        <p style="margin: 0;">Status telah diperbarui menjadi: <strong>${
+        <p style="margin: 0; color:#000">Status telah diperbarui menjadi: <strong>${
           updatedProposal.status?.status_name || "Status tidak diketahui"
-        }</strong>z</p>
+        }</strong></p>
       </div>
       
       ${

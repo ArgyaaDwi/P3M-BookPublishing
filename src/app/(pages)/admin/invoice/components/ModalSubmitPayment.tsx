@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Clipboard, CircleAlert } from "lucide-react";
 import { handlePasteText } from "@/utils/handlePaste";
 import ErrorValidation from "@/components/form/ErrorValidation";
+import Swal from "sweetalert2";
 type PaymentModalProps = {
   invoice: {
     id: number;
@@ -54,11 +55,21 @@ const SubmitPaymentModal: React.FC<PaymentModalProps> = ({ invoice }) => {
       );
       const result = await res.json();
       if (res.ok) {
-        alert("Status berhasil diperbarui!");
+        await Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Berhasil mengupload bukti pembayaran!",
+          confirmButtonColor: "#3085d6",
+        });
         setIsOpen(false);
         window.location.reload();
       } else {
-        alert(`Gagal update: ${result.error || "Terjadi kesalahan"}`);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Gagal mengupload bukti pembayaran: " + result.message,
+          confirmButtonColor: "#d33",
+        });
       }
     } catch (error) {
       console.error("Error updating status:", error);

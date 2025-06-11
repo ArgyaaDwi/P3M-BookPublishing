@@ -27,13 +27,22 @@ const AllInvoicePublisher = () => {
     currentPage * itemsPerPage
   );
   const handleExportPDF = () => {
-    const headers = [["No", "Kode Transaksi", "Tanggal Transaksi", "Status"]];
+    const headers = [
+      [
+        "No",
+        "Kode Transaksi",
+        "Tanggal Transaksi",
+        "Status",
+        "Bukti Pembayaran",
+      ],
+    ];
 
     const body = paginatedInvoices.map((invoice, index) => [
       (currentPage - 1) * itemsPerPage + index + 1,
       invoice.transaction_ticket,
       formatDate(invoice.createdAt),
       invoice.status?.status_name,
+      invoice.payment_proof || "Belum diupload",
     ]);
 
     exportToPDF({
@@ -50,7 +59,7 @@ const AllInvoicePublisher = () => {
       "Tanggal Transaksi": formatDate(invoice.createdAt),
       Status: invoice.status?.status_name,
     }));
-    exportToExcel(data, "semua-invoice-all");
+    exportToExcel(data, "all-invoice");
   };
   useEffect(() => {
     if (!searchTerm.trim()) {
