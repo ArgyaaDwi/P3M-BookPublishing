@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 
+
 // API Put Handler Untuk Melakukan Verifikasi Proposal
 export async function PUT(
   req: Request,
@@ -30,11 +31,11 @@ export async function PUT(
         { error: "Status Wajib Diisi" },
         { status: 404 }
       );
-    if (!note)
-      return NextResponse.json(
-        { error: "Note tidak boleh kosong" },
-        { status: 400 }
-      );
+    // if (!note)
+    //   return NextResponse.json(
+    //     { error: "Note tidak boleh kosong" },
+    //     { status: 400 }
+    //   );
     await Promise.all([
       prisma.publication.update({
         where: { id: Number(id) },

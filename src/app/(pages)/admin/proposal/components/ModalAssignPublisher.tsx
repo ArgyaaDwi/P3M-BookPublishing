@@ -26,6 +26,8 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string>("");
   const [supportingUrl, setSupportingUrl] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -54,7 +56,7 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
       }, 10);
       return;
     }
-
+    setIsSubmitting(true);
     try {
       const response = await fetch("/api/v1/admin/proposals/assign-publisher", {
         method: "POST",
@@ -79,6 +81,8 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
     } catch (error) {
       console.error("Error assigning publisher:", error);
       alert("Terjadi kesalahan. Coba lagi!");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -93,7 +97,8 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-8">
+          {/* <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-8"> */}
+          <div className="bg-white rounded-lg shadow-lg w-[95%] max-w-2xl max-h-[90vh] overflow-y-auto p-6">
             <h3 className="text-2xl font-semibold text-gray-900 text-center mb-4">
               Assign Penerbit
             </h3>
@@ -163,12 +168,20 @@ const ModalPublisher: React.FC<ModalPublisherProps> = ({
                 </label>
               </div>
               <div className="flex items-center gap-2">
-                <button
+                {/* <button
                   type="submit"
                   className="bg-primary font-semibold px-3 py-2 rounded-lg text-white"
                   onClick={handleSave}
                 >
                   Simpan
+                </button> */}
+                <button
+                  type="submit"
+                  className="bg-primary font-semibold px-3 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
+                  onClick={handleSave}
+                >
+                  {isSubmitting ? "Menyimpan..." : "Simpan"}
                 </button>
                 <button
                   type="button"

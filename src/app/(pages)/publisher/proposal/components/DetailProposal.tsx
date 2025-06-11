@@ -4,6 +4,8 @@ import { formatDate } from "@/utils/dateFormatter";
 import BadgeStatus from "@/components/BadgeStatus";
 import ModalInputDocument from "./ModalInputDocument";
 import ModalRevisionDocument from "./ModalRevisionDocument";
+import ModalVerifyStatus from "./ModalVerify";
+
 const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
   return (
     <div className="mx-auto bg-white rounded-2xl shadow-md p-8 space-y-6 border border-gray-200">
@@ -99,7 +101,7 @@ const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
       {proposal.publication_document && (
         <a
           href={proposal.publication_document}
-          target="_blank" 
+          target="_blank"
           rel="noopener noreferrer"
           className="group relative inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300 transition-all duration-300 hover:shadow-lg"
         >
@@ -146,6 +148,10 @@ const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
           </p>
           <ModalRevisionDocument proposal={proposal} />
         </div>
+      )}
+      {(proposal.current_status_id === 5 ||
+        proposal.current_status_id === 9) && (
+        <ModalVerifyStatus proposal={proposal} />
       )}
     </div>
   );

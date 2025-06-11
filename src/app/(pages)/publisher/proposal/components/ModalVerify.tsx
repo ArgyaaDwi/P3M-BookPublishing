@@ -20,6 +20,7 @@ const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
   const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
   const [note, setNote] = useState<string>("");
   const [supportingUrl, setSupportingUrl] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const getStatus = async () => {
@@ -68,8 +69,10 @@ const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
       }, 10);
       return;
     }
+
+    setIsSubmitting(true);
     try {
-      const res = await fetch(`/api/publisher/status/${proposal.id}`, {
+      const res = await fetch(`/api/v1/publisher/status/${proposal.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -89,13 +92,15 @@ const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
       }
     } catch (error) {
       console.error("Error updating status:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div>
       <button
-        className="bg-yellow-100 p-2 rounded-lg text-yellow-500 hover:text-yellow-800 flex items-center gap-2"
+        className="bg-yellow-100 p-2 rounded-lg text-yellow-700 hover:text-yellow-800 flex items-center gap-2"
         onClick={() => setIsOpen(true)}
       >
         <Pencil className="w-5 h-5" />
@@ -104,7 +109,8 @@ const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
 
       {isOpen && proposal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-8">
+          {/* <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-8"> */}
+          <div className="bg-white rounded-lg shadow-lg w-[95%] max-w-2xl max-h-[90vh] overflow-y-auto p-6">
             <h3 className="text-2xl font-semibold text-gray-900 text-center mb-4">
               Verifikasi Ajuan Penerbitan
             </h3>
@@ -155,7 +161,7 @@ const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
               </div>
               <div className="mb-1">
                 <label className="block font-medium text-black pb-1">
-                  Catatan   
+                  Catatan
                 </label>
                 <textarea
                   className="w-full border border-gray-400 p-3 rounded-xl text-black"
@@ -204,11 +210,18 @@ const ModalVerifyStatus: React.FC<ModalStatusProps> = ({ proposal }) => {
                 </label>
               </div>
               <div className="flex items-center gap-2">
-                <button
+                {/* <button
                   type="submit"
                   className="bg-primary font-semibold px-3 py-2 rounded-lg text-white"
                 >
                   Simpan
+                </button> */}
+                <button
+                  type="submit"
+                  className="bg-primary font-semibold px-3 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Menyimpan..." : "Simpan"}
                 </button>
                 <button
                   type="button"

@@ -2,7 +2,8 @@ import { PublicationType } from "@/types/publicationTypes";
 import { formatDate } from "@/utils/dateFormatter";
 import BadgeStatus from "@/components/BadgeStatus";
 import { StickyNote } from "lucide-react";
-
+import ModalStatus from "./ModalVerifyStatus";
+import ModalPublisher from "./ModalAssignPublisher";
 const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
   return (
     <div className="mx-auto bg-white rounded-2xl shadow-md p-8 space-y-6 border border-gray-200">
@@ -122,6 +123,13 @@ const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
             </svg>
           </div>
         </a>
+      )}
+      {(proposal.current_status_id === 1 ||
+        proposal.current_status_id === 4) && (
+        <ModalStatus proposal={proposal} />
+      )}
+      {proposal.current_status_id === 3 && (
+        <ModalPublisher proposal={proposal} />
       )}
     </div>
   );

@@ -19,6 +19,7 @@ const ModalInputDocument: React.FC<ModalInputDocumentProps> = ({
   const [coverBookUrl, setCoverBookUrl] = useState<string>("");
   const [proofUrl, setProofUrl] = useState<string>("");
   const [note, setNote] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (proposal) {

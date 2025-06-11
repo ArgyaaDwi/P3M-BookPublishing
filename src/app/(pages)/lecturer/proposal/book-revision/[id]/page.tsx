@@ -36,6 +36,7 @@ export default function SubmitBookRevision() {
     { name: "Ajuan", url: "/lecturer/proposal" },
     { name: "Loading...", url: `/lecturer/lecturer/${proposalId}` },
   ]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchProposal = async () => {
@@ -88,17 +89,18 @@ export default function SubmitBookRevision() {
     if (!notes) {
       setError(null);
       setTimeout(() => {
-        setError("Catatan wajib diisi");
+        setError("Catatan Revisi wajib diisi");
       }, 10);
       return;
     }
     if (!documentUrl) {
       setError(null);
       setTimeout(() => {
-        setError("URL wajib diisi");
+        setError("URL Draf Buku wajib diisi");
       }, 10);
       return;
     }
+    setIsSubmitting(true);
     try {
       const res = await fetch(
         `/api/v1/lecturer/proposals/book-revision/${proposalId}`,
@@ -124,6 +126,8 @@ export default function SubmitBookRevision() {
       }
     } catch (error) {
       console.error("Error submitting form:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
   if (loading) return <LoadingIndicator />;
@@ -201,8 +205,15 @@ export default function SubmitBookRevision() {
                 </div>
               </div>
               <div className="flex items-center gap-2 pt-4">
-                <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
+                {/* <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
                   {loading ? "Loading..." : "Simpan"}
+                </button> */}
+                <button
+                  className="bg-primary font-semibold px-3 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
+                  type="submit"
+                >
+                  {isSubmitting ? "Menyimpan..." : "Simpan"}
                 </button>
                 <button
                   type="button"
