@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Breadcrumb from "@/components/BreadCrumb";
 import Select from "@/components/form/Select";
 import { CircleAlert } from "lucide-react";
+import LoadingIndicator from "@/components/Loading";
 import Swal from "sweetalert2";
 interface ApprovedBooks {
   id: number;
@@ -108,7 +109,9 @@ export default function AddInvoicePage() {
     { name: "Invoice", url: "/publisher/invoice" },
     { name: "Buat Invoice", url: "/publisher/invoice/create" },
   ];
-
+  if (loading) {
+    return <LoadingIndicator />;
+  }
   return (
     <div>
       <Breadcrumb
