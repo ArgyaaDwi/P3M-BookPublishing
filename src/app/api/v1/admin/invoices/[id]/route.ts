@@ -28,6 +28,7 @@ export async function GET(
           include: {
             publication: {
               select: {
+                id: true,
                 publication_title: true,
                 user_id: true,
                 publication_book_cover: true,

@@ -94,9 +94,15 @@ const DetailInvoiceSection = ({ invoice }: { invoice: InvoiceType }) => {
               className="p-3 border rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center"
             >
               <div>
-                <p className="text-base font-semibold text-black">
+                <a
+                  href={`/admin/proposal/${item.publication.id}`}
+                  className="text-base font-semibold text-blue-600 hover:underline"
+                >
                   {item.publication.publication_title}
-                </p>
+                </a>
+                {/* <p className="text-base font-semibold text-black">
+                  {item.publication.publication_title}
+                </p> */}
                 <p className="text-sm text-gray-500">
                   Dosen: {item.publication.lecturer.name} NIDN{" "}
                   {item.publication.lecturer.nidn}

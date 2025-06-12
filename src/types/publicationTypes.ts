@@ -6,6 +6,7 @@ export type PublicationType = {
   current_status_id: number ;
   current_transaction_status_id: number;
   supporting_url?: string;
+  publication_final_book?: string | null;
   createdAt: string;
   updatedAt: string;
   status: {

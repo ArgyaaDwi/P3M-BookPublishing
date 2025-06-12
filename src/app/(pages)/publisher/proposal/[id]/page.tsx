@@ -7,7 +7,7 @@ import Tabs from "@/components/Tabs";
 import DetailProposalSection from "../components/DetailProposal";
 import LoadingIndicator from "@/components/Loading";
 import LogPublicationActivity from "@/components/publication/LogActivity";
-import InvoiceSection from "../components/InvoiceSection";
+// import InvoiceSection from "../components/InvoiceSection";
 const ProposalDetailPublisher = () => {
   const { id } = useParams();
   const proposalId = String(id);
@@ -69,14 +69,6 @@ const ProposalDetailPublisher = () => {
       content: (
         <div>
           <LogPublicationActivity publicationId={Number(id)} />
-        </div>
-      ),
-    },
-    {
-      title: "Invoice",
-      content: (
-        <div>
-          <InvoiceSection proposalId={Number(id)} />
         </div>
       ),
     },

@@ -31,6 +31,8 @@ export async function GET(
         publication_authenticity_proof: true,
         publication_book_cover: true,
         status_transaction: { select: { status_name: true } },
+        publication_final_book: true,
+        current_transaction_status_id: true,
         createdAt: true,
         items: {
           select: {

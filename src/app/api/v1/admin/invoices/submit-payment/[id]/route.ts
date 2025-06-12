@@ -27,9 +27,7 @@ export async function PUT(
       },
     });
     if (!transaction) {
-      return NextResponse.json(
-        { error: "Invoice tidak ditemukan" },
-      );
+      return NextResponse.json({ error: "Invoice tidak ditemukan" });
     }
     const publicationIds = transaction.items.map((item) => item.publication_id);
     await Promise.all([

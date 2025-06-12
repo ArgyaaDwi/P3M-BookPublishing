@@ -24,6 +24,7 @@ export async function GET(
         publication_authenticity_proof: true,
         publication_document: true,
         current_status_id: true,
+        publication_final_book: true,
         lecturer: { select: { name: true, nidn: true } },
         publisher: { select: { name: true } },
         status: { select: { status_name: true } },
