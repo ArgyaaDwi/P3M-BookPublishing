@@ -46,6 +46,21 @@ export async function GET(req: NextRequest) {
           createdAt: "desc",
         },
       });
+    } else if (status === "pending") {
+      invoices = await prisma.transaction.findMany({
+        where: {
+          user_id: publisherId,
+          current_status_id: 1,
+          deleted: false,
+        },
+        include: {
+          user: true,
+          status: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
     } else {
       invoices = await prisma.transaction.findMany({
         where: {

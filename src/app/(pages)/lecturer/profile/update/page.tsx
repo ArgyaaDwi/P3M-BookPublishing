@@ -1,11 +1,16 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useUser } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 import Breadcrumb from "@/components/BreadCrumb";
 import Input from "@/components/form/Input";
 import ErrorValidation from "@/components/form/ErrorValidation";
+import Swal from "sweetalert2";
+
 export default function ProfilePage() {
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const breadcrumbItems = [
     { name: "Dashboard", url: "/lecturer/dashboard" },
     { name: "Profil", url: "/lecturer/profile" },
@@ -14,7 +19,7 @@ export default function ProfilePage() {
   const user = useUser();
   const [form, setForm] = useState({
     name: "",
-    email: "",
+    // email: "",
     phone_number: "",
     address: "",
   });
@@ -23,7 +28,7 @@ export default function ProfilePage() {
     if (user) {
       setForm({
         name: user.name,
-        email: user.email,
+        // email: user.email,
         phone_number: user.phone_number,
         address: user.address,
       });
@@ -60,20 +65,44 @@ export default function ProfilePage() {
       }, 10);
       return;
     }
-    const res = await fetch("/api/v1/profile/update", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    await fetch("/api/v1/profile/refresh-session", {
-      method: "POST",
-    });
-    window.location.reload();
-    if (res.ok) {
-      alert("Profil berhasil diperbarui!");
-    } else {
-      alert("Gagal memperbarui profil.");
-    }
+    setIsSubmitting(true);
+    try {
+        const res = await fetch("/api/v1/profile/update", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        });
+        await fetch("/api/v1/profile/refresh-session", {
+          method: "POST",
+        });
+        if (res.ok) {
+          Swal.fire("Berhasil!", "Profil berhasil diperbarui!", "success").then(() => {
+            router.push("/lecturer/profile");
+            window.location.reload();
+          });
+        } else {
+          alert("Gagal memperbarui profil.");
+        }
+        } catch (error) {
+          console.error("Terjadi kesalahan saat memperbarui profil:", error);
+          alert("Terjadi kesalahan. Silakan coba lagi nanti.");
+        } finally {
+          setIsSubmitting(false);
+        }
+    // const res = await fetch("/api/v1/profile/update", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(form),
+    // });
+    // await fetch("/api/v1/profile/refresh-session", {
+    //   method: "POST",
+    // });
+    // window.location.reload();
+    // if (res.ok) {
+    //   alert("Profil berhasil diperbarui!");
+    // } else {
+    //   alert("Gagal memperbarui profil.");
+    // }
   };
 
   return (
@@ -122,10 +151,18 @@ export default function ProfilePage() {
               className="bg-inputColor border text-black border-borderInput w-full rounded-xl p-3"
             />
             <div className="flex items-center gap-2">
-              <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
+              {/* <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
                 Simpan
+              </button> */}
+              <button
+                  type="submit"
+                  className="bg-primary font-semibold px-3 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Menyimpan..." : "Simpan"}
               </button>
               <button
+                onClick={()=>router.back()}
                 type="button"
                 className="bg-white border font-semibold border-red-600 px-3 py-2 rounded-lg text-red-600"
               >

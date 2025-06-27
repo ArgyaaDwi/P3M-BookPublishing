@@ -32,7 +32,7 @@ const InvoiceDetailAdmin = () => {
             { name: "Dashboard", url: "/admin/dashboard" },
             { name: "Invoice", url: "/admin/invoice" },
             {
-              name: data.id,
+              name: "Detail Invoice",
               url: `/admin/invoice/${invoiceId}`,
             },
           ]);

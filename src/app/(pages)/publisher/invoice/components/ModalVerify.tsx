@@ -9,6 +9,7 @@ type ModalStatusProps = {
     id: number;
     current_status_id: number;
     status: { status_name: string };
+    payment_proof: string | null;
   } | null;
 };
 
@@ -110,6 +111,27 @@ const ModalVerifyInvoice: React.FC<ModalStatusProps> = ({ invoice }) => {
               Verifikasi Pembayaran
             </h3>
             <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label className="block font-medium text-black pb-1">
+                  URL Bukti Pembayaran
+                </label>
+                {invoice.payment_proof ? (
+                  <div className="w-full px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg"> 
+                      <a href={invoice.payment_proof}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 hover:underline break-all text-sm transition-colors duration-200 flex items-center gap-2"
+                      >
+                        <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        <span className="truncate">{invoice.payment_proof}</span>
+                      </a>
+                  </div>
+                ) : (
+                  <p className="text-gray-500 italic">Belum ada bukti</p>
+                )}
+              </div>
               <div className="mb-3">
                 {error && <ErrorValidation message={error} duration={3000} />}
                 <label className="block font-medium text-black pb-1">

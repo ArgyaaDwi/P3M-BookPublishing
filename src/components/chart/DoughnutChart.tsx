@@ -4,36 +4,6 @@ import { Doughnut } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const labels = [
-  "Menunggu Verifikasi Admin",
-  "Menunggu Verifikasi Penerbit",
-  "Revisi dari Admin",
-  "Revisi dari Penerbit",
-  "Disetujui Admin",
-  "Disetujui Penerbit",
-  "Selesai",
-];
-
-const data = {
-  labels,
-  datasets: [
-    {
-      label: "Jumlah Mahasiswa",
-      data: [120, 90, 75, 60, 50, 40, 30],
-      backgroundColor: [
-        "rgba(255, 99, 132, 0.5)",
-        "rgba(54, 162, 235, 0.5)",
-        "rgba(255, 206, 86, 0.5)",
-        "rgba(153, 102, 255, 0.5)",
-        "rgba(255, 159, 64, 0.5)",
-        "rgba(199, 199, 199, 0.5)",
-        "rgba(75, 192, 192, 0.5)",
-      ],
-      borderWidth: 1,
-    },
-  ],
-};
-
 const options = {
   responsive: true,
   maintainAspectRatio: false,
@@ -58,10 +28,39 @@ const options = {
   },
 };
 
-export default function DoughnutChart() {
+type Props = {
+  labels: string[];
+  data: number[];
+};
+
+export default function DoughnutChart({ labels, data }: Props) {
+  const chartData = {
+    labels,
+    datasets: [
+      {
+        label: "Jumlah Ajuan",
+        data,
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.5)",  
+          "rgba(54, 162, 235, 0.5)",  
+          "rgba(255, 206, 86, 0.5)",  
+          "rgba(153, 102, 255, 0.5)", 
+          "rgba(255, 159, 64, 0.5)",  
+          "rgba(199, 199, 199, 0.5)", 
+          "rgba(75, 192, 192, 0.5)",  
+          "rgba(255, 99, 71, 0.5)",   
+          "rgba(100, 149, 237, 0.5)", 
+          "rgba(60, 179, 113, 0.5)",  
+          "rgba(218, 112, 214, 0.5)", 
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
   return (
     <div style={{ height: "350px" }}>
-      <Doughnut data={data} options={options} />
+      <Doughnut data={chartData} options={options} />
     </div>
   );
 }

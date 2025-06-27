@@ -22,17 +22,33 @@ export async function createSessionToken(payload: SessionPayload) {
 }
 
 // verify session token
+// export async function verifySessionToken(session: string | undefined = "") {
+//   try {
+//     if (session === undefined) {
+//       console.log("session is undefined");
+//       return null;
+//     }
+//     const { payload } = await jwtVerify(session, encodedKey, {
+//       algorithms: ["HS256"],
+//     });
+//     return payload;
+//   } catch (error) {
+//     console.error("Error verifying session token:", error);
+//   }
+// }
 export async function verifySessionToken(session: string | undefined = "") {
   try {
-    if (session === undefined) {
-      console.log("session is undefined");
+    if (!session) {
+      console.log("❌ Session token tidak ada");
       return null;
     }
     const { payload } = await jwtVerify(session, encodedKey, {
       algorithms: ["HS256"],
     });
+
     return payload;
   } catch (error) {
-    console.error("Error verifying session token:", error);
+    console.error("❌ Error verifying session token:", error);
+    return null; // ⚠️ PENTING: tambahkan return null
   }
 }

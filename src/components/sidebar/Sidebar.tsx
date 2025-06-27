@@ -77,8 +77,10 @@ export default function Sidebar({ title, children, user }: SidebarProps) {
             `}
           >
             <div className="leading-4">
-              <h4 className="font-semibold text-black">{user?.name || ""}</h4>
-              <span className="text-xs text-gray-600">{user?.email || ""}</span>
+              {/* <h4 className="font-semibold text-black">{user?.name || ""}</h4>
+              <span className="text-xs text-gray-600">{user?.email || ""}</span> */}
+              <h4 className="font-semibold text-black truncate max-w-[120px] overflow-hidden whitespace-nowrap">{user?.name || ""}</h4>
+              {/* <span className="text-xs text-gray-600 truncate max-w-[10px] overflow-hidden whitespace-nowrap">{user?.email || ""}</span> */}
             </div>
             <button onClick={handleLogout}>
               <LogOut size={22} color="red" />

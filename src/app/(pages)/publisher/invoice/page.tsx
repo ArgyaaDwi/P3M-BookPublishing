@@ -4,11 +4,11 @@ import Tabs from "@/components/Tabs";
 import AllInvoicePublisher from "./components/AllInvoice";
 import VerifyInvoicePublisher from "./components/VerifyInvoice";
 import SuccessInvoicePublisher from "./components/SuccessInvoice";
-
+import WaitingInvoicePublisher from "./components/WaitingInvoice";
 const breadcrumbItems = [
   {
     name: "Dashboard",
-    url: "/admin/dashboard",
+    url: "/publisher/dashboard",
   },
   {
     name: "Invoice",
@@ -27,7 +27,15 @@ export default function InvoicePage() {
       ),
     },
     {
-      title: "Menunggu Verifikasi",
+      title: "Menunggu Pembayaran",
+      content: (
+        <div>
+          <WaitingInvoicePublisher />
+        </div>
+      ),
+    },
+    {
+      title: "Butuh Verifikasi",
       content: (
         <div>
           <VerifyInvoicePublisher />

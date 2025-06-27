@@ -10,6 +10,7 @@ import Pagination from "@/components/Pagination";
 import BadgeStatus from "@/components/BadgeStatus";
 import LoadingIndicator from "@/components/Loading";
 import TableHeader from "@/components/TableHeader";
+import RevisionPaymentModal from "./ModalRevisionPayment";
 import ExportButton from "@/components/button/ExportButton";
 
 const VerifyInvoiceAdmin = () => {
@@ -143,7 +144,7 @@ const VerifyInvoiceAdmin = () => {
           <TableHeader
             columns={[
               "No",
-              "Transaksi Tiket",
+              "Kode Transaksi",
               "Tanggal Transaksi",
               "Status",
               "Bukti Pembayaran",
@@ -173,14 +174,16 @@ const VerifyInvoiceAdmin = () => {
                     color={
                       invoice.current_status_id === 1
                         ? "badgePendingText"
-                        : invoice.current_status_id === 3
+                        : invoice.current_status_id === 3 ||
+                          invoice.current_status_id === 4
                         ? "badgeRevText"
                         : "badgeSuccessText"
                     }
                     bgColor={
                       invoice.current_status_id === 1
                         ? "badgePending"
-                        : invoice.current_status_id === 3
+                        : invoice.current_status_id === 3 ||
+                          invoice.current_status_id === 4
                         ? "badgeRev"
                         : "badgeSuccess"
                     }
@@ -229,6 +232,9 @@ const VerifyInvoiceAdmin = () => {
                     >
                       <Eye />
                     </button>
+                     {invoice.current_status_id === 4 && (
+                      <RevisionPaymentModal invoice={invoice} />
+                    )}
                   </div>
                 </td>
               </tr>

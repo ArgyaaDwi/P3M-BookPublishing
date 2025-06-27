@@ -35,10 +35,12 @@ export async function createSession(user: SessionUser) {
   const cookieStore = await cookies();
   cookieStore.set({
     name: "session",
-    value: session,
+    value: session, 
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    expires: expiresAt,
+    // secure: process.env.NODE_ENV === "production",
+    secure: false,
+    // expires: expiresAt,
+    maxAge: 60 * 60 * 24, // ✅ 1 hari dalam detik
     sameSite: "lax",
     path: "/",
   });
@@ -60,14 +62,15 @@ export async function updateSession() {
     return null;
   }
 
-  const expires = new Date(Date.now() + 1 * 60 * 60 * 1000);
+  // const expires = new Date(Date.now() + 1 * 60 * 60 * 1000);
 
   cookieStore.set({
     name: "session",
     value: sessionCookie.value,
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    expires,
+    // secure: process.env.NODE_ENV === "production",
+    secure: false,
+    maxAge: 60 * 60 * 24, // ✅ 1 hari dalam detik
     sameSite: "lax",
     path: "/",
   });

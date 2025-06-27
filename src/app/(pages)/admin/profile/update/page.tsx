@@ -8,8 +8,8 @@ import ErrorValidation from "@/components/form/ErrorValidation";
 import Swal from "sweetalert2";
 export default function ProfilePage() {
   const router = useRouter();
-
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const breadcrumbItems = [
     { name: "Dashboard", url: "/admin/dashboard" },
     { name: "Profil", url: "/admin/profile" },
@@ -62,28 +62,51 @@ export default function ProfilePage() {
       }, 10);
       return;
     }
-    const res = await fetch("/api/v1/profile/update", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    await fetch("/api/v1/profile/refresh-session", {
-      method: "POST",
-    });
-    window.location.href = "/admin/profile";
-    if (res.ok) {
-      Swal.fire("Berhasil!", "Profil berhasil diperbarui!", "success").then(
-        () => {
-          setTimeout(() => {
-            router.push("/admin/profile");
-          }, 2500); // delay 1.5 detik
-        }
-      );
-    } else {
-      alert("Gagal memperbarui profil.");
-    }
+    setIsSubmitting(true);
+    // const res = await fetch("/api/v1/profile/update", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(form),
+    // });
+    // await fetch("/api/v1/profile/refresh-session", {
+    //   method: "POST",
+    // });
+    // window.location.href = "/admin/profile";
+    // if (res.ok) {
+    //   Swal.fire("Berhasil!", "Profil berhasil diperbarui!", "success").then(
+    //     () => {
+    //       setTimeout(() => {
+    //         router.push("/admin/profile");
+    //       }, 2500); // delay 1.5 detik
+    //     }
+    //   );
+    // } else {
+    //   alert("Gagal memperbarui profil.");
+    // }
+    try {
+      const res = await fetch("/api/v1/profile/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      await fetch("/api/v1/profile/refresh-session", {
+        method: "POST",
+      });
+      if (res.ok) {
+        Swal.fire("Berhasil!", "Profil berhasil diperbarui!", "success").then(() => {
+          router.push("/admin/profile");
+          window.location.reload();
+        });
+      } else {
+        alert("Gagal memperbarui profil.");
+      }
+      } catch (error) {
+        console.error("Terjadi kesalahan saat memperbarui profil:", error);
+        alert("Terjadi kesalahan. Silakan coba lagi nanti.");
+      } finally {
+        setIsSubmitting(false);
+      }
   };
-
   return (
     <div>
       <Breadcrumb
@@ -129,10 +152,18 @@ export default function ProfilePage() {
               className="bg-inputColor border text-black border-borderInput w-full rounded-xl p-3"
             />
             <div className="flex items-center gap-2">
-              <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
+              {/* <button className="bg-primary font-semibold px-3 py-2 rounded-lg text-white">
                 Simpan
+              </button> */}
+              <button
+                  type="submit"
+                  className="bg-primary font-semibold px-3 py-2 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Menyimpan..." : "Simpan"}
               </button>
               <button
+                onClick={()=>router.back()}
                 type="button"
                 className="bg-white border font-semibold border-red-600 px-3 py-2 rounded-lg text-red-600"
               >

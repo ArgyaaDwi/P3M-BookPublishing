@@ -4,6 +4,8 @@ import BadgeStatus from "@/components/BadgeStatus";
 import { StickyNote } from "lucide-react";
 import ModalStatus from "./ModalVerifyStatus";
 import ModalPublisher from "./ModalAssignPublisher";
+// import { convertDriveLinkToImage } from "@/utils/convertDriveLink";
+
 const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
   return (
     <div className="mx-auto bg-white rounded-2xl shadow-md p-8 space-y-6 border border-gray-200">
@@ -84,6 +86,24 @@ const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
               >
                 📚 Cover Buku
               </a>
+                // <div className="flex flex-col items-start gap-2">
+                //   <a
+                //     href={proposal.publication_book_cover}
+                //     target="_blank"
+                //     rel="noopener noreferrer"
+                //     className="px-3 py-1 bg-sky-100 text-sky-700 rounded-full text-sm font-medium hover:bg-sky-200 transition"
+                //   >
+                //     📚 Lihat Cover Buku
+                //   </a>
+                //   <img
+                //     src={convertDriveLinkToImage(proposal.publication_book_cover)}
+                //     alt="Cover Buku"
+                //     className="w-32 h-48 object-cover rounded border"
+                //     onError={(e) => {
+                //       e.currentTarget.src = "/default-cover.png"; // fallback jika gagal load
+                //     }}
+                //   />
+                // </div>
             )}
             {proposal.publication_authenticity_proof && (
               <a

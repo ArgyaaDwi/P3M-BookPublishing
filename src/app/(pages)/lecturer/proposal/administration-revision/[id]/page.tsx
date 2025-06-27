@@ -90,7 +90,7 @@ export default function SubmitAdministrationRevision() {
     if (!notes) {
       setError(null);
       setTimeout(() => {
-        setError("Catatan Revisi wajib diisi");
+        setError("Pesan Respon terhadap Revisi wajib diisi");
       }, 10);
       return;
     }
@@ -177,12 +177,12 @@ export default function SubmitAdministrationRevision() {
                   htmlFor="notes"
                   className="text-black text-base self-start font-normal mb-1"
                 >
-                  Catatan Revisi <span className="text-red-500">*</span>
+                  Respon Terhadap Revisi <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   id="notes"
                   className="w-full border bg-inputColor border-borderInput p-3 rounded-xl text-black"
-                  placeholder="Masukkan Catatan Keterangan Revisi"
+                  placeholder="Masukkan Pesan Respon terhadap Revisi"
                   rows={4}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}

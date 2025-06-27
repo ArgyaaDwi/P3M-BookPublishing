@@ -69,16 +69,16 @@ export default function PublisherDetailPage() {
         </div>
       ),
     },
-    {
-      title: "Buku yang Ditangani",
-      content: (
-        <div>
-          <h3 className="text-black font-bold">
-            Ajuan Penerbitan Buku Pengguna dari {publisher.name}
-          </h3>
-        </div>
-      ),
-    },
+    // {
+    //   title: "Buku yang Ditangani",
+    //   content: (
+    //     <div>
+    //       <h3 className="text-black font-bold">
+    //         Ajuan Penerbitan Buku Pengguna dari {publisher.name}
+    //       </h3>
+    //     </div>
+    //   ),
+    // },
   ];
   return (
     <div>

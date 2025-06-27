@@ -37,16 +37,13 @@ export default function ProfilePage() {
   const breadcrumbItems = [
     {
       name: "Dashboard",
-      url: "/admin/dashboard",
+      url: "/lecturer/dashboard",
     },
     {
       name: "Profil",
-      url: "/admin/profile",
+      url: "/lecturer/profile",
     },
   ];
-
-  // Data dummy untuk profil pengguna
-
   return (
     <div className="mx-auto">
       <Breadcrumb title="Halaman Profil" breadcrumbItems={breadcrumbItems} />
@@ -92,7 +89,7 @@ export default function ProfilePage() {
               <span>Edit Profil</span>
             </Link>
             <p className="mt-2 text-gray-600 font-medium text-sm">
-              Terakhir diperbarui: {formatDate(user.updatedAt)}
+              Terakhir diperbarui: {user.updatedAt}
             </p>
           </div>
         </div>
@@ -191,22 +188,21 @@ export default function ProfilePage() {
         {/* Detail Profil */}
         <div className="bg-white rounded-lg shadow-md p-6 order-1 md:order-2 md:col-span-2">
           <h2 className="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b flex justify-between items-center">
-            <span>Detail Profil</span>
+            <span>Riwayat Aktivitas</span>
           </h2>
-
           <div className="space-y-6">
-            <div>
+            {/* <div>
               <h3 className="text-md font-medium text-gray-700 mb-2">Bio</h3>
               <p className="text-gray-600">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 Accusantium, sequi. Soluta molestiae quos quae temporibus.
               </p>
-            </div>
+            </div> */}
 
             <div>
-              <h3 className="text-md font-medium text-gray-700 mb-3">
+              {/* <h3 className="text-md font-medium text-gray-700 mb-3">
                 Riwayat Aktivitas
-              </h3>
+              </h3> */}
               <div className="space-y-3">
                 {activities.map((item) => (
                   <div

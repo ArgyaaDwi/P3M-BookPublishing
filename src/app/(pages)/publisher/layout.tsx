@@ -57,12 +57,12 @@ export default async function PublisherLayout({ children }: PublisherLayout) {
           <SidebarItem
             icon={<CircleUserRound size={20} />}
             text="Profil Saya"
-            url="/admin/profile"
+            url="/publisher/profile"
           />
           <SidebarItem
             icon={<KeyRound size={20} />}
             text="Ganti Password"
-            url="/admin/lecturer"
+            url="/publisher/profile/change-password"
           />
         </Sidebar>
         <div className="flex-1 flex flex-col h-screen">

@@ -26,14 +26,24 @@ export default function LoginPage() {
       console.log(result);
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to login");
+        // Tampilkan pesan error dari server jika ada
+        const serverError = result?.error || result?.message || "Gagal login";
+        console.error("❌ Server error:", serverError);
+        setError(serverError);
+        return;
+        // throw new Error(result.error || "Failed to login");
       }
 
       console.log("Login successful:", result.data);
       const userRole = result.data.role;
+      
+      console.log("Redirecting to:", userRole);
 
       if (userRole === "ADMIN") {
+        // alert("Redirecting to /admin/dashboard");
         router.push("/admin/dashboard");
+        // window.location.href = "/admin/dashboard";
+        // router.push("/admin/dashboard");
       } else if (userRole === "DOSEN") {
         router.push("/lecturer/dashboard");
       } else if (userRole === "PENERBIT") {
@@ -41,9 +51,13 @@ export default function LoginPage() {
       } else {
         throw new Error("Invalid role");
       }
-    } catch (error) {
-      setError((error as Error).message);
-    } finally {
+    } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error:", error.message);
+    } else {
+      console.error("Unknown error:", error);
+    }
+  } finally {
       setLoading(false);
     }
   };
@@ -83,9 +97,14 @@ export default function LoginPage() {
         </form>
         <p className="text-black text-center text-base mt-6 font-normal">
           Belum punya akun?{" "}
-          <a href="/register" className="text-primary hover:underline">
-            Hubungi Admin
-          </a>
+        <a
+          href="https://wa.me/6281226513164?text=Halo%20Admin,%20saya%20butuh%20bantuan%20terkait%20pendaftaran."
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary hover:underline"
+        >
+          Hubungi Admin
+        </a>
         </p>
       </div>
       <div className=" hidden md:flex w-1/2 justify-center items-center">

@@ -37,7 +37,6 @@ export default function LatestProposals() {
           <tr>
             <th className="px-4 py-3">No.</th>
             <th className="px-4 py-3">Judul Ajuan</th>
-            <th className="px-4 py-3">Dosen Pemohon</th>
             <th className="px-4 py-3">Tanggal Pengajuan</th>
             <th className="px-4 py-3">Status</th>
           </tr>
@@ -47,7 +46,6 @@ export default function LatestProposals() {
             <tr key={recent.id} className="border-t">
               <td className="px-4 py-2">{index + 1}</td>
               <td className="px-4 py-2">{recent.publication_title}</td>
-              <td className="px-4 py-2">{recent.lecturer?.name}</td>
               <td className="px-4 py-2">{formatDate(recent.createdAt)}</td>
               <td className="px-4 py-2">
                 {" "}

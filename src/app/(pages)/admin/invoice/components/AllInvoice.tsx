@@ -146,7 +146,7 @@ const AllInvoiceAdmin = () => {
           <TableHeader
             columns={[
               "No",
-              "Transaksi Tiket",
+              "Kode Transaksi",
               "Tanggal Transaksi",
               "Status",
               "Bukti Pembayaran",

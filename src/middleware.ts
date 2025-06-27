@@ -3,12 +3,13 @@ import { NextResponse } from "next/server";
 import { verifySessionToken } from "./lib/encrypt";
 
 const protectedRouteByRoles = [
-  { path: /^\/admin/, roles: ["admin"] },
-  { path: /^\/lecturer/, roles: ["dosen"] },
-  { path: /^\/publisher/, roles: ["penerbit"] },
+  { path: /^\/admin/, roles: ["admin", "ADMIN"] },
+  { path: /^\/lecturer/, roles: ["dosen", "DOSEN"],  },
+  { path: /^\/publisher/, roles: ["penerbit", "PENERBIT"] },
 ];
 
 export async function middleware(req: NextRequest) {
+  console.log("🧪 SECRET_KEY di middleware:", process.env.SECRET_KEY); 
   const pathname = req.nextUrl.pathname;
   console.log("menuju", pathname);
   if (
@@ -24,23 +25,33 @@ export async function middleware(req: NextRequest) {
   }
   //   jika tidak ada token di cookies
   const sessionToken = req.cookies.get("session")?.value;
+  console.log("📦 Session token:", sessionToken);
+
   if (!sessionToken) {
+    console.log("⛔ Tidak ada session token, redirect ke /login");
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
   // jika ada token
   const session = await verifySessionToken(sessionToken);
+  console.log("🔍 Decoded session:", session);
+
   if (!session?.role) {
+    console.log("⛔ Session tidak valid / tidak ada role");
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
   const userRole = session.role.toString().toLowerCase();
+  console.log("👤 User role:", userRole);
+  console.log("📍 Pathname:", pathname);
   // Cek apakah path yang diakses memerlukan role tertentu
   const matchedRoute = protectedRouteByRoles.find((route) =>
     route.path.test(pathname)
   );
 
   if (matchedRoute) {
+      console.log("🔐 Protected route:", matchedRoute.path);
+
     // Jika role pengguna tidak ada dalam daftar role yang diperbolehkan
     if (!matchedRoute.roles.includes(userRole)) {
       console.log(

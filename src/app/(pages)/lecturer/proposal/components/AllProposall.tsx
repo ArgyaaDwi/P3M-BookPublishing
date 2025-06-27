@@ -212,7 +212,6 @@ const LecturerProposals = () => {
     }
   };
 
-  // useEffect tetap bisa pakai fungsi tersebut:
   useEffect(() => {
     fetchProposals();
   }, []);
@@ -273,13 +272,8 @@ const LecturerProposals = () => {
                   {(currentPage - 1) * itemsPerPage + index + 1}
                 </td>
                 <td className="p-4 text-black border font-semibold">
-                  <div className="flex flex-col">
-                    <span>{proposal.publication_title}</span>
-                    <span className="text-gray-500 font-medium">
-                      #{proposal.publication_ticket}
-                    </span>
-                  </div>
-                </td>
+                    {proposal.publication_title}
+                </td>      
                 <td className="p-4 text-black border">
                   {(() => {
                     const [bg, color] = getBadgeVariant(
@@ -297,7 +291,7 @@ const LecturerProposals = () => {
                     );
                   })()}
                 </td>
-                <td className="p-4 text-black border">
+                <td className="p-4 text-black border" suppressHydrationWarning>
                   {formatDate(proposal.createdAt)}
                 </td>
                 <td className="p-4 text-black border">

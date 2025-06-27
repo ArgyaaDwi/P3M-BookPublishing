@@ -35,6 +35,8 @@ export default function AddInvoicePage() {
         }
       } catch (error) {
         console.error("Error fetch buku:", error);
+      }finally{
+        setLoading(false);
       }
     };
 
@@ -51,7 +53,13 @@ export default function AddInvoicePage() {
         quantity: 1,
       }));
     if (items.length === 0) {
-      alert("Silakan isi minimal 1 buku dan biaya.");
+       await Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Silahkan isi minimal 1 buku beserta biayanya",
+          confirmButtonColor: "#d33",
+        });
+      // alert("Silakan isi minimal 1 buku dan biaya.");
       return;
     }
     const data = {

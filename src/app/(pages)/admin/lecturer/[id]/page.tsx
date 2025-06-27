@@ -49,16 +49,16 @@ export default function LecturerDetailPage() {
         </div>
       ),
     },
-    {
-      title: "Ajuan Penerbitan Pengguna",
-      content: (
-        <div>
-          <h3 className="text-black font-bold">
-            Ajuan Penerbitan Buku Pengguna {lecturer.name}
-          </h3>
-        </div>
-      ),
-    },
+    // {
+    //   title: "Ajuan Penerbitan Pengguna",
+    //   content: (
+    //     <div>
+    //       <h3 className="text-black font-bold">
+    //         Ajuan Penerbitan Buku Pengguna {lecturer.name}
+    //       </h3>
+    //     </div>
+    //   ),
+    // },
   ];
   return (
     <div>

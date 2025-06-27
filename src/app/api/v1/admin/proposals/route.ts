@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     let proposals;
     if (status === "revision") {
       proposals = await prisma.publication.findMany({
-        where: { current_status_id: 2 },
+        where: { current_status_id: 2, deleted: false,},
         include: {
           lecturer: true,
           status: true,
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
       });
     } else if (status === "approved") {
       proposals = await prisma.publication.findMany({
-        where: { current_status_id: 3 },
+        where: { current_status_id: 3,  deleted: false,},
         include: {
           lecturer: true,
           status: true,
@@ -33,6 +33,7 @@ export async function GET(req: NextRequest) {
           current_status_id: {
             in: [1, 4, 5],
           },
+          deleted: false,
         },
         include: {
           lecturer: true,
@@ -44,6 +45,7 @@ export async function GET(req: NextRequest) {
       });
     } else {
       proposals = await prisma.publication.findMany({
+        where: { deleted: false},
         include: {
           lecturer: true,
           status: true,

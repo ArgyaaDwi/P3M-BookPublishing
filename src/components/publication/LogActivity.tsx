@@ -66,6 +66,7 @@ const LogPublicationActivity = ({
   const [activities, setActivities] = useState([]);
   const [loggedInUser, setLoggedInUser] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -108,15 +109,16 @@ const LogPublicationActivity = ({
       </h3> */}
       {activities.length > 0 ? (
         <div className="space-y-4">
-          {activities.map((activity: PublicationActivity) => {
+          {/* {activities.map((activity: PublicationActivity) => { */}
+          {(showAll ? activities : activities.slice(0, 4)).map((activity: PublicationActivity) => {
             const isUser = activity.user?.name === loggedInUser;
             return (
               <div
                 key={activity.id}
-                className={`flex ${isUser ? "justify-end" : "justify-start"}`}
+                className={`flex justify-start`}
               >
                 <div
-                  className={`rounded-lg border shadow-sm overflow-hidden w-full max-w-lg ${
+                  className={`rounded-lg border shadow-sm overflow-hidden w-full max-w-2xl ${
                     isUser
                       ? "bg-slate-100 border-indigo-100"
                       : "bg-slate-50 border-gray-200"
@@ -208,6 +210,16 @@ const LogPublicationActivity = ({
               </div>
             );
           })}
+          {activities.length > 4 && (
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => setShowAll((prev) => !prev)}
+                className="bg-white border border-primary p-3 rounded-md text-sm text-primary hover:bg-primary hover:text-white"
+              >
+                {showAll ? "Tampilkan Sedikit" : "Lihat Semua"}
+              </button>
+            </div>
+          )}
         </div>
       ) : (
         <div className="py-6 flex flex-col items-center justify-center text-center bg-gray-50 rounded-lg border border-dashed border-gray-300">

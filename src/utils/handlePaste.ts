@@ -11,4 +11,3 @@ export const handlePasteText = async (): Promise<string | null> => {
       return null;
     }
   };
-  

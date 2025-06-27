@@ -3,12 +3,14 @@ import { useState } from "react";
 import Breadcrumb from "@/components/BreadCrumb";
 import Input from "@/components/form/Input";
 import ErrorValidation from "@/components/form/ErrorValidation";
+import { useRouter } from "next/navigation";
 export default function ChangePasswordForm() {
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const breadcrumbItems = [
     { name: "Dashboard", url: "/admin/dashboard" },
     { name: "Profil", url: "/admin/profile" },
-    { name: "Edit Profil", url: "/admin/lecturer/add" },
+    { name: "Ubah Password", url: "/admin/lecturer/add" },
   ];
   const [form, setForm] = useState({
     password_lama: "",
@@ -120,6 +122,7 @@ export default function ChangePasswordForm() {
                 {loading ? "Menyimpan..." : "Simpan Perubahan"}
               </button>
               <button
+                onClick={()=>router.back()}
                 type="button"
                 className="bg-white border font-semibold border-red-600 px-3 py-2 rounded-lg text-red-600"
               >

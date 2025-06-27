@@ -18,7 +18,7 @@ type Activity = {
 };
 export default function ProfilePage() {
   const [activities, setActivities] = useState<Activity[]>([]);
-
+  
   useEffect(() => {
     const fetchActivities = async () => {
       const res = await fetch("/api/v1/proposals/log-activities/recent");
@@ -186,22 +186,22 @@ export default function ProfilePage() {
         {/* Detail Profil */}
         <div className="bg-white rounded-lg shadow-md p-6 order-1 md:order-2 md:col-span-2">
           <h2 className="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b flex justify-between items-center">
-            <span>Detail Profil</span>
+            <span> Riwayat Aktivitas</span>
           </h2>
 
           <div className="space-y-6">
-            <div>
+            {/* <div>
               <h3 className="text-md font-medium text-gray-700 mb-2">Bio</h3>
               <p className="text-gray-600">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 Accusantium, sequi. Soluta molestiae quos quae temporibus.
               </p>
-            </div>
+            </div> */}
 
             <div>
-              <h3 className="text-md font-medium text-gray-700 mb-3">
+              {/* <h3 className="text-md font-medium text-gray-700 mb-3">
                 Riwayat Aktivitas
-              </h3>
+              </h3> */}
               <div className="space-y-3">
                 {activities.map((item) => (
                   <div

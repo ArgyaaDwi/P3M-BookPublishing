@@ -7,6 +7,8 @@ import Tabs from "@/components/Tabs";
 import LoadingIndicator from "@/components/Loading";
 import LogPublicationActivity from "@/components/publication/LogActivity";
 import DetailProposalSection from "../components/DetailProposal";
+import PublicationTimeline from "@/components/publication/PublicationTimeline";
+
 const ProposalDetail = () => {
   const { id } = useParams();
   const proposalId = String(id);
@@ -58,6 +60,15 @@ const ProposalDetail = () => {
       content: (
         <div>
           <DetailProposalSection proposal={proposal} />
+        </div>
+      ),
+    },
+    {
+      title: "Timeline",
+      content: (
+        <div>
+          <PublicationTimeline publicationId={proposal.id}
+          currentStatusId={proposal.current_status_id} />    
         </div>
       ),
     },

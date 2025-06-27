@@ -4,6 +4,7 @@ import Tabs from "@/components/Tabs";
 import AllInvoiceAdmin from "./components/AllInvoice";
 import VerifyInvoiceAdmin from "./components/VerifyInvoice";
 import SuccessInvoiceAdmin from "./components/SuccessInvoice";
+import WaitingInvoiceAdmin from "./components/WaitingInvoice";
 // import Example from "@/components/tables/TestTable";
 const breadcrumbItems = [
   {
@@ -23,6 +24,14 @@ export default function InvoicePageAdmin() {
       content: (
         <div>
           <AllInvoiceAdmin />
+        </div>
+      ),
+    },
+    {
+      title: "Menunggu Pembayaran",
+      content: (
+        <div>
+          <WaitingInvoiceAdmin />
         </div>
       ),
     },

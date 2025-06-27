@@ -105,8 +105,21 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+    const existingProposal = await prisma.publication.findFirst({
+      where: {
+        publication_title: publication_title,
+      },
+    });
+
+    if (existingProposal) {
+      return NextResponse.json(
+        { error: "Proposal with this title already exists" },
+        { status: 409 } 
+      );
+    }
     const userId = Number(session.user_id);
     console.log("User ID:", userId);
+
     const publication_ticket = uuid();
     const current_status_id = 1;
     const newProposal = await prisma.publication.create({

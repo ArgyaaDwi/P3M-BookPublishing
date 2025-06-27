@@ -16,7 +16,7 @@ const InvoiceDetailPublisher = () => {
   const [breadcrumbItems, setBreadcrumbItems] = useState([
     { name: "Dashboard", url: "/publisher/dashboard" },
     { name: "Invoice", url: "/publisher/proposal" },
-    { name: "Loading...", url: `/publisher/publisher/${invoiceId}` },
+    { name: "Detail Invoice", url: `/publisher/publisher/` },
   ]);
 
   useEffect(() => {
@@ -32,8 +32,8 @@ const InvoiceDetailPublisher = () => {
             { name: "Dashboard", url: "/publisher/dashboard" },
             { name: "Invoice", url: "/publisher/invoice" },
             {
-              name: data.id,
-              url: `/publisher/lecturer/${invoiceId}`,
+              name: "Detail Invoice",
+              url: `/publisher/invoice/${invoiceId}`,
             },
           ]);
         } else {

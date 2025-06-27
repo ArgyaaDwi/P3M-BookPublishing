@@ -397,12 +397,7 @@ const AllProposalAdmin = () => {
                   {(currentPage - 1) * itemsPerPage + index + 1}
                 </td>
                 <td className="p-4 text-black border font-semibold">
-                  <div className="flex flex-col">
-                    <span>{proposal.publication_title}</span>
-                    <span className="text-gray-500 font-medium">
-                      #{proposal.publication_ticket}
-                    </span>
-                  </div>
+                    {proposal.publication_title}
                 </td>
                 <td className="p-4 text-black border">
                   {proposal.lecturer?.name || "Dosen Tidak Diketahui"}
