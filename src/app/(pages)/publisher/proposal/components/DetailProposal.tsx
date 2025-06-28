@@ -51,7 +51,8 @@ const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700"> */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm text-gray-700">
         <div>
           <p className="text-gray-500">Dosen Pengusul</p>
           <p className="font-medium text-gray-800">
@@ -71,12 +72,35 @@ const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
                 "Belum Ada Transaksi"}
             </p>
           )}
+          <div className="my-4">
+            {proposal.publication_book_cover && (
+              <div className="space-y-2">
+                <div className="overflow-hidden border shadow-sm max-w-[300px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={proposal.publication_book_cover}
+                    alt="Cover Buku"
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+                <a
+                  href={`${proposal.publication_book_cover.replace(
+                    "/upload/",
+                    "/upload/fl_attachment/"
+                  )}`}
+                  className="inline-block px-3 py-1 bg-sky-600 text-white text-sm rounded-md hover:bg-sky-700 transition"
+                >
+                  ⬇️ Download Cover Buku
+                </a>
+              </div>
+            )}
+          </div>
         </div>
         <div className="space-y-1">
           <p className="text-sm text-gray-400">
             Ajuan Dibuat: {formatDate(proposal.createdAt)}
           </p>
-          <div className="flex flex-wrap gap-2 py-4">
+          {/* <div className="flex flex-wrap gap-2 py-4">
             {proposal.publication_book_cover && (
               <a
                 href={proposal.publication_book_cover}
@@ -84,7 +108,7 @@ const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
                 rel="noopener noreferrer"
                 className="px-3 py-1 bg-sky-100 text-sky-700 rounded-full text-sm font-medium hover:bg-sky-200 transition"
               >
-                📚 Cover Buku
+                📚 File Cover Buku
               </a>
             )}
             {proposal.publication_authenticity_proof && (
@@ -93,6 +117,28 @@ const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm font-medium hover:bg-teal-200 transition"
+              >
+                🛡️ Bukti Keaslian
+              </a>
+            )}
+          </div> */}
+          <div className="flex flex-wrap gap-2 pt-4">
+            {proposal.publication_book_cover && (
+              <a
+                href={proposal.publication_book_cover}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block px-3 py-1 bg-sky-100 text-sky-700 rounded-full text-sm font-medium hover:bg-sky-200 transition"
+              >
+                📚 Lihat Cover Buku
+              </a>
+            )}
+            {proposal.publication_authenticity_proof && (
+              <a
+                href={proposal.publication_authenticity_proof}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-medium hover:bg-emerald-200 transition"
               >
                 🛡️ Bukti Keaslian
               </a>
@@ -216,5 +262,4 @@ const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
     </div>
   );
 };
-
 export default DetailProposalSection;

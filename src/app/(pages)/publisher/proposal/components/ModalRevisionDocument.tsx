@@ -4,6 +4,7 @@ import { Files, Clipboard, CircleAlert } from "lucide-react";
 import { handlePasteText } from "@/utils/handlePaste";
 import ErrorValidation from "@/components/form/ErrorValidation";
 import Swal from "sweetalert2";
+import UploadCoverCloudinaryOptional from "./UploadCoverCloudinaryOptional";
 type ModalRevisionDocumentProps = {
   proposal: {
     id: number;
@@ -23,17 +24,29 @@ const ModalRevisionDocument: React.FC<ModalRevisionDocumentProps> = ({
   const [proofUrl, setProofUrl] = useState<string>("");
   const [note, setNote] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // useEffect(() => {
+  //   if (proposal) {
+  //     setCoverBookUrl(proposal.publication_book_cover || "");
+  //     setProofUrl(proposal.publication_authenticity_proof || "");
+  //     setNote("");
+  //   }
+  // }, [proposal]);
   useEffect(() => {
     if (proposal) {
-      setCoverBookUrl(proposal.publication_book_cover || "");
-      setProofUrl(proposal.publication_authenticity_proof || "");
+      setCoverBookUrl((prev) =>
+        prev ? prev : proposal.publication_book_cover || ""
+      );
+      setProofUrl((prev) =>
+        prev ? prev : proposal.publication_authenticity_proof || ""
+      );
       setNote("");
     }
-  }, [proposal, isOpen]);
-  const handlePasteCover = async () => {
-    const url = await handlePasteText();
-    if (url) setCoverBookUrl(url);
-  };
+  }, [proposal]);
+
+  // const handlePasteCover = async () => {
+  //   const url = await handlePasteText();
+  //   if (url) setCoverBookUrl(url);
+  // };
   const handlePasteProof = async () => {
     const url = await handlePasteText();
     if (url) setProofUrl(url);
@@ -85,6 +98,7 @@ const ModalRevisionDocument: React.FC<ModalRevisionDocumentProps> = ({
           text: "Berhasil revisi berkas!",
           confirmButtonColor: "#3085d6",
         });
+        console.log("Final Cover to Submit:", coverBookUrl);
         setIsOpen(false);
         window.location.reload();
       } else {
@@ -112,14 +126,15 @@ const ModalRevisionDocument: React.FC<ModalRevisionDocumentProps> = ({
       </button>
       {isOpen && proposal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-8">
+          {/* <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-8"> */}
+          <div className="bg-white rounded-lg shadow-lg w-[95%] max-w-2xl max-h-[90vh] overflow-y-auto p-6">
             <h3 className="text-2xl font-semibold text-gray-900 text-center mb-4">
               Revisi Dokumen
             </h3>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 {error && <ErrorValidation message={error} duration={3000} />}
-                <label className="block font-medium text-black pb-1">
+                {/* <label className="block font-medium text-black pb-1">
                   Link URL Cover Buku <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
@@ -146,7 +161,28 @@ const ModalRevisionDocument: React.FC<ModalRevisionDocumentProps> = ({
                   >
                     <Clipboard className="h-5 w-5 text-black" />
                   </button>
-                </div>
+                </div> */}
+                {coverBookUrl && (
+                  <div className="mb-3">
+                    <label className="block font-medium text-black pb-1">
+                      Cover Buku Sebelumnya
+                    </label>
+                    <div className="w-[150px] h-auto rounded-lg overflow-hidden border mb-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={coverBookUrl}
+                        alt="Cover Lama"
+                        className="w-full object-cover"
+                      />
+                    </div>
+                    <UploadCoverCloudinaryOptional
+                      onUpload={(url) => {
+                        console.log("coverBookUrl", url);
+                        setCoverBookUrl(url);
+                      }}
+                    />
+                  </div>
+                )}
               </div>
               <div className="mb-3">
                 <label className="block font-medium text-black pb-1">

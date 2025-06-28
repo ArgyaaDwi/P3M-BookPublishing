@@ -4,12 +4,12 @@ import { verifySessionToken } from "./lib/encrypt";
 
 const protectedRouteByRoles = [
   { path: /^\/admin/, roles: ["admin", "ADMIN"] },
-  { path: /^\/lecturer/, roles: ["dosen", "DOSEN"],  },
+  { path: /^\/lecturer/, roles: ["dosen", "DOSEN"] },
   { path: /^\/publisher/, roles: ["penerbit", "PENERBIT"] },
 ];
 
 export async function middleware(req: NextRequest) {
-  console.log("🧪 SECRET_KEY di middleware:", process.env.SECRET_KEY); 
+  console.log("🧪 SECRET_KEY di middleware:", process.env.SECRET_KEY);
   const pathname = req.nextUrl.pathname;
   console.log("menuju", pathname);
   if (
@@ -19,7 +19,8 @@ export async function middleware(req: NextRequest) {
     pathname === "/login" ||
     pathname === "/sitemap.xml" ||
     pathname === "/robots.txt" ||
-    pathname.startsWith("/assets/")
+    pathname.startsWith("/assets/") ||
+    pathname.startsWith("/publication")
   ) {
     return NextResponse.next();
   }
@@ -50,7 +51,7 @@ export async function middleware(req: NextRequest) {
   );
 
   if (matchedRoute) {
-      console.log("🔐 Protected route:", matchedRoute.path);
+    console.log("🔐 Protected route:", matchedRoute.path);
 
     // Jika role pengguna tidak ada dalam daftar role yang diperbolehkan
     if (!matchedRoute.roles.includes(userRole)) {

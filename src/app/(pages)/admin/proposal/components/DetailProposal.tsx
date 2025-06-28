@@ -4,7 +4,6 @@ import BadgeStatus from "@/components/BadgeStatus";
 import { StickyNote } from "lucide-react";
 import ModalStatus from "./ModalVerifyStatus";
 import ModalPublisher from "./ModalAssignPublisher";
-// import { convertDriveLinkToImage } from "@/utils/convertDriveLink";
 
 const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
   return (
@@ -69,6 +68,29 @@ const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
                 "Belum Ada Transaksi"}
             </p>
           )}
+          <div className="my-4">
+            {proposal.publication_book_cover && (
+              <div className="space-y-2">
+                <div className="overflow-hidden border shadow-sm max-w-[300px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={proposal.publication_book_cover}
+                    alt="Cover Buku"
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+                <a
+                  href={`${proposal.publication_book_cover.replace(
+                    "/upload/",
+                    "/upload/fl_attachment/"
+                  )}`}
+                  className="inline-block px-3 py-1 bg-sky-600 text-white text-sm rounded-md hover:bg-sky-700 transition"
+                >
+                  ⬇️ Download Cover Buku
+                </a>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="space-y-2">
@@ -86,24 +108,24 @@ const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
               >
                 📚 Cover Buku
               </a>
-                // <div className="flex flex-col items-start gap-2">
-                //   <a
-                //     href={proposal.publication_book_cover}
-                //     target="_blank"
-                //     rel="noopener noreferrer"
-                //     className="px-3 py-1 bg-sky-100 text-sky-700 rounded-full text-sm font-medium hover:bg-sky-200 transition"
-                //   >
-                //     📚 Lihat Cover Buku
-                //   </a>
-                //   <img
-                //     src={convertDriveLinkToImage(proposal.publication_book_cover)}
-                //     alt="Cover Buku"
-                //     className="w-32 h-48 object-cover rounded border"
-                //     onError={(e) => {
-                //       e.currentTarget.src = "/default-cover.png"; // fallback jika gagal load
-                //     }}
-                //   />
-                // </div>
+              // <div className="flex flex-col items-start gap-2">
+              //   <a
+              //     href={proposal.publication_book_cover}
+              //     target="_blank"
+              //     rel="noopener noreferrer"
+              //     className="px-3 py-1 bg-sky-100 text-sky-700 rounded-full text-sm font-medium hover:bg-sky-200 transition"
+              //   >
+              //     📚 Lihat Cover Buku
+              //   </a>
+              //   <img
+              //     src={convertDriveLinkToImage(proposal.publication_book_cover)}
+              //     alt="Cover Buku"
+              //     className="w-32 h-48 object-cover rounded border"
+              //     onError={(e) => {
+              //       e.currentTarget.src = "/default-cover.png"; // fallback jika gagal load
+              //     }}
+              //   />
+              // </div>
             )}
             {proposal.publication_authenticity_proof && (
               <a

@@ -71,6 +71,29 @@ const DetailProposalSection = ({ proposal }: { proposal: PublicationType }) => {
                 "Belum Ada Transaksi"}
             </p>
           )}
+          <div className="my-4">
+            {proposal.publication_book_cover && (
+              <div className="space-y-2">
+                <div className="overflow-hidden border shadow-sm max-w-[300px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={proposal.publication_book_cover}
+                    alt="Cover Buku"
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+                <a
+                  href={`${proposal.publication_book_cover.replace(
+                    "/upload/",
+                    "/upload/fl_attachment/"
+                  )}`}
+                  className="inline-block px-3 py-1 bg-sky-600 text-white text-sm rounded-md hover:bg-sky-700 transition"
+                >
+                  ⬇️ Download Cover Buku
+                </a>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="space-y-2">

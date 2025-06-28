@@ -49,6 +49,6 @@ export async function verifySessionToken(session: string | undefined = "") {
     return payload;
   } catch (error) {
     console.error("❌ Error verifying session token:", error);
-    return null; // ⚠️ PENTING: tambahkan return null
+    return null; 
   }
 }

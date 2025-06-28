@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Files, Clipboard, CircleAlert } from "lucide-react";
 import { handlePasteText } from "@/utils/handlePaste";
 import ErrorValidation from "@/components/form/ErrorValidation";
+import UploadCoverCloudinary from "./UploadCoverCloudinary";
 import Swal from "sweetalert2";
 type ModalInputDocumentProps = {
   proposal: {
@@ -29,10 +30,10 @@ const ModalInputDocument: React.FC<ModalInputDocumentProps> = ({
       setProofUrl("");
     }
   }, [proposal, isOpen]);
-  const handlePasteCover = async () => {
-    const url = await handlePasteText();
-    if (url) setCoverBookUrl(url);
-  };
+  // const handlePasteCover = async () => {
+  //   const url = await handlePasteText();
+  //   if (url) setCoverBookUrl(url);
+  // };
   const handlePasteProof = async () => {
     const url = await handlePasteText();
     if (url) setProofUrl(url);
@@ -111,14 +112,15 @@ const ModalInputDocument: React.FC<ModalInputDocumentProps> = ({
       </button>
       {isOpen && proposal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-8">
+          {/* <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-8"> */}
+          <div className="bg-white rounded-lg shadow-lg w-[95%] max-w-2xl max-h-[90vh] overflow-y-auto p-6">
             <h3 className="text-2xl font-semibold text-gray-900 text-center mb-4">
               Input Berkas Dokumen
             </h3>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 {error && <ErrorValidation message={error} duration={3000} />}
-                <label className="block font-medium text-black pb-1">
+                {/* <label className="block font-medium text-black pb-1">
                   Link URL Cover Buku <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
@@ -145,7 +147,10 @@ const ModalInputDocument: React.FC<ModalInputDocumentProps> = ({
                   >
                     <Clipboard className="h-5 w-5 text-black" />
                   </button>
-                </div>
+                </div> */}
+                <UploadCoverCloudinary
+                  onUpload={(url) => setCoverBookUrl(url)}
+                />
               </div>
               <div className="mb-3">
                 <label className="block font-medium text-black pb-1">
