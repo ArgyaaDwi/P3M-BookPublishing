@@ -51,7 +51,7 @@ export default function UploadCoverCloudinary({
           <img
             src={preview}
             alt="Preview"
-            className="w-32 h-48 object-cover mt-2 rounded border"
+            className="w-48 h-20 object-cover mt-2 rounded border"
           />
         </>
       )}
